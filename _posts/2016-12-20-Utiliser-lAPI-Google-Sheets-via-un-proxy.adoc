@@ -1,0 +1,138 @@
+= Utiliser l'API Google Sheets via un proxy 
+:hp-tags: java, google-api, google-sheets, securité, proxy
+
+Pour un de mes clients, j'ai commencé à étudier la possibilité d'utiliser les API Google pour pousser des données de son application métier vers https://www.google.com/sheets/about/[Google Sheets].
+Bien que la problématique semble simple au premier abord et que le https://developers.google.com/sheets/api/quickstart/java[quickstart java] permette logiquement de vérifier la faisabilité rapidement de la solution, je me suis heurté à un problème de certificats SSL.
+
+== Symptôme rencontré
+
+Après avoir suivi le quickstart et démarré l'application, celle-ci crachait avec la stacktrace suivante.
+
+----
+2016-12-15 16:11:19.226:INFO::Stopped SocketConnector@localhost:58961
+Exception in thread "main" javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+	at sun.security.ssl.Alerts.getSSLException(Alerts.java:192)
+	at sun.security.ssl.SSLSocketImpl.fatal(SSLSocketImpl.java:1949)
+	at sun.security.ssl.Handshaker.fatalSE(Handshaker.java:302)
+	at sun.security.ssl.Handshaker.fatalSE(Handshaker.java:296)
+	at sun.security.ssl.ClientHandshaker.serverCertificate(ClientHandshaker.java:1509)
+	at sun.security.ssl.ClientHandshaker.processMessage(ClientHandshaker.java:216)
+	at sun.security.ssl.Handshaker.processLoop(Handshaker.java:979)
+	at sun.security.ssl.Handshaker.process_record(Handshaker.java:914)
+	at sun.security.ssl.SSLSocketImpl.readRecord(SSLSocketImpl.java:1062)
+	at sun.security.ssl.SSLSocketImpl.performInitialHandshake(SSLSocketImpl.java:1375)
+	at sun.security.ssl.SSLSocketImpl.startHandshake(SSLSocketImpl.java:1403)
+	at sun.security.ssl.SSLSocketImpl.startHandshake(SSLSocketImpl.java:1387)
+	at sun.net.www.protocol.https.HttpsClient.afterConnect(HttpsClient.java:559)
+	at sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.connect(AbstractDelegateHttpsURLConnection.java:185)
+	at sun.net.www.protocol.http.HttpURLConnection.getOutputStream0(HttpURLConnection.java:1283)
+	at sun.net.www.protocol.http.HttpURLConnection.getOutputStream(HttpURLConnection.java:1258)
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getOutputStream(HttpsURLConnectionImpl.java:250)
+	at com.google.api.client.http.javanet.NetHttpRequest.execute(NetHttpRequest.java:77)
+	at com.google.api.client.http.HttpRequest.execute(HttpRequest.java:981)
+	at com.google.api.client.auth.oauth2.TokenRequest.executeUnparsed(TokenRequest.java:283)
+	at com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest.execute(GoogleAuthorizationCodeTokenRequest.java:158)
+	at com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest.execute(GoogleAuthorizationCodeTokenRequest.java:79)
+	at com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp.authorize(AuthorizationCodeInstalledApp.java:82)
+	at Quickstart.authorize(Quickstart.java:74)
+	at Quickstart.getSheetsService(Quickstart.java:86)
+	at Quickstart.main(Quickstart.java:93)
+Caused by: sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+	at sun.security.validator.PKIXValidator.doBuild(PKIXValidator.java:387)
+	at sun.security.validator.PKIXValidator.engineValidate(PKIXValidator.java:292)
+	at sun.security.validator.Validator.validate(Validator.java:260)
+	at sun.security.ssl.X509TrustManagerImpl.validate(X509TrustManagerImpl.java:324)
+	at sun.security.ssl.X509TrustManagerImpl.checkTrusted(X509TrustManagerImpl.java:229)
+	at sun.security.ssl.X509TrustManagerImpl.checkServerTrusted(X509TrustManagerImpl.java:124)
+	at sun.security.ssl.ClientHandshaker.serverCertificate(ClientHandshaker.java:1491)
+	... 21 more
+Caused by: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+	at sun.security.provider.certpath.SunCertPathBuilder.build(SunCertPathBuilder.java:141)
+	at sun.security.provider.certpath.SunCertPathBuilder.engineBuild(SunCertPathBuilder.java:126)
+	at java.security.cert.CertPathBuilder.build(CertPathBuilder.java:280)
+	at sun.security.validator.PKIXValidator.doBuild(PKIXValidator.java:382)
+	... 27 more
+----
+
+Comme on peut le remarquer, l'erreur indique un problème dans la validation de la chaîne de certificats.
+En fait, comme mon client utilise un proxy de la société Palo Alto Networks, il est nécessaire d'ajouter dans notre magasin applicatif (le cacerts de la JVM) les différents certificats correspondants.
+
+== Ajouter des certificats dans le cacerts
+
+Ce n'est pas très compliqué en soit, et de nombreux articles de blogs sont disponibles sur le net.
+Voici néanmoins un rapide résumé de l'ajout d'un certificat dans le JDK.
+
+----
+%JAVA_HOME%\bin\keytool.exe -import -file %PATH_FICHIER%\mon-certificat.pem -alias mon-alias -keystore %JAVA_HOME%\jre\lib\security\cacerts -storepass changeit -noprompt
+----
+
+Avec pour information :
+
+* %JAVA_HOME% : le répertoire du JDK
+* %PATH_FICHIER% : le chemin vers le fichier de certificat
+* changeit : le mot de passe par défaut du cacerts
+
+
+Après cet ajout de certificat(s), il suffit de relancer l'application développé dans le quickstart.
+Et là, le problème est... toujours présent.
+
+
+== Analyse plus profonde du problème
+
+Donc après ce nouvel échec et plusieurs tentatives de correction tout autant infructueuse telle que :
+
+* utiliser le jre contenu dans le jdk pour lancer le programme
+* changer de compte google
+* passer sur un jdk 1.7 plutôt que 1.8
+
+Un collègue a commencé à me prêter main forte sur le sujet.
+
+On a donc ajouté des logs sur les échanges entre la jvm et le réseau.
+Pour cela, il suffit de rajouter le paramètre suivant lors du lancement de la jvm
+
+----
+-Djavax.net.debug=all
+----
+
+Ceci nous a permis de valider que le certificat était bien présent dans notre magasin de clé.
+Je vous laisse le loisir de tester ce paramètre de démarrage de la JVM.
+Le résultat est assez verbeux dans les logs.
+
+Ensuite, on a travaillé en pur debug pas à pas. Et là on a découvert que l'api Google possédait son propre magasin de certificats.
+Celui-ci se trouve intégré au jar et est disponible à ce chemin */com/google/api/client/googleapis/google.jks*.
+
+En fait dans le quickstart, la variable *HTTP_TRANSPORT* est initialisé avec l'appel suivant :
+
+----
+GoogleNetHttpTransport.newTrustedTransport();
+----
+
+Cette méthode charge un KeyStore avec la liste des certificats contenu dans le fichier *google.jks*.
+De ce fait, nos certificats ajoutés dans le magasin de notre JVM sont tout simplement ignorés.
+Le proxy Palo Alto faisant son office, la JVM ne reconnaît pas le certificat lors du retour de l'authentification et donc plante.
+
+Pour valider que le problème venaît bien de là, j'ai donc modifié la bibliothèque eb ajoutant les certificats dans le magasin du jar.
+Ceci n'est pas une solution optimale loin de là.
+
+Pour rappel : *NE MODIFIEZ JAMAIS UN JAR* car si même ça marche en local sur votre poste, ça ne fonctionnera pas sur les serveurs après un build par votre IC.
+A moins bien entendu que vous ayez fait *encore pire* (mais ça je ne veux pas le savoir).
+
+== Modification du Quickstart pour fonctionner derrière un proxy
+
+Comme indiqué dans la partie précédente, le soucis provient de la création dr *HTTP_TRANSPORT*.
+Il suffit donc de modifier sa création pour utiliser notre propre magasin possédant les certificats de notre proxy.
+On peut par exemple changer l'initialisation par le code suivant:
+
+----
+File file = new File(PATH);
+KeyStore certTrustStore = SecurityUtils.getJavaKeyStore();
+InputStream keyStoreStream = new FileInputStream(file);
+SecurityUtils.loadKeyStore(certTrustStore, keyStoreStream, "changeit");
+HTTP_TRANSPORT = (new NetHttpTransport.Builder()).trustCertificates(certTrustStore).build();
+----
+
+* La chaîne PATH doit correspondre au chemin du cacerts possédant les certificats.
+  Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security
+* changeit : le mot de passe par défaut du cacerts
+
+Comme on peut le voir la solution à ce problème est plutôt simple.
