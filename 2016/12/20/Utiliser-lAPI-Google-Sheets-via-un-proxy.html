@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Utiliser l&#x27;API Google Sheets via un proxy</title>
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="http://blog.jabby-techs.fr/favicon.ico">
+
+    <script type="text/javascript" src="//blog.jabby-techs.fr/themes/ichi/assets/js/vendor/fastclick.js?v=1482235722930"></script>
+    <script type="text/javascript" src="//blog.jabby-techs.fr/themes/ichi/assets/js/vendor/modernizr.js?v=1482235722930"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="//blog.jabby-techs.fr/themes/ichi/assets/css/normalize.css?v=1482235722930" />
+    <link rel="stylesheet" type="text/css" href="//blog.jabby-techs.fr/themes/ichi/assets/css/foundation.min.css?v=1482235722930" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" type="text/css" href="//blog.jabby-techs.fr/themes/ichi/assets/css/outdatedBrowser.min.css?v=1482235722930">
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="//blog.jabby-techs.fr/themes/ichi/assets/fonts/foundation-icons/foundation-icons.css?v=1482235722930" />
+    <link rel="stylesheet" type="text/css" href="//blog.jabby-techs.fr/themes/ichi/assets/css/styles.css?v=1482235722930" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:300,700,400|Source+Sans+Pro:300,400,600,700,900,300italic,400italic,600italic,700italic,900italic" />
+
+    <link rel="canonical" href="http://blog.jabby-techs.fr/2016/12/20/Utiliser-lAPI-Google-Sheets-via-un-proxy.html" />
+    <meta name="referrer" content="origin" />
+    
+    <meta property="og:site_name" content="Jabby Tech&#x27;s" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Utiliser l&#x27;API Google Sheets via un proxy" />
+    <meta property="og:description" content="Pour un de mes clients, j&amp;#8217;ai commencé à étudier la possibilité d&amp;#8217;utiliser les API Google pour pousser des données de son application métier vers Google Sheets. Bien que la problématique semble simple au premier abord et que le quickstart java permette logiquement de vérifier la faisabilité" />
+    <meta property="og:url" content="http://blog.jabby-techs.fr/2016/12/20/Utiliser-lAPI-Google-Sheets-via-un-proxy.html" />
+    <meta property="article:tag" content="java" />
+    <meta property="article:tag" content=" google-api" />
+    <meta property="article:tag" content=" google-sheets" />
+    <meta property="article:tag" content=" securité" />
+    <meta property="article:tag" content=" proxy" />
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Utiliser l&#x27;API Google Sheets via un proxy" />
+    <meta name="twitter:description" content="Pour un de mes clients, j&amp;#8217;ai commencé à étudier la possibilité d&amp;#8217;utiliser les API Google pour pousser des données de son application métier vers Google Sheets. Bien que la problématique semble simple au premier abord et que le quickstart java permette logiquement de vérifier la faisabilité" />
+    <meta name="twitter:url" content="http://blog.jabby-techs.fr/2016/12/20/Utiliser-lAPI-Google-Sheets-via-un-proxy.html" />
+    
+    <script type="application/ld+json">
+null
+    </script>
+
+    <meta name="generator" content="HubPress" />
+    <link rel="alternate" type="application/rss+xml" title="Jabby Tech&#x27;s" href="http://blog.jabby-techs.fr/rss/" />
+</head>
+<body class="post-template tag-java tag-google-api tag-google-sheets tag-securite tag-proxy">
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdate" href="http://outdatedbrowser.com/">Update my browser now</a></p>
+</div>
+
+<nav class="top-bar hide-for-large-up" data-topbar style="background: none">
+  <ul class="title-area">
+    <li class="name">
+
+    </li>
+    <li class="home"><a class="fi-home" href="http://blog.jabby-techs.fr"></a></li>
+    <li class="toggle-topbar"><a href="#" id="trigger-overlay" class="fi-list"></a></li>
+  </ul>
+
+<div class="overlay overlay-scale">
+    <button type="button" class="overlay-close">Close</button>
+    <nav>
+        <ul>
+            <li><a href="http://blog.jabby-techs.fr">Home</a></li>
+        </ul>
+    </nav>
+</div>
+
+</nav>
+
+<div class="row">
+
+<div class="small-16 medium-16 large-4 columns right head-area bgimage" style="background-image: url(/images/cover-1920x1080.jpg)">
+
+<header class="site-head">
+    <div class="vertical">
+        <div class="site-head-content inner">
+            <ul class="side-nav blog-menu show-for-large-up">
+                <li><a class="fi-home" href="http://blog.jabby-techs.fr"></a></li>
+                <li><a class="fi-torso" href="http://blog.jabby-techs.fr/about"></a></li>
+                <li><a class="fi-mail" href="http://blog.jabby-techs.fr/contact"></a></li>
+            </ul>
+            
+            <h1 class="blog-title">Jabby Tech&#x27;s</h1>
+            <hr>
+            <p class="blog-description">You will never code alone !</p>
+            <div class="blog-network">
+<!--                 <a href="#" class="fi-social-pinterest"></a>
+                <a href="#" class="fi-social-linkedin"></a>
+                <a href="#" class="fi-social-behance"></a>
+                <a href="#" class="fi-social-deviant-art"></a>
+                <a href="#" class="fi-social-dribbble"></a>
+                <a href="#" class="fi-social-flickr"></a>
+                <a href="#" class="fi-social-github"></a>
+                <a href="#" class="fi-social-skype"></a>
+                <a href="#" class="fi-social-snapchat"></a>
+                <a href="#" class="fi-social-steam"></a>
+                <a href="#" class="fi-social-xbox"></a>
+                <a href="#" class="fi-social-reddit"></a> -->
+                  <a href="https://github.com/jabby" class="fi-social-github"></a>
+                  <a href="https://twitter.com/darkjabberwock" class="fi-social-twitter"></a>
+            </div>
+        </div>
+    </div>
+</header>
+
+</div>
+
+
+<div class="small-16 medium-16 large-12 columns main-column left">
+    
+
+<main class="content" role="main">
+
+    <article class="post tag-java tag-google-api tag-google-sheets tag-securite tag-proxy">
+
+
+            <h1 class="post-title">Utiliser l&#x27;API Google Sheets via un proxy</h1>
+
+            <span class="post-meta label"><time datetime="2016-12-20">20 Dec 2016</time></span>
+
+            <section class="post-content">
+                <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Pour un de mes clients, j&#8217;ai commencé à étudier la possibilité d&#8217;utiliser les API Google pour pousser des données de son application métier vers <a href="https://www.google.com/sheets/about/">Google Sheets</a>.
+Bien que la problématique semble simple au premier abord et que le <a href="https://developers.google.com/sheets/api/quickstart/java">quickstart java</a> permette logiquement de vérifier la faisabilité rapidement de la solution, je me suis heurté à un problème de certificats SSL.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_sympt_me_rencontr">Symptôme rencontré</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Après avoir suivi le quickstart et démarré l&#8217;application, celle-ci crachait avec la stacktrace suivante.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>2016-12-15 16:11:19.226:INFO::Stopped SocketConnector@localhost:58961
+Exception in thread "main" javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+	at sun.security.ssl.Alerts.getSSLException(Alerts.java:192)
+	at sun.security.ssl.SSLSocketImpl.fatal(SSLSocketImpl.java:1949)
+	at sun.security.ssl.Handshaker.fatalSE(Handshaker.java:302)
+	at sun.security.ssl.Handshaker.fatalSE(Handshaker.java:296)
+	at sun.security.ssl.ClientHandshaker.serverCertificate(ClientHandshaker.java:1509)
+	at sun.security.ssl.ClientHandshaker.processMessage(ClientHandshaker.java:216)
+	at sun.security.ssl.Handshaker.processLoop(Handshaker.java:979)
+	at sun.security.ssl.Handshaker.process_record(Handshaker.java:914)
+	at sun.security.ssl.SSLSocketImpl.readRecord(SSLSocketImpl.java:1062)
+	at sun.security.ssl.SSLSocketImpl.performInitialHandshake(SSLSocketImpl.java:1375)
+	at sun.security.ssl.SSLSocketImpl.startHandshake(SSLSocketImpl.java:1403)
+	at sun.security.ssl.SSLSocketImpl.startHandshake(SSLSocketImpl.java:1387)
+	at sun.net.www.protocol.https.HttpsClient.afterConnect(HttpsClient.java:559)
+	at sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.connect(AbstractDelegateHttpsURLConnection.java:185)
+	at sun.net.www.protocol.http.HttpURLConnection.getOutputStream0(HttpURLConnection.java:1283)
+	at sun.net.www.protocol.http.HttpURLConnection.getOutputStream(HttpURLConnection.java:1258)
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getOutputStream(HttpsURLConnectionImpl.java:250)
+	at com.google.api.client.http.javanet.NetHttpRequest.execute(NetHttpRequest.java:77)
+	at com.google.api.client.http.HttpRequest.execute(HttpRequest.java:981)
+	at com.google.api.client.auth.oauth2.TokenRequest.executeUnparsed(TokenRequest.java:283)
+	at com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest.execute(GoogleAuthorizationCodeTokenRequest.java:158)
+	at com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest.execute(GoogleAuthorizationCodeTokenRequest.java:79)
+	at com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp.authorize(AuthorizationCodeInstalledApp.java:82)
+	at Quickstart.authorize(Quickstart.java:74)
+	at Quickstart.getSheetsService(Quickstart.java:86)
+	at Quickstart.main(Quickstart.java:93)
+Caused by: sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+	at sun.security.validator.PKIXValidator.doBuild(PKIXValidator.java:387)
+	at sun.security.validator.PKIXValidator.engineValidate(PKIXValidator.java:292)
+	at sun.security.validator.Validator.validate(Validator.java:260)
+	at sun.security.ssl.X509TrustManagerImpl.validate(X509TrustManagerImpl.java:324)
+	at sun.security.ssl.X509TrustManagerImpl.checkTrusted(X509TrustManagerImpl.java:229)
+	at sun.security.ssl.X509TrustManagerImpl.checkServerTrusted(X509TrustManagerImpl.java:124)
+	at sun.security.ssl.ClientHandshaker.serverCertificate(ClientHandshaker.java:1491)
+	... 21 more
+Caused by: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+	at sun.security.provider.certpath.SunCertPathBuilder.build(SunCertPathBuilder.java:141)
+	at sun.security.provider.certpath.SunCertPathBuilder.engineBuild(SunCertPathBuilder.java:126)
+	at java.security.cert.CertPathBuilder.build(CertPathBuilder.java:280)
+	at sun.security.validator.PKIXValidator.doBuild(PKIXValidator.java:382)
+	... 27 more</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Comme on peut le remarquer, l&#8217;erreur indique un problème dans la validation de la chaîne de certificats.
+En fait, comme mon client utilise un proxy de la société Palo Alto Networks, il est nécessaire d&#8217;ajouter dans notre magasin applicatif (le cacerts de la JVM) les différents certificats correspondants.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ajouter_des_certificats_dans_le_cacerts">Ajouter des certificats dans le cacerts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Ce n&#8217;est pas très compliqué en soit, et de nombreux articles de blogs sont disponibles sur le net.
+Voici néanmoins un rapide résumé de l&#8217;ajout d&#8217;un certificat dans le JDK.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>%JAVA_HOME%\bin\keytool.exe -import -file %PATH_FICHIER%\mon-certificat.pem -alias mon-alias -keystore %JAVA_HOME%\jre\lib\security\cacerts -storepass changeit -noprompt</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Avec pour information :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>%JAVA_HOME% : le répertoire du JDK</p>
+</li>
+<li>
+<p>%PATH_FICHIER% : le chemin vers le fichier de certificat</p>
+</li>
+<li>
+<p>changeit : le mot de passe par défaut du cacerts</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Après cet ajout de certificat(s), il suffit de relancer l&#8217;application développé dans le quickstart.
+Et là, le problème est&#8230;&#8203; toujours présent.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_analyse_plus_profonde_du_probl_me">Analyse plus profonde du problème</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Donc après ce nouvel échec et plusieurs tentatives de correction tout autant infructueuse telle que :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>utiliser le jre contenu dans le jdk pour lancer le programme</p>
+</li>
+<li>
+<p>changer de compte google</p>
+</li>
+<li>
+<p>passer sur un jdk 1.7 plutôt que 1.8</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Un collègue a commencé à me prêter main forte sur le sujet.</p>
+</div>
+<div class="paragraph">
+<p>On a donc ajouté des logs sur les échanges entre la jvm et le réseau.
+Pour cela, il suffit de rajouter le paramètre suivant lors du lancement de la jvm</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>-Djavax.net.debug=all</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ceci nous a permis de valider que le certificat était bien présent dans notre magasin de clé.
+Je vous laisse le loisir de tester ce paramètre de démarrage de la JVM.
+Le résultat est assez verbeux dans les logs.</p>
+</div>
+<div class="paragraph">
+<p>Ensuite, on a travaillé en pur debug pas à pas. Et là on a découvert que l&#8217;api Google possédait son propre magasin de certificats.
+Celui-ci se trouve intégré au jar et est disponible à ce chemin <strong>/com/google/api/client/googleapis/google.jks</strong>.</p>
+</div>
+<div class="paragraph">
+<p>En fait dans le quickstart, la variable <strong>HTTP_TRANSPORT</strong> est initialisé avec l&#8217;appel suivant :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>GoogleNetHttpTransport.newTrustedTransport();</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Cette méthode charge un KeyStore avec la liste des certificats contenu dans le fichier <strong>google.jks</strong>.
+De ce fait, nos certificats ajoutés dans le magasin de notre JVM sont tout simplement ignorés.
+Le proxy Palo Alto faisant son office, la JVM ne reconnaît pas le certificat lors du retour de l&#8217;authentification et donc plante.</p>
+</div>
+<div class="paragraph">
+<p>Pour valider que le problème venaît bien de là, j&#8217;ai donc modifié la bibliothèque eb ajoutant les certificats dans le magasin du jar.
+Ceci n&#8217;est pas une solution optimale loin de là.</p>
+</div>
+<div class="paragraph">
+<p>Pour rappel : <strong>NE MODIFIEZ JAMAIS UN JAR</strong> car si même ça marche en local sur votre poste, ça ne fonctionnera pas sur les serveurs après un build par votre IC.
+A moins bien entendu que vous ayez fait <strong>encore pire</strong> (mais ça je ne veux pas le savoir).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_modification_du_quickstart_pour_fonctionner_derri_re_un_proxy">Modification du Quickstart pour fonctionner derrière un proxy</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Comme indiqué dans la partie précédente, le soucis provient de la création dr <strong>HTTP_TRANSPORT</strong>.
+Il suffit donc de modifier sa création pour utiliser notre propre magasin possédant les certificats de notre proxy.
+On peut par exemple changer l&#8217;initialisation par le code suivant:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>File file = new File(PATH);
+KeyStore certTrustStore = SecurityUtils.getJavaKeyStore();
+InputStream keyStoreStream = new FileInputStream(file);
+SecurityUtils.loadKeyStore(certTrustStore, keyStoreStream, "changeit");
+HTTP_TRANSPORT = (new NetHttpTransport.Builder()).trustCertificates(certTrustStore).build();</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>La chaîne PATH doit correspondre au chemin du cacerts possédant les certificats.
+Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
+</li>
+<li>
+<p>changeit : le mot de passe par défaut du cacerts</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Comme on peut le voir la solution à ce problème est plutôt simple.</p>
+</div>
+</div>
+</div>
+                        <aside class="tags fi-pricetag-multiple">Posted on <a href="http://blog.jabby-techs.fr/tag/java/">java</a>, <a href="http://blog.jabby-techs.fr/tag/google-api/"> google-api</a>, <a href="http://blog.jabby-techs.fr/tag/google-sheets/"> google-sheets</a>, <a href="http://blog.jabby-techs.fr/tag/securite/"> securité</a>, <a href="http://blog.jabby-techs.fr/tag/proxy/"> proxy</a></aside>
+            </section>
+            <hr>
+            <footer class="post-footer">
+
+                <section class="share">
+                    <h4>Liked this post ? Share it.</h4>
+                    <a class="fi-social-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.jabby-techs.fr/2016/12/20/Utiliser-lAPI-Google-Sheets-via-un-proxy.html"
+                        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    </a>
+                    <a class="fi-social-twitter" href="https://twitter.com/share?text=Utiliser%20l'API%20Google%20Sheets%20via%20un%20proxy&amp;url=http://blog.jabby-techs.fr/2016/12/20/Utiliser-lAPI-Google-Sheets-via-un-proxy.html"
+                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    </a>
+                    <a class="fi-social-google-plus" href="https://plus.google.com/share?url=http://blog.jabby-techs.fr/2016/12/20/Utiliser-lAPI-Google-Sheets-via-un-proxy.html"
+                       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    </a>
+                </section>
+
+                <section class="author">
+                    <header>
+                        <span>About the author</span>
+                    </header>
+                    <section>
+                        <h4>jabby</h4>
+                        <img src="https://avatars.githubusercontent.com/u/1883932?v&#x3D;3">
+                        <span>Nantes, France</span>
+                        <a href="http://www.jabby-techs.fr/">http://www.jabby-techs.fr/</a>
+                    </section>
+                    <footer>
+                         <p></p>
+                    </footer>
+                </section>
+
+        <div class="clearfix"></div>
+                    <hr>
+
+            </footer>
+
+        <h3 class="title-disqus"><span class="fi-comments"></span>Discussions</h3>
+
+
+
+
+        <section class="post-comments">
+          <div id="disqus_thread"></div>
+          <script type="text/javascript">
+          var disqus_shortname = 'jabbytechs'; // required: replace example with your forum shortname
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+          </script>
+          <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+          <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        </section>
+
+
+    </article>
+
+</main>
+
+</div>
+
+</div>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js?v="></script> 
+      <script type="text/javascript">
+        jQuery( document ).ready(function() {
+          // change date with ago
+          jQuery('ago.ago').each(function(){
+            var element = jQuery(this).parent();
+            element.html( moment(element.text()).fromNow());
+          });
+        });
+
+        hljs.initHighlightingOnLoad();
+      </script>
+
+    <!--[if lte IE 8]>
+        <script type="text/javascript" src="//blog.jabby-techs.fr/themes/ichi/assets/js/outdatedBrowser.min.js?v=1482235722930"></script>
+    <![endif]-->
+    <script type="text/javascript" src="//blog.jabby-techs.fr/themes/ichi/assets/js/min/built.js?v=1482235722930"></script>
+
+    <script>
+      $(document).foundation();
+    </script>
+
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-24824748-2', 'auto');
+    ga('send', 'pageview');
+
+    </script>
+</body>
+</html>
