@@ -1,0 +1,3019 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Jabby Tech's]]></title><description><![CDATA[You will never code alone !]]></description><link>http://blog.jabby-techs.fr</link><image><url>/images/cover-1920x1080.jpg</url><title>Jabby Tech&apos;s</title><link>http://blog.jabby-techs.fr</link></image><generator>RSS for Node</generator><lastBuildDate>Tue, 20 Dec 2016 12:08:42 GMT</lastBuildDate><atom:link href="http://blog.jabby-techs.fr/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Utiliser l'API Google Sheets via un proxy]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Pour un de mes clients, j&#8217;ai commencé à étudier la possibilité d&#8217;utiliser les API Google pour pousser des données de son application métier vers <a href="https://www.google.com/sheets/about/">Google Sheets</a>.
+Bien que la problématique semble simple au premier abord et que le <a href="https://developers.google.com/sheets/api/quickstart/java">quickstart java</a> permette logiquement de vérifier la faisabilité rapidement de la solution, je me suis heurté à un problème de certificats SSL.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_sympt_me_rencontr">Symptôme rencontré</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Après avoir suivi le quickstart et démarré l&#8217;application, celle-ci crachait avec la stacktrace suivante.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>2016-12-15 16:11:19.226:INFO::Stopped SocketConnector@localhost:58961
+Exception in thread "main" javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+	at sun.security.ssl.Alerts.getSSLException(Alerts.java:192)
+	at sun.security.ssl.SSLSocketImpl.fatal(SSLSocketImpl.java:1949)
+	at sun.security.ssl.Handshaker.fatalSE(Handshaker.java:302)
+	at sun.security.ssl.Handshaker.fatalSE(Handshaker.java:296)
+	at sun.security.ssl.ClientHandshaker.serverCertificate(ClientHandshaker.java:1509)
+	at sun.security.ssl.ClientHandshaker.processMessage(ClientHandshaker.java:216)
+	at sun.security.ssl.Handshaker.processLoop(Handshaker.java:979)
+	at sun.security.ssl.Handshaker.process_record(Handshaker.java:914)
+	at sun.security.ssl.SSLSocketImpl.readRecord(SSLSocketImpl.java:1062)
+	at sun.security.ssl.SSLSocketImpl.performInitialHandshake(SSLSocketImpl.java:1375)
+	at sun.security.ssl.SSLSocketImpl.startHandshake(SSLSocketImpl.java:1403)
+	at sun.security.ssl.SSLSocketImpl.startHandshake(SSLSocketImpl.java:1387)
+	at sun.net.www.protocol.https.HttpsClient.afterConnect(HttpsClient.java:559)
+	at sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.connect(AbstractDelegateHttpsURLConnection.java:185)
+	at sun.net.www.protocol.http.HttpURLConnection.getOutputStream0(HttpURLConnection.java:1283)
+	at sun.net.www.protocol.http.HttpURLConnection.getOutputStream(HttpURLConnection.java:1258)
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getOutputStream(HttpsURLConnectionImpl.java:250)
+	at com.google.api.client.http.javanet.NetHttpRequest.execute(NetHttpRequest.java:77)
+	at com.google.api.client.http.HttpRequest.execute(HttpRequest.java:981)
+	at com.google.api.client.auth.oauth2.TokenRequest.executeUnparsed(TokenRequest.java:283)
+	at com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest.execute(GoogleAuthorizationCodeTokenRequest.java:158)
+	at com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest.execute(GoogleAuthorizationCodeTokenRequest.java:79)
+	at com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp.authorize(AuthorizationCodeInstalledApp.java:82)
+	at Quickstart.authorize(Quickstart.java:74)
+	at Quickstart.getSheetsService(Quickstart.java:86)
+	at Quickstart.main(Quickstart.java:93)
+Caused by: sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+	at sun.security.validator.PKIXValidator.doBuild(PKIXValidator.java:387)
+	at sun.security.validator.PKIXValidator.engineValidate(PKIXValidator.java:292)
+	at sun.security.validator.Validator.validate(Validator.java:260)
+	at sun.security.ssl.X509TrustManagerImpl.validate(X509TrustManagerImpl.java:324)
+	at sun.security.ssl.X509TrustManagerImpl.checkTrusted(X509TrustManagerImpl.java:229)
+	at sun.security.ssl.X509TrustManagerImpl.checkServerTrusted(X509TrustManagerImpl.java:124)
+	at sun.security.ssl.ClientHandshaker.serverCertificate(ClientHandshaker.java:1491)
+	... 21 more
+Caused by: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+	at sun.security.provider.certpath.SunCertPathBuilder.build(SunCertPathBuilder.java:141)
+	at sun.security.provider.certpath.SunCertPathBuilder.engineBuild(SunCertPathBuilder.java:126)
+	at java.security.cert.CertPathBuilder.build(CertPathBuilder.java:280)
+	at sun.security.validator.PKIXValidator.doBuild(PKIXValidator.java:382)
+	... 27 more</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Comme on peut le remarquer, l&#8217;erreur indique un problème dans la validation de la chaîne de certificats.
+En fait, comme mon client utilise un proxy de la société Palo Alto Networks, il est nécessaire d&#8217;ajouter dans notre magasin applicatif (le cacerts de la JVM) les différents certificats correspondants.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ajouter_des_certificats_dans_le_cacerts">Ajouter des certificats dans le cacerts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Ce n&#8217;est pas très compliqué en soit, et de nombreux articles de blogs sont disponibles sur le net.
+Voici néanmoins un rapide résumé de l&#8217;ajout d&#8217;un certificat dans le JDK.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>%JAVA_HOME%\bin\keytool.exe -import -file %PATH_FICHIER%\mon-certificat.pem -alias mon-alias -keystore %JAVA_HOME%\jre\lib\security\cacerts -storepass changeit -noprompt</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Avec pour information :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>%JAVA_HOME% : le répertoire du JDK</p>
+</li>
+<li>
+<p>%PATH_FICHIER% : le chemin vers le fichier de certificat</p>
+</li>
+<li>
+<p>changeit : le mot de passe par défaut du cacerts</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Après cet ajout de certificat(s), il suffit de relancer l&#8217;application développé dans le quickstart.
+Et là, le problème est&#8230;&#8203; toujours présent.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_analyse_plus_profonde_du_probl_me">Analyse plus profonde du problème</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Donc après ce nouvel échec et plusieurs tentatives de correction tout autant infructueuse telle que :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>utiliser le jre contenu dans le jdk pour lancer le programme</p>
+</li>
+<li>
+<p>changer de compte google</p>
+</li>
+<li>
+<p>passer sur un jdk 1.7 plutôt que 1.8</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Un collègue a commencé à me prêter main forte sur le sujet.</p>
+</div>
+<div class="paragraph">
+<p>On a donc ajouté des logs sur les échanges entre la jvm et le réseau.
+Pour cela, il suffit de rajouter le paramètre suivant lors du lancement de la jvm</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>-Djavax.net.debug=all</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ceci nous a permis de valider que le certificat était bien présent dans notre magasin de clé.
+Je vous laisse le loisir de tester ce paramètre de démarrage de la JVM.
+Le résultat est assez verbeux dans les logs.</p>
+</div>
+<div class="paragraph">
+<p>Ensuite, on a travaillé en pur debug pas à pas. Et là on a découvert que l&#8217;api Google possédait son propre magasin de certificats.
+Celui-ci se trouve intégré au jar et est disponible à ce chemin <strong>/com/google/api/client/googleapis/google.jks</strong>.</p>
+</div>
+<div class="paragraph">
+<p>En fait dans le quickstart, la variable <strong>HTTP_TRANSPORT</strong> est initialisé avec l&#8217;appel suivant :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>GoogleNetHttpTransport.newTrustedTransport();</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Cette méthode charge un KeyStore avec la liste des certificats contenu dans le fichier <strong>google.jks</strong>.
+De ce fait, nos certificats ajoutés dans le magasin de notre JVM sont tout simplement ignorés.
+Le proxy Palo Alto faisant son office, la JVM ne reconnaît pas le certificat lors du retour de l&#8217;authentification et donc plante.</p>
+</div>
+<div class="paragraph">
+<p>Pour valider que le problème venaît bien de là, j&#8217;ai donc modifié la bibliothèque eb ajoutant les certificats dans le magasin du jar.
+Ceci n&#8217;est pas une solution optimale loin de là.</p>
+</div>
+<div class="paragraph">
+<p>Pour rappel : <strong>NE MODIFIEZ JAMAIS UN JAR</strong> car si même ça marche en local sur votre poste, ça ne fonctionnera pas sur les serveurs après un build par votre IC.
+A moins bien entendu que vous ayez fait <strong>encore pire</strong> (mais ça je ne veux pas le savoir).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_modification_du_quickstart_pour_fonctionner_derri_re_un_proxy">Modification du Quickstart pour fonctionner derrière un proxy</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Comme indiqué dans la partie précédente, le soucis provient de la création dr <strong>HTTP_TRANSPORT</strong>.
+Il suffit donc de modifier sa création pour utiliser notre propre magasin possédant les certificats de notre proxy.
+On peut par exemple changer l&#8217;initialisation par le code suivant:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>File file = new File(PATH);
+KeyStore certTrustStore = SecurityUtils.getJavaKeyStore();
+InputStream keyStoreStream = new FileInputStream(file);
+SecurityUtils.loadKeyStore(certTrustStore, keyStoreStream, "changeit");
+HTTP_TRANSPORT = (new NetHttpTransport.Builder()).trustCertificates(certTrustStore).build();</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>La chaîne PATH doit correspondre au chemin du cacerts possédant les certificats.
+Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
+</li>
+<li>
+<p>changeit : le mot de passe par défaut du cacerts</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Comme on peut le voir la solution à ce problème est plutôt simple.</p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2016/12/20/Utiliser-lAPI-Google-Sheets-via-un-proxy.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2016/12/20/Utiliser-lAPI-Google-Sheets-via-un-proxy.html</guid><category><![CDATA[java]]></category><category><![CDATA[ google-api]]></category><category><![CDATA[ google-sheets]]></category><category><![CDATA[ securité]]></category><category><![CDATA[ proxy]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Tue, 20 Dec 2016 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Mars - épisode 3 - Amélioration de l'ergonomie de la console]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>A part au niveau des éditeurs de code, un développeur passe un peu de temps dans la console pour voir comment son programme se comporte. Que ce soit pour simplement vérifier le fonctionnement général de l&#8217;application ou bien pour vérifier qu&#8217;il n&#8217;y a pas d&#8217;exceptions générées lors de l&#8217;utilisation de l&#8217;application.</p>
+</div>
+<div class="paragraph">
+<p>Eclipse Mars (qui sort en juin) comporte donc quelques améliorations pour nous développeurs. Je les trouve plutôt sympathiques donc autant vous en faire profiter.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_verrouillage_automatique_du_d_filement">Verrouillage automatique du défilement</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Un truc assez embêtant lorsque les logs de l&#8217;application sont verbeux, c&#8217;est que l&#8217;on n&#8217;a généralement pas le temps de lire les logs que d&#8217;autres sont de nouveaux écrits dans la console. Ce qui empêche le développeur que je suis de finir de lire ce que j&#8217;avais commencé.</p>
+</div>
+<div class="paragraph">
+<p>Généralement, l&#8217;utilisateur va donc remonter avec dans les logs avec la barre de défilement. Malheureusement cela ne résout pas le problème puisqu'à chaque nouvelle ligne de log, la console réaffiche les lignes nouvellement écrites.</p>
+</div>
+<div class="paragraph">
+<p>Pour désactiver ce fonctionnement et permettre la lecture des logs, il existe un bouton permettant de bloquer le défilement. Il n&#8217;est pas activé par défaut (à mon avis heureusement) mais peut être utile de temps à autres.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2015/06/console-scroll-lock-option.png" alt="console scroll lock option.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Une amélioration appréciable au niveau de la console est d&#8217;activer l&#8217;option de verrouillage dès lors que l&#8217;on utilise la molette de la souris pour remonter dans l&#8217;historique des logs. Ce n&#8217;est pas grand chose, mais c&#8217;est réellement appréciable. Pour réactiver le défilement automatique il faut alors soit cliquer sur le bouton correspondant soit de redescendre via la molette.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_retour_la_ligne_pour_les_longues_lignes_de_log">Retour à la ligne pour les longues lignes de log</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Un autre point intéressant sur la console est le fait de pouvoir maintenant avoir un retour à la ligne automatique pour son contenu. Cela permet donc de lire le contenu de la console sans devoir se déplacer avec la barre de défilement horizontale.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2015/06/console-without-word-wrap.png" alt="console without word wrap.png">
+</div>
+</div>
+<div class="paragraph">
+<p>L&#8217;option n&#8217;est pas activée par défaut, ce qui se comprend pour éviter de perturber les utilisateurs. Elle peut être facilement activée avec le bouton correspondant.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2015/06/console-word-wrap-option.png" alt="console word wrap option.png">
+</div>
+</div>
+<div class="paragraph">
+<p>A noter que lors de l&#8217;activation / désactivation, il y a un petit délai avant de voir le nouveau mode d&#8217;affichage. Je n&#8217;ai pas regardé le code, mais je suppose que c&#8217;est pour permettre de recalculer le caractère où l&#8217;on doit découper pour l&#8217;affichage.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2015/06/console-word-wrap.png" alt="console word wrap.png">
+</div>
+</div>
+<div class="paragraph">
+<p>J&#8217;espère que ces petites améliorations vous plairont autant qu'à moi.</p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2015/06/10/Eclipse-Mars-episode-3-Amelioration-de-lergonomie-de-la-console.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2015/06/10/Eclipse-Mars-episode-3-Amelioration-de-lergonomie-de-la-console.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[ mars]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Wed, 10 Jun 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Mars - épisode 2 - Filtrer la popup Open Resources]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Après un <a href="/2015/05/19/Eclipse-Mars-episode-1-Vue-hierarchique-des-projets.html">premier article</a> sur la nouvelle mouture d&#8217;Eclipse, je vais vous présenter une autre fonctionnalité intéressante de l&#8217;IDE.</p>
+</div>
+<div class="paragraph">
+<p>Si vous êtes utilisateur régulier de l&#8217;IDE, vous devez souvent utiliser le raccourci Ctrl + Shift + R. Celui-ci permet de rapidement rechercher un fichier par son nom dans vos projets.</p>
+</div>
+<div class="paragraph">
+<p>Le problème avec cette vue c&#8217;est que si l&#8217;on a des projets et des sous-projets, on se retrouve avec plusieurs versions du même fichier listées dans la fenêtre de recherche.</p>
+</div>
+<div class="paragraph">
+<p>Sur l&#8217;exemple suivant, on voit bien deux fois le fichier TestFile.properties.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2015/05/open-resource-not-filtered.png" alt="open resource not filtered.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Le pire dans tout ça, c&#8217;est que l&#8217;ouverture de certaines références de fichier ne permettent pas d&#8217;avoir le contexte dans lequel on veut travailler.</p>
+</div>
+<div class="paragraph">
+<p>Pour prendre un exemple simple, si le projet parent n&#8217;est pas un projet Java et que le projet fils en est un, l&#8217;ouverture d&#8217;une des deux références ne permettra pas d&#8217;avoir l&#8217;autocomplétion. Ce qui n&#8217;est vraiment pas pratique.</p>
+</div>
+<div class="paragraph">
+<p>Heureusement <a href="https://twitter.com/mickaelistria">Mickael Istria</a> (oui encore lui 😄) a pris en compte <a href="460749">mes remarques</a> sur ce point et a ajouté une fonctionnalité super pratique.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_activer_le_filtre_des_resources">Activer le filtre des resources</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Pour activer cette fonctionnalité, il suffit d&#8217;accéder aux options de la fenêtre "Open Resources". Une fois ouverte, il suffit d&#8217;activer l&#8217;option "Filter duplicated Resources".</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2015/05/open-resource-select-option.png" alt="open resource select option.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Après l&#8217;activation, vous ne devriez plus avoir de doublons dans les fichiers proposés.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2015/05/open-resource-filtered.png" alt="open resource filtered.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Si c&#8217;est toujours le cas, c&#8217;est peut être que vous utilisez des projets maven sans M2E et sans activer une option permettant de masquer les dossiers fils. Dans ce cas, je vous invite à regarder les commentaires du ticket que j&#8217;ai créé sur le bugtracker eclipse. <a href="http://eclip.se/468692" class="bare">http://eclip.se/468692</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_est_ce_que_l_option_est_cross_workspace">Est ce que l&#8217;option est cross-workspace ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Malheureusement c&#8217;est comme pour la vue hiérarchique présentée dans mon <a href="/2015/05/19/Eclipse-Mars-episode-1-Vue-hierarchique-des-projets.html">billet précédent</a>. Les données ne sont pas automatiquement reportées d&#8217;un workspace à l&#8217;autre.</p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2015/05/28/Eclipse-Mars-episode-2-Filtrer-la-popup-Open-Resources.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2015/05/28/Eclipse-Mars-episode-2-Filtrer-la-popup-Open-Resources.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[ mars]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Thu, 28 May 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Mars - épisode 1 - Vue hiérarchique des projets]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Comme tous les ans, je teste en avance la prochaine version d&#8217;Eclipse. Cette année, elle s&#8217;appelera Mars et sera à mon avis un cru plutôt intéressant. J&#8217;ai donc décidé de vous présenter quelques une des  nouveautés de cette version pour vous préparer à la sortie qui aura lieu fin juin 2015.</p>
+</div>
+<div class="paragraph">
+<p>Dans ces nouveautés, vous retrouverez des améliorations directement visible pour nous utilisateur, mais également quelques nouveautés dans la gestion en lui même du produit Eclipse IDE.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_comment_se_passe_l_affichage_des_projets_jusqu_luna">Comment se passe l&#8217;affichage des projets jusqu'à Luna</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Si vous utilisez maven sur vos projets, vous avez peut être des modules maven. Généralement le dossier d&#8217;un module est directement présent dans le dossier de son parent. On a donc une arborescence sur le disque équivalent à l&#8217;exemple suivant :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code> - my-project (dossier)
+ --- my-project-api (dossier)
+ --- my-project-core (dossier)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sous Eclipse, l&#8217;affichage est différent. En effet, les différentes vues, notamment la vue Project Explorer gère uniquement des projets ou des working set dans leur arbre. Il n&#8217;y a pas de représentations dans l&#8217;arbre de sous-projet. On retrouve donc l&#8217;arborescence suivante</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code> - my-project (projet Eclipse)
+ --- my-project-api (simple dossier)
+ --- my-project-core (simple dossier)
+ - my-project-api (projet Eclipse)
+ - my-project-core (projet Eclipse)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pour un projet plus complexe tel que webtools.jsdt (outils de développement JS d&#8217;Eclipse), on arrive à ça :</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2015/05/eclipse-flat-presentation-project.png" alt="eclipse flat presentation project.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Il est possible de supprimer de l&#8217;affichage les simples dossiers. Ceci permet de ne plus avoir de doublons dans l&#8217;arbre. Pour moi, ceci n'était qu&#8217;un palliatif mais pas une solution optimale. A priori je n'étais pas le seul à penser cela.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_affichage_hi_rarchique_des_projets">Affichage hiérarchique des projets</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://twitter.com/mickaelistria">Mickael Istria</a> de Red Hat a développé une nouvelle fonctionnalité pour le Project Explorer. Celle-ci permet de changer l&#8217;affichage de l&#8217;arbre pour ne plus avoir de doublon dans l&#8217;arbre mais également de placer les projets de façon à respecter le stockage sur disque.</p>
+</div>
+<div class="paragraph">
+<p>On récupère donc la représentation suivante :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code> - my-project (projet Eclipse)
+ --- my-project-api (projet Eclipse)
+ --- my-project-core (projet Eclipse)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ou pour le webtools.jsdt, l&#8217;organisation suivante :</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2015/05/eclipse-hierarchical-presentation-project.png" alt="eclipse hierarchical presentation project.png">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_comment_activer_l_option">Comment activer l&#8217;option ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Pour activer l&#8217;option, c&#8217;est simple, il suffit d&#8217;accéder aux options de la vue Project Explorer. Là je vous sens fébrile. Il parle de quoi ?</p>
+</div>
+<div class="paragraph">
+<p>En fait sur plusieurs vues d&#8217;Eclipse, il existe un menu intégré accessible par le triangle inversé (cf image ci-après). C&#8217;est ce que j&#8217;appelle les options de la vue.</p>
+</div>
+<div class="paragraph">
+<p>Donc dans les options, vous changez "Projects Presentation &gt; Flat" par "Projects Presentation &gt; Hierarchical"</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2015/05/eclipse-change-presentation-project.png" alt="eclipse change presentation project.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Si vous êtes comme moi, vous allez adorer cette nouvelle présentation.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_est_ce_que_le_param_trage_est_cross_workspace">Est-ce que le paramétrage est cross-workspace ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Sachant que certains mécanismes sont mis en place dans Eclipse Mars pour gérer les préférences entre workspaces (je ferais un article dessus prochainement), on peut se demander si le paramétrage de la vue sera pris en compte dans tous les workspaces.</p>
+</div>
+<div class="paragraph">
+<p>J&#8217;ai fait le test et malheureusement ce n&#8217;est pas le cas. Je pense que cela est dû au fait que les paramétrages des perspectives ne sont pas encore sauvegardés indépendamment du modèle du workspace. Si vous voulez plus d&#8217;information sur cette partie là, je vous invite à lire le ticket suivant <a href="http://eclip.se/378811" class="bare">http://eclip.se/378811</a></p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2015/05/19/Eclipse-Mars-episode-1-Vue-hierarchique-des-projets.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2015/05/19/Eclipse-Mars-episode-1-Vue-hierarchique-des-projets.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[ mars]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Tue, 19 May 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[Pourquoi je suis passé de Wordpress à HubPress]]></title><description><![CDATA[<div class="sect1">
+<h2 id="_wordpress_pourquoi_et_comment">WordPress, pourquoi et comment</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>En 2011, j’ai décidé de me créer un blog. A l'époque, je n’ai pas spécialement cherché de plateforme spécifique. De nombreuses personnes utilisaient WordPress et j’avais donc pris un hébergement mutualisé chez OVH pour y installer une instance de ce CMS.</p>
+</div>
+<div class="paragraph">
+<p>Depuis, la situation a changé. Je me suis rendu compte que je n'écrivais pas si souvent que cela et que la solution WordPress ne me convenait pas totalement. En fait, je suis du genre à ne pas utiliser le mode WYSIWYG fourni. Je le trouve pas mal, mais le html produit n’est pas aussi propre que celui que je voulais. Donc je gérais cette partie à la main. Ceci pose un problème de relecture. Il n’est quand même pas des plus simples de relire du texte encapsulé dans des balises html.</p>
+</div>
+<div class="paragraph">
+<p>En plus de ce premier constat sur l’outil, celui-ci impose d'être mis à jour régulièrement pour éviter une attaque. Franchement vu le peu de fois où je me connecte sur l’interface d’administration par an, c’est presque un miracle que le blog n’ai jamais été piraté.</p>
+</div>
+<div class="paragraph">
+<p>Troisième argument contre mon WordPress, je l’ai hébergé sur un serveur que je loue. Sérieusement ça n’a pas été la meilleure idée que j’ai eue. Je me suis servi de l’hébergement pour d’autres choses, mais le peu d’utilisation n’a pas spécialement mérité cet investissement financier.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_a_la_recherche_d_une_solution">A la recherche d&#8217;une solution</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Parallèlement, j’avais beaucoup entendu parler des gh-pages. Un moyen facile d’héberger des pages html pour son site. Rapidement beaucoup d’informaticiens ont commencé à regarder de ce côté-là pour gérer leur blog et de nombreux systèmes ont vu le jour pour générer les pages html.</p>
+</div>
+<div class="paragraph">
+<p>J’ai commencé à regarder un peu ce qui se faisait en fin d’année dernière. Il y a du choix. Trop presque, vous pouvez d’ailleurs passer sur ce <a href="https://staticsitegenerators.net/">site</a> pour vous rendre compte du choix disponible pour un utilisateur.</p>
+</div>
+<div class="paragraph">
+<p>Je recherchais un générateur de html à partir de fichier texte en Markdown ou Asciidoctor qui soit simple d&#8217;utilisation. J&#8217;ai testé par exemple jbake. C'était pas mal, mais comme bon nombre de ces outils, il faut une chaîne de build pour générer les pages. Et ça, ce n&#8217;est clairement pas pratique. Comment modifier ou corriger un article à partir d&#8217;un pc ne possédant pas les outils nécessaires ? WordPress le permettait vu qu&#8217;un simple navigateur était nécessaire.</p>
+</div>
+<div class="paragraph">
+<p>Alors que je cherchais une solution, j&#8217;ai discuté avec <a href="http://www.anthonnyquerouil.fr/">Anthonny Quérouil</a> de ce problème. La chance m&#8217;avait souri. En fait, Anthonny avait un petit side-project utilisant asciidoctor. Un truc qui lui semblait pas mal et qui répondait à un besoin, celui de publier sur gh-pages facilement. Dans le mile, ça répondait sur le papier exactement mon besoin.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_hubpress_le_tester_c_est_l_adopter">HubPress le tester, c&#8217;est l&#8217;adopter</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>J&#8217;ai donc attendu un bon mois pour que le projet sorte en technical preview. Pas simple de patienter jusque-là. L&#8217;envie d&#8217;une autre solution me tiraillait, mais finalement j&#8217;ai bien fait d&#8217;attendre. La sortie fut juste énorme, la solution est plutôt simple d&#8217;utilisation mais pas que. En fait, HubPress possèdent des avantages indéniables :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>se configure très facilement</p>
+</li>
+<li>
+<p>utilise <a href="http://asciidoctor.org">asciidoctor</a> : si vous ne connaissez pas, testez-le. C&#8217;est moins lourd que markdown qui est déjà plus léger que du docbook. Pour écrire de la documentation c&#8217;est génial</p>
+</li>
+<li>
+<p>propose une ihm agréable et sans fioritures pour la rédaction d&#8217;un article</p>
+</li>
+<li>
+<p>permet de visualiser en direct le rendu asciidoctor</p>
+</li>
+<li>
+<p>fourni plusieurs thèmes sympa et permet d&#8217;utiliser les thèmes de ghost</p>
+</li>
+<li>
+<p>intègre google analytics</p>
+</li>
+<li>
+<p>intège le système de commentaire disqus</p>
+</li>
+<li>
+<p>pas besoin de plugins pour la coloration syntaxique</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2015/04/hubpress-edit-page.png" alt="hubpress edit page.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Autant dire que je suis plutôt content de cette solution. Tout n&#8217;est pas encore présent. Il manque par exemple la génération des flux RSS. Mais l&#8217;outil est quand même bien pratique. Il n&#8217;y a qu'à regarder l&#8217;engouement autour de l&#8217;outil pour comprendre que ce petit side-project a bien plus d&#8217;impact que l&#8217;on aurait pu le croire au tout début.</p>
+</div>
+<div class="paragraph">
+<p>Je vous invite d&#8217;ailleurs à regarder le site <a href="https://staticsitegenerators.net/" class="bare">https://staticsitegenerators.net/</a>. HubPress est à la 15ème position en termes d'étoiles sur Github. Le tout en 3 mois. Autant dire qu&#8217;il y a pas mal de supporters.</p>
+</div>
+<div class="paragraph">
+<p>En espérant que cet article vous incitera à tester ce projet très intéressant. Et s&#8217;il vous manque quelque chose, n&#8217;hésitez pas à la demander. C&#8217;est par ici que ça se passe : <a href="https://github.com/HubPress/hubpress.io/issues" class="bare">https://github.com/HubPress/hubpress.io/issues</a></p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2015/04/13/Pourquoi-je-suis-passe-de-Wordpress-a-HubPress.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2015/04/13/Pourquoi-je-suis-passe-de-Wordpress-a-HubPress.html</guid><category><![CDATA[HubPress]]></category><category><![CDATA[ Asciidoctor]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Mon, 13 Apr 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[Problème de background dans le thème Dark d’Eclipse]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Je ne sais pas si vous aviez lu mon article précédent, mais j’abordais rapidement le fait qu’un thème « Dark » soit nativement présent dans Eclipse depuis la version Luna. J’avais fait mention d’un petit souci de couleur de fond des éditeurs dans certains packagings et je souhaitais vous donner une solution de contournement. En fait, il y a mieux.</p>
+</div>
+<div class="paragraph">
+<p>Plusieurs bugs ont été créés sur le tracker d’Eclipse. (<a href="http://eclip.se/438475">bug 438475</a> et <a href="http://eclip.se/438175">bug 438175</a>). Ces bugs sont maintenant résolus et au lieu d’un contournement qui aurait supprimé une partie des fonctionnalités des packagings Eclipse concerné, on peut simplement mettre à jour le composant fautif.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_solution">Solution</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Pour installer la correction, lancer Eclipse et accéder à l’installation de nouveaux plugins (Help &gt; Install New Software…). Saisir l’url suivante : <a href="http://download.eclipse.org/tm/updates/3.6milestones/20140704" class="bare">http://download.eclipse.org/tm/updates/3.6milestones/20140704</a>.</p>
+</div>
+<div class="paragraph">
+<p>Pour récupérer uniquement la correction, décocher l’option « Group Items by Category » et sélectionner le plugin nommé « Target management Terminal Widget ». Poursuivez l’installation de ce composant et redémarrer Eclipse. Il ne devrait plus y avoir de problème de background.</p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/07/25/Probleme-de-background-dans-le-theme-Dark-dEclipse.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/07/25/Probleme-de-background-dans-le-theme-Dark-dEclipse.html</guid><category><![CDATA[eclipse]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 25 Jul 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Sortie d’Eclipse Luna]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Comme tous les ans, la fondation Eclipse lance une nouvelle version de plusieurs de ses projets à la même date. Ce lancement simultané, appelée <a href="https://projects.eclipse.org/releases/luna">release train</a>, voit notamment l’arrivée d’une nouvelle version de l’IDE. Cette année, c’est donc Eclipse Luna qui devient la dernière version de l’IDE. Voici quelques nouveautés de l’IDE.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2014/07/splash-luna.png" alt="splash luna.png">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_support_de_java_8_natif">Support de Java 8 natif</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Suite à l’annonce de la sortie officielle de Java 8, il était possible d’ajouter dans Eclipse Kepler le support de cette nouvelle version. Au choix, on pouvait utiliser le Marketplace ou bien télécharger un nouveau packaging Kepler SR2 Java 8 Support. Dans Luna, la dernière version de Java est nativement gérée. Plus besoin d’ajouter un patch.</p>
+</div>
+<div class="paragraph">
+<p>Au programme on retrouve bien entendu la reconnaissance des lambdas et leur gestion (extraction en méthode, renommage des paramètres dans une expression lambda, debug, …). De plus, les saves actions se voient enrichir d’une possible transformation automatique des interfaces fonctionnelles vers une expression lambda ou des lambdas vers des classes anonymes.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2014/07/save-actions-java-8.png" alt="save actions java 8.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Les autres nouveautés du langage sont bien entendues prises également en compte. Il reste néanmoins quelques petits ajustements sur JDT pour que Java 8 soit pris en compte à 100%. Pour ma part, j’ai trouvé un petit problème lors de l’inférence de type sur des cas de lambda couplés avec des types génériques (cf. <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=435767" class="bare">https://bugs.eclipse.org/bugs/show_bug.cgi?id=435767</a>).</p>
+</div>
+<div class="paragraph">
+<p>Voici une liste détaillé des bugs en cours sur le support Java 8 :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://bugs.eclipse.org/bugs/buglist.cgi?bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;list_id=9477975&amp;query_format=advanced&amp;short_desc=%5B1.8%5D&amp;short_desc_type=allwordssubstr">Liste des bugs en cours pour le support de Java 8</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_nouveau_th_me_pour_eclipse">Nouveau thème pour Eclipse</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Au final, c’est peut être l’un des plus gros reproches fait à l’IDE, mais jusqu’à présent, il n’existait pas de thème sombre nativement. Pour en obtenir un, il fallait passer par des plugins externes. Plusieurs développeurs ont décidé de changer cela en contribuant à la plateforme. Pour cela, ils utilisent notamment les possibilités offertes par la gestion du <a href="https://wiki.eclipse.org/Eclipse4/CSS">CSS au sein même d’Eclipse</a>.</p>
+</div>
+<div class="paragraph">
+<p>Maintenant, il est possible d’utiliser le thème fourni par Eclipse. Il suffit de changer ça dans Window &gt; Preferences &gt; General &gt; Appearance, en choisissant le thème « Dark ». J’ai fait quelques tests et pour le moment, je ne le trouve pas aussi bien que des thèmes sombres dans d’autres éditeurs. Il a néanmoins le mérite d’exister et d’avoir des contributeurs actifs.</p>
+</div>
+<div class="paragraph">
+<p><strong>N’hésitez pas à tester et à remonter les problèmes sur le bug tracker d’Eclipse.</strong></p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2014/07/dark-theme.png" alt="dark theme.png">
+</div>
+</div>
+<div class="paragraph">
+<p>En parlant de problèmes sur le thème « Dark », j’ai testé les différents packages d’Eclipse sur la page de téléchargement et quatre d’entre eux ont un problème sur la couleur de fond de l’éditeur de fichier. Un bug a été remonté à la communauté Eclipse et une correction devrait être présente dans la prochaine mise à jour.</p>
+</div>
+<div class="paragraph">
+<p>Les packages ayant le problème sont :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Eclipse IDE for C/C++ Developers</p>
+</li>
+<li>
+<p>Eclipse IDE for Java EE Developers (à mon grand regret)</p>
+</li>
+<li>
+<p>Eclipse for Parallel Application Developers</p>
+</li>
+<li>
+<p>Eclipse IDE for Java and Report Developers</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Il existe un contournement pour palier à ce problème, je ferais prochainement un article dessus.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_am_liorations_diverses_de_l_espace_de_travail">Améliorations diverses de l’espace de travail</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Plusieurs petites améliorations sont également de la partie sur l’espace de travail. J’apprécie ces modifications même si elles peuvent être considérées comme mineure pour beaucoup de monde.</p>
+</div>
+<div class="sect2">
+<h3 id="_num_ro_de_ligne_dans_les_diteurs">Numéro de ligne dans les éditeurs</h3>
+<div class="paragraph">
+<p>Tout d’abord, tous les éditeurs affichent maintenant le numéro de ligne par défaut. C’était demandé depuis longtemps mais le fait que ce paramétrage soit commun à tous les éditeurs et non pas de façon indépendante, n’a pas permis avant cette année de prendre une décision. Le pouvoir du sondage a bien aidé sur ce coup-là.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_r_duction_de_l_espace_per_du_dans_les_ihm">Réduction de l’espace « per* du » dans les IHM</h3>
+<div class="paragraph">
+<p>Ensuite de façon générale sur plusieurs thèmes, les écarts entre les vues ont été réduits. Il y a donc plus de place pour l’information utile.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_possibilit_de_masquer_le_quick_access">Possibilité de masquer le « Quick Access »</h3>
+<div class="paragraph">
+<p>Petit clin d’oeil à un collègue, le champ de saisie « Quick Access » dans la barre de menu peu maintenant être masqué. Pour cela il suffit de faire un clic droit dessus et de cocher « Hide ».</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_split_des_diteurs">Split des éditeurs</h3>
+<div class="paragraph">
+<p>Enfin dernière petite amélioration des éditeurs, le split horizontal et vertical. Et oui c’est un truc que l’on n’avait pas jusque-là sur Eclipse. Il était possible de cloner l’éditeur et d’avoir deux fois le même fichier visible mais cela obligeait à avoir deux onglets pour le même fichier dans la liste des éditeurs.</p>
+</div>
+<div class="paragraph">
+<p>Il est maintenant possible soit via « Window &gt; Editor &gt; Split … » ou alors par raccourci clavier de séparer en deux zones le même éditeur. A noter que d’après mes premiers tests, en clavier français, le split vertical ne peut pas être utilisé sans changer le raccourci clavier. Je vous laisse regarder ce point.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_am_liorations_egit">Améliorations EGit</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Là c’est un gros morceau. L’équipe travaillant sur EGit a sorti quatre nouvelles versions entre Kepler et Luna. On est donc passé de la 3.0 d’EGit à la 3.4. Au final, je ne listerais pas toutes les améliorations tellement elles sont nombreuses.</p>
+</div>
+<div class="paragraph">
+<p>Sachez néanmoins que les performances et l’expérience utilisateur ont été fortement retravaillées pour que le plugin soit plus agréable à utiliser. Pour ceux qui ont testé EGit il y a un an, je vous invite à retenter l’aventure.</p>
+</div>
+<div class="paragraph">
+<p>Pour connaître la liste des différentes améliorations d’EGit, vous pouvez vous référer aux 4 pages wiki suivantes :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://wiki.eclipse.org/EGit/New_and_Noteworthy/3.1">Amélioration EGit version 3.1</a></p>
+</li>
+<li>
+<p><a href="https://wiki.eclipse.org/EGit/New_and_Noteworthy/3.2">Amélioration EGit version 3.2</a></p>
+</li>
+<li>
+<p><a href="https://wiki.eclipse.org/EGit/New_and_Noteworthy/3.3">Amélioration EGit version 3.3</a></p>
+</li>
+<li>
+<p><a href="https://wiki.eclipse.org/EGit/New_and_Noteworthy/3.4">Amélioration EGit version 3.4</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_autres_informations_autour_de_la_release_annuelle">Autres informations autour de la release annuelle</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Bien entendu, je me suis principalement concentré sur les améliorations de l’IDE Eclipse. Il ne faut pas oublier les autres projets pour autant. Vous trouverez à cette adresse la liste de tous les projets Eclipse ayant participés à la release annuelle sur <a href="https://projects.eclipse.org/releases/luna">cette page</a>.</p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/07/07/Sortie-dEclipse-Luna.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/07/07/Sortie-dEclipse-Luna.html</guid><category><![CDATA[eclipse]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Mon, 07 Jul 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Nouveau site pour la fondation Eclipse]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Il y a des nouvelles assez simples qui ont tendances à me faire plaisir. Depuis quelques semaines déjà, il est possible de tester le futur site de la fondation Eclipse. Il faut avouer que le site actuel n’est pas super vendeur. J’aurais même tendance à dire qu’il est plutôt austère et vieillot. Voici quelques exemples du travail accomplit à l’heure actuelle.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_une_page_d_accueil_plus_jeune">Une page d’accueil plus jeune</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Le design sur Internet change constamment. Certains sites arrivent à suivre la cadence, d’autres moins. Là on peut dire que la fondation a enfin rattrapé un peu son retard. La page d’accueil est plus agréable et les informations sont plus facilement accessibles. J’ai même découvert des parties du site simplement parce que l’UI est plus agréable. Pour vous faire une idée voici les deux versions des pages d’accueil</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2014/04/site-eclipse-actuel.png" alt="site eclipse actuel.png">
+</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2014/04/site-eclipse-futur.png" alt="site eclipse futur.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Je ne sais pas pour vous mais je trouve vraiment que l’ancienne version est brouillonne. Il y a trop d’informations en même temps. On ne sait presque plus où donner de la tête. Ceci est accentué par le fait que le site ne prend pas toute la largeur de l’écran.</p>
+</div>
+<div class="paragraph">
+<p>Sur la nouvelle version, cela paraît plus clair. Le site prend toute la place disponible à l’écran. Cela permet d’avoir une meilleure séparation des contenus. On peut également voir que trois aspects de la fondation sont mis en avant. A savoir, l’IDE mais également les groupes de travails et la communauté de projet.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_une_page_de_t_l_chargement_plus_polic_e">Une page de téléchargement plus policée</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>L’une des pages où je vais le plus sur ce site est celle de téléchargement. Qui a dit que je prenais plus de packages Eclipse que de bières lors des soirées ? Oui j’avoue, je suis un grand consommateur de packages Eclipse. Ici les différences sont un peu moins marquantes mais au moins, le site reste cohérent.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2014/04/site-eclipse-download-actuel.png" alt="site eclipse download actuel.png">
+</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2014/04/site-eclipse-download-futur.png" alt="site eclipse download futur.png">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_et_pour_tester_c_est_par_o">Et pour tester c’est par où ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Je vous sens impatient. Donc pour tester c’est assez simple, il suffit d’aller à cette url : <a href="http://staging.eclipse.org/" class="bare">http://staging.eclipse.org/</a></p>
+</div>
+<div class="paragraph">
+<p>Toutes les pages n’ont pas encore été migrées vers la nouvelle version mais le travail avance plutôt bien. Et si vous ne voulez pas tester de suite, sachez qu’en juin prochain, la version sera mise officiellement en ligne. Pour les plus motivés vous pouvez donc tester la nouvelle mouture et faire vos retours sur <a href="https://www.surveymonkey.com/s/eclipsedesign">ce sondage</a>.</p>
+</div>
+<div class="paragraph">
+<p>Article initial : <a href="http://ianskerrett.wordpress.com/2014/03/31/time-for-a-new-eclipse-org-lf/" class="bare">http://ianskerrett.wordpress.com/2014/03/31/time-for-a-new-eclipse-org-lf/</a></p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/04/25/Nouveau-site-pour-la-fondation-Eclipse.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/04/25/Nouveau-site-pour-la-fondation-Eclipse.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[divers]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 25 Apr 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 006 – activer l’autocomplétion sur tout]]></title><description><![CDATA[<div class="paragraph">
+<p>J’ai découvert il y a trois jours cette petite astuce à propos de l’auto-complétion. Je devrais d’ailleurs plutôt remercier <a href="http://blog.vogella.com/author/vogella/">Lars Vogel</a> pour cette découverte.</p>
+</div>
+<div class="paragraph">
+<p>Comme vous le savez, par défaut, l’auto-complétion se lance soit lorsque l’on utilise le raccourci clavier « Ctrl + Espace » soit après un petit temps d’activation lorsque l’on tape un point. Il est possible, et c’est là le sujet du jour, d’activer l’auto-complétion sur d’autres éléments que le point. Ainsi dès que l’on commence à taper quelque chose, l’auto-complétion s’active.</p>
+</div>
+<div class="paragraph">
+<p>Pour activer cette option, accédez au préférences suivantes : « Window &gt; Preferences &gt; Java &gt; Editor &gt; Content Assist ». Une fois les préférences affichées, , il vous suffit dans l’encadré « Auto activation » de changer le masque de l’option « Auto activation triggers for Java » et de mettre le masque suivant :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-linenums" data-lang="linenums">._abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</code></pre>
+</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2014/03/auto-activation-triggers-for-java.png" alt="auto activation triggers for java.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Voilà c’est fait, plus besoin en Java d’appuyer frénétiquement sur « Ctrl + Espace » pour avoir l’auto-complétion sur une méthode pour laquelle vous avez déjà commencé à taper le nom. Eclipse proposera directement les choix possibles. A vous de voir si vous activez ce nouveau masque. En effet, au premier abord, cela peut perturber légèrement vos habitudes.</p>
+</div>
+<div class="paragraph">
+<p>Il est possible d’activer la même option pour l’éditeur JavaScript. Je n’ai pour le moment pas encore activé celle-ci vu le peu de JavaScript que je fais ces derniers jours.</p>
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/07/Eclipse-Tips-006-activer-lautocompletion-sur-tout.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/07/Eclipse-Tips-006-activer-lautocompletion-sur-tout.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><category><![CDATA[java]]></category><category><![CDATA[auto-complétion]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 07 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 005 : Accélérer votre debug avec le step filtering]]></title><description><![CDATA[<div class="paragraph">
+<p>Le debug sous Eclipse est à mon sens pas trop mal foutu. Par contre, certains points dans la configuration de base ne sont pas spécialement pratiques. Je pense notamment au moment où l’on utilise le « Step into » (F5) et que l’on se retrouve dans les méandres de la JVM/Spring/autre mécanisme d’aop ou d’injection… Je suppose que comme moi c’est plutôt le debug de votre programme qui vous intéresse que celui de la JVM ni de ces bibliothèque qui servent à lier vos bouts de code en un tout utile.</p>
+</div>
+<div class="paragraph">
+<p>En fait, prenons un exemple avec le code naif et inutile suivant.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Test
+public void test() {
+    StringBuilder builder = new StringBuilder();
+    builder.append(false);
+    builder.append("");
+    builder.append(1);
+    maMethode(builder.append(builder));
+}
+
+private void maMethode(StringBuilder builder) {
+    System.out.println(builder);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si l’on commence à jouer avec le F5 à chaque ligne ou bien uniquement à la ligne 7, vous entrez par défaut dans l’implémentation de StringBuilder. Je ne dis pas que ce n’est pas intéressant, mais ça ralenti notre debug et donc notre correction du problème que l’on essaye de comprendre. Il existe pourtant une petite configuration très pratique pour éviter ce désagrément.</p>
+</div>
+<div class="paragraph">
+<p>Accédez à « Window &gt; Preferences &gt; Java &gt; Debug &gt; Step Filtering ». Comme vous pouvez le remarquer, plusieurs options sont proposées.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2014/03/step-filtering.png" alt="step filtering.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Premièrement, activez l’option puis cochez les différents package dans lesquels vous ne souhaitez pas rentrer lors de l’utilisation du F5. Vous pouvez également en ajouter au besoin.</p>
+</div>
+<div class="paragraph">
+<p>Ensuite, si cela vous intéresse, cochez les deux options sur les getters/setters en dessous de la liste des packages. Ainsi lors de l’appel à un simple getter/setter (comme la majorité des getters des applications courantes) vous ne rentrerez plus dedans.</p>
+</div>
+<div class="paragraph">
+<p>Voilà, votre configuration de debug est améliorée. Dans l’exemple précédent, avec le configuration indiquée dans la capture d’écran, le fait d’appuyer sur F5 tout le long de la méthode de test ne vous fera pas rentrer dans le code de StringBuilder. De plus, si vous aviez utilisé un POJO, vous ne seriez pas non plus rentré dans un de vos getters/setters simple.</p>
+</div>
+<div class="paragraph">
+<p><strong>Oui mais si je veux rentrer dans un de mes getters/setters ? Et si je veux rentrer dans une méthode d’un package que je filtre ?</strong></p>
+</div>
+<div class="paragraph">
+<p>Il suffit en fait de mettre un point d’arrêt. Vous pourrez alors vérifier vos données d’entrée ou être informée d’un appel à cette méthode filtrée. Par contre, si vous essayez alors d’avancer en debug dans la méthode, Eclipse vous en refera sortir directement. Il faudra donc au cas par cas désactiver votre filtrage.</p>
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/07/Eclipse-Tips-005-Accelerer-votre-debug-avec-le-step-filtering.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/07/Eclipse-Tips-005-Accelerer-votre-debug-avec-le-step-filtering.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><category><![CDATA[java]]></category><category><![CDATA[debug]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 07 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 004 – Echapper les caractères lorsque l’on colle dans un String]]></title><description><![CDATA[<div class="paragraph">
+<p>Si vous aussi vous faîtes parti des rares personnes à <a href="http://www.commitstrip.com/fr/2014/02/24/coder-on-the-verge-of-extinction/">écrire vos RegExp à la main</a>, cette petite astuce risque de vous intéresser.</p>
+</div>
+<div class="paragraph">
+<p>En effet, vous êtes serein, vous prévoyez votre RegExp dans un éditeur de texte, voir quelqu’un l’a écrite pour vous dans des spécifications. Et là, vous collez cette expression dans une chaîne de caractères en Java. et vous vous rendez à l’évidence. Il vous faut tout échapper. Normal me direz vous.</p>
+</div>
+<div class="paragraph">
+<p>Mais imaginez une RegExp complexe, longue que vous commencez à échapper à la main (je ne cautionne pas) et là votre voisin vous interpelle pour vous poser une question. Ce moment, où vous ne voulez pas répondre à part « Je code »… Mais c’est le drame, vous perdez le fil de votre échappement et vous vous retrouvez à ne plus savoir si ce « \\ » doit être échappé ou non… Ne vous inquiétez pas, j’ai une solution.</p>
+</div>
+<div class="paragraph">
+<p>Accédez aux préférences « Window &gt; Preferences », et recherchez « Escape » vous aurez alors la possibilité de cocher l’option « Escape text when pasting into a string literal » de l’éditeur Java.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2014/03/escape-when-pasting.png" alt="escape when pasting.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Ainsi lors de vos prochains collages (non, pas comme à la maternelle) dans une chaîne de caractère, la chaîne sera automatiquement échappée. Le code ci-dessous présente une chaîne non échappé automatiquement et son équivalent une fois l’option activée.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public static final String EMAIL_PATTERN_PASTE_WITHOUT_AUTO_ESCAPE = "^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"; // Cette ligne ne compile pas
+public static final String EMAIL_PATTERN_PASTE_WITH_AUTO_ESCAPE = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Vous pouvez également faire la même chose dans l’éditeur JavaScript. Par contre, je n’ai pas pris le temps d’essayer pour vous.</p>
+</div>
+<div class="paragraph">
+<p><strong>Attention : si la chaîne est déjà échappée, elle le sera doublement… Pensez-y avant de copier/coller vos RegExp (ou autre texte que vous collez). Dans ce cas, coller la chaîne hors des doubles quotes et ajoutez les autour après coup.</strong></p>
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/06/Eclipse-Tips-004-Echapper-les-caracteres-lorsque-lon-colle-dans-un-String.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/06/Eclipse-Tips-004-Echapper-les-caracteres-lorsque-lon-colle-dans-un-String.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><category><![CDATA[java]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Thu, 06 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 003 – Les favoris accélèrent le développement]]></title><description><![CDATA[<div class="paragraph">
+<p>Lorsque l’on commence à mieux connaître Eclipse, on se rend compte que la gestion de l’auto-complétion peut être très poussée et qu’elle vous permet d’optimiser votre rapidité de développement. L’un de ses paramètres m’est d’ailleurs utile quotidiennement notamment dans le cas des tests unitaires. Il s’agit des favoris. Là tout de suite, je vous sens fébrile. Vous voulez savoir ce que c’est ?</p>
+</div>
+<div class="paragraph">
+<p>Les favoris sont en fait les classes que vous préférez utiliser. Une fois que vous les avez indiquées, vous pouvez directement utiliser les méthodes de ces classes dans l’auto-complétion. Comme je le disais, je m’en sers principalement dans les tests car comme beaucoup, j’utilise énormément les méthodes de la classe Assert de JUnit, mais également celles de Mockito ou Matchers de la bibliothèque Mockito.</p>
+</div>
+<div class="paragraph">
+<p>Pour les configurer, vous devez aller dans « Window &gt; Preferences » puis tapez directement « Favorites » dans la barre de recherche. Ensuite, il vous reste plus qu’à indiquer vos classes préférées en utilisant le bouton « New Type ». Insérer le nom complet de la classe (c’est à dire avec son package) et cliquez sur « Ok ».</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2014/03/favorites.png" alt="favorites.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Voilà c’est fait, vous aurez l’auto-complétion sur les méthodes de ces classes.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2014/03/favorites-autocomplete.png" alt="favorites autocomplete.png">
+</div>
+</div>
+<div class="paragraph">
+<p><strong>C’est pas mal mais Sonar gueule avec mes imports statiques, peut-on faire mieux ?</strong></p>
+</div>
+<div class="paragraph">
+<p>La réponse est bien évidemment oui, sinon, je n’aurais pas posé cette question juste au-dessus. En fait, en configurant les « Save Actions », vous pouvez automatiquement préfixer les appels statiques de méthodes avec la classe correspondante. Mais on verra ça un autre jour, peut-être demain.</p>
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/05/Eclipse-Tips-003-Les-favoris-accelerent-le-developpement.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/05/Eclipse-Tips-003-Les-favoris-accelerent-le-developpement.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Wed, 05 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 002 – Autocomplétion : insérer ou remplacer ?]]></title><description><![CDATA[<div class="paragraph">
+<p>Aujourd’hui, je vais présenter un petit truc qui a changé ma vie (ou presque) sur l’auto-complétion Java dans Eclipse. Oui je vous sens réellement sceptique, mais lisez la suite, vous allez peut être découvrir un truc génial.</p>
+</div>
+<div class="paragraph">
+<p>Je ne sais pas pour vous mais moi lorsque j’utilise l’auto-complétion, il m’arrive de me tromper de méthode. Je recommence donc pour choisir la bonne méthode. Le problème récurent est que la première méthode choisie est toujours présente. Par exemple, en utilisant l’API JodaTime, un « raté » pour utiliser la méthode plusMinutes pourrait donner ceci :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">int minutes = 1;
+DateTime date = DateTime.now();
+date.plusMillis(millis);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Et la tentative de correction, cela :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">int minutes = 1;
+DateTime date = DateTime.now();
+date.plusMinutes(minutes)llis(millis);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Comme vous pouvez le voir, le second code ne compile pas. Et pour cause, l’auto-complétion a ajouté la méthode au lieu de remplacer celle précédemment écrite. Il est donc nécessaire de nettoyer le code avant de continuer à coder. Heureusement, il est possible de modifier le fonctionnement de l’auto-complétion Java. Pour cela, rien de très compliqué. Il suffit d’aller dans « Window &gt; Preferences » puis de sélectionner « Content Assist » pour l’éditeur Java. Ensuite modifiez simplement la première option pour choisir « Completion overwrites ». Appliquez et tester.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2014/03/completion-overwrites.png" alt="completion overwrites.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Après cette modification, une tentative de correction (auto-complétion avec « plusMi ») donnera le code suivant. Il ne restera alors plus qu’à changer le nom du paramètre.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">int minutes = 1;
+DateTime date = DateTime.now();
+date.plusMinutes(millis);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Il est possible sans changer les préférences d’avoir d’avoir le même comportement au coup par coup. Pour cela, au lieu d’appuyer uniquement sur la touche « Enter » pour choisir la méthode, il suffit d’appuyer conjointement sur « Ctrl + Enter ».</p>
+</div>
+<div class="paragraph">
+<p>Dernier point, il est également possible de faire la même chose pour l’auto-complétion JavaScript. La procédure est similaire, il faut simplement choisir l’éditeur JavaScript à la place de celui pour Java.</p>
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/04/Eclipse-Tips-002-Autocompletion-inserer-ou-remplacer.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/04/Eclipse-Tips-002-Autocompletion-inserer-ou-remplacer.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><category><![CDATA[auto-complétion]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Tue, 04 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 001 – raccourcir le temps de lancement]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Voilà, je commence la mission rédaction d’un petit article tous les jours. Aujourd’hui on va parler de la durée de lancement d’Eclipse IDE. Vous savez ce truc qui met parfois 20, 30 secondes voir plus à se lancer. On va voir comment optimiser un peu tout ça tranquillement et simplement.</p>
+</div>
+<div class="paragraph">
+<p>Le temps de lancement n’arrive pas souvent dans une journée de travail, mais je fais parti des utilisateurs qui n’aiment pas attendre. J’ai donc cherché à optimiser un peu le temps de démarrage de mon IDE. Cette volonté s’est accrue lorsque j’ai travaillé sur des machines peu puissante ou dans des petites VM contenant toute la configuration d’un projet <em>(qui a dit hérésie ?)</em>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_la_question_est_comment_faire">La question est comment faire ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Une fois Eclipse ouvert il vous suffit d’accéder aux préférences de votre IDE « Window &gt; Preferences ». Dans le champ de recherche, tapez « Startup ». Vous pouvez voir que la liste n’est plus très longue.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2014/03/startup-and-shutdown.png" alt="startup and shutdown.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Sélectionnez « Startup and Shutdown ». Comme vous pouvez le remarquez, certains plugins d’Eclipse sont listés dans la section des plugins activés au démarrage. Il vous suffit de décocher ceux que vous ne souhaitez pas activer lors du lancement. Rassurez-vous, si vous faites appel à ces plugins lors de l’utilisation de votre IDE, ils se lanceront automatiquement. Je pense notamment au Marketplace qui ne sert pas tous les jours.</p>
+</div>
+<div class="paragraph">
+<p>D’ailleurs, je désactive généralement tous les plugins listés dans la capture précédente. Pensez également de temps à temps à regarder cette liste. En effet, lorsque vous ajoutez des plugins, elle est parfois enrichie. Il peut donc être opportun de désactiver certains plugins ajoutés.</p>
+</div>
+<div class="paragraph">
+<p>Voilà c’était l’astuce du jour. Bonne journée et à demain.</p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/03/Eclipse-Tips-001-raccourcir-le-temps-de-lancement.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/03/Eclipse-Tips-001-raccourcir-le-temps-de-lancement.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Mon, 03 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Write once, run… No, write as often as possible]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Après quelques années d’écriture sur ce blog, je me rends compte que je n’écris pas autant que je le souhaiterais. En fait, cela provient surtout du fait que j’ai des idées d’articles qui sont longs à écrire <em>(fausse excuse du mec qui est pas trop motivé).</em></p>
+</div>
+<div class="paragraph">
+<p>Il faut en effet tester et valider ce que j’écris donc plus il y a de contenu dans un article et plus long est sa rédaction. J’ai d’ailleurs deux brouillons en cours qui à mon avis ne seront jamais terminés. L’intérêt que j’ai pour les terminer est moindre en ce moment et la charge de travail à fournir encore assez conséquente <em>(qui a dit qu’il n’y avait que les titres ?)</em>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_que_faire">Que faire ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>De ce fait, je me suis dit que j’allais appliquer une méthode similaire à celle de <a href="http://blog.javabien.net/2014/02/15/trois-fruits-et-legumes-par-jour-et-un-article-de-blog/">David Gageot</a>. Pour faire un résumé, David s’est décidé à écrire tous les jours ouvrés <em>(donc pas le week-end bande de geek)</em> un article sur son blog.</p>
+</div>
+<div class="paragraph">
+<p>Avouez que l’idée est séduisante. Je ne sais pas si j’arriverais à être aussi régulier que lui, mais je vais tenter cette aventure. Je pense d’ailleurs que la régularité est la clé du succès <em>(non commercial, je ne gagne rien à écrire sauf flatter mon ego)</em>. Dans le cas contraire, cela ressemblera trop à ce qui m’arrive actuellement. Peu ou pas de nouveaux article ce qui donne moins d’un article tous les deux mois.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_qu_est_ce_que_je_vais_aborder">Qu’est ce que je vais aborder ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Alors là c’est une grande question. Je pense que dans un premier temps, je vais continuer <a href="/2013/02/22/Eclipse-cet-IDE-que-je-ne-connais-pas-vraiment.html">ma série sur l’IDE Eclipse</a>. Au lieu d’essayer d’expliquer quelque chose en détail, je ne mettrais que des petites astuces pour mieux développer et se simplifier la vie.</p>
+</div>
+<div class="paragraph">
+<p>Pour la suite, je verrais bien ce qui me tente. Peut être AngularJS vu que c’est pas mal du tout et que je commence à bidouiller avec. Ou bien quelques petites choses en pur JEE voir un poil de Ruby. Comme dirait l’autre « Wait &amp; See »</p>
+</div>
+<div class="paragraph">
+<p>Sur ces mots, je vous dis donc à lundi prochain pour un nouvel article.</p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/02/28/Write-once-run-No-write-as-often-as-possible.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/02/28/Write-once-run-No-write-as-often-as-possible.html</guid><category><![CDATA[divers]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 28 Feb 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse : Tester Java 8]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Suite à la soirée du <a href="http://nantesjug.org/#/events/2013_12_04">Nantes JUG le 4 décembre 2013</a>, j’ai voulu tester un peu Java 8. Comme j’ai l’habitude d’utiliser Eclipse, j’ai voulu voir où en était la prise en compte des modifications du langage au sein de l’IDE. Tout n’est pas encore au point mais, je suis plutôt content de l’avancement. Voici comment installer un environnement fonctionnel.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installer_le_jdk_8">Installer le JDK 8</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Comme la version de Java 8 n’est pas encore sortie officiellement, il est nécessaire d’aller sur le site <a href="https://jdk8.java.net/download.html" class="bare">https://jdk8.java.net/download.html</a> pour obtenir une installation selon votre système d’exploitation. Je vais pour ma part expliquer la marche à suivre pour Windows 7 (ou 8 car ça fonctionne sur les deux). A priori, il ne doit pas y avoir de grosses différences pour les autres plateformes.</p>
+</div>
+<div class="paragraph">
+<p>Donc sur le site <a href="https://jdk8.java.net/download.html" class="bare">https://jdk8.java.net/download.html</a>, acceptez la licence d’utilisation (Accept License Agreement) puis téléchargez le jdk correspondant à votre système d’exploitation. Une fois le téléchargement effectué, lancez l’installation de Java 8.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_r_cup_ration_d_un_eclipse_luna_m3">Récupération d’un Eclipse Luna M3</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>J’aime bien faire plein de tests, alors je me suis pris également une version d’Eclipse Luna M3 (future version d’Eclipse) pour tester Java 8. Je n’ai pas tester avec une version Kepler de l’IDE. Pour cela, accédez à la page de téléchargement d’Eclipse et recherchez la partie « Developer Builds » ou cliquez directement sur ce lien <a href="http://www.eclipse.org/downloads/index-developer.php" class="bare">http://www.eclipse.org/downloads/index-developer.php</a> pour les plus flemmards d’entre vous.</p>
+</div>
+<div class="paragraph">
+<p>Sélectionnez le packaging que vous préférez et téléchargez le. J’ai pris personnellement la version « Eclipse IDE for Java EE Developers Eclipse IDE for Java EE Developers ». Une fois le téléchargement terminé, dézippez l’archive dans le répertoire de votre choix.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation_des_plugins_pour_le_support_de_java_8">Installation des plugins pour le support de Java 8</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Il existe deux solutions pour cette partie. La première est de construire vos plugins, la seconde d’utiliser un dépôt de Spring Source pour installer les plugins. Mon petit côté « j’ai envie de jouer vite fait et pas de me prendre la tête » m’a fait opter pour la seconde solution.</p>
+</div>
+<div class="paragraph">
+<p>Pour la seconde solution, il suffit tout simplement de suivre les instructions suivantes :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Lancez votre Eclipse fraîchement dézippé</p>
+</li>
+<li>
+<p>Accédez au menu « Help &gt; Install New Software… »</p>
+</li>
+<li>
+<p>Indiquez l’url suivante dans le champ « Work With » : <a href="http://build.eclipse.org/eclipse/builds/4P/siteDir/updates/4.3-P-builds" class="bare">http://build.eclipse.org/eclipse/builds/4P/siteDir/updates/4.3-P-builds</a></p>
+</li>
+<li>
+<p>Appuyez sur la touche « Entrée » pour rafraîchir la liste des plugins disponibles</p>
+</li>
+<li>
+<p>Sélectionnez la catégorie « Eclipse Java 8 Support (BETA) »</p>
+</li>
+<li>
+<p>Validez les boutons « Next » jusqu’à la licence</p>
+</li>
+<li>
+<p>Acceptez la licence</p>
+</li>
+<li>
+<p>Cliquez sur « Finish »</p>
+</li>
+<li>
+<p>Pendant l’installation, acceptez l’alerte de sécurité</p>
+</li>
+<li>
+<p>Redémarrez Eclipse</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Vous pouvez maintenant relancer Eclipse. En toute logique (en tout cas sous Windows), Eclipse devrait détecter directement la version Java 8 (en l’occurrence la présence du JRE 8 dans JAVA_HOME). Maintenant votre IDE est configuré pour fonctionner avec Java 8. Il vous suffira d’indiquer l’environnement d’exécution JavaSE-1.8.</p>
+</div>
+<div class="paragraph">
+<p>Cerise sur le gâteau, m2e est compatible. Il suffit de préciser au maven-compiler-plugin la version souhaité du JRE. Voici un pom d’exemple :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+    &lt;groupId&gt;fr.jabbytechs.tb&lt;/groupId&gt;
+    &lt;artifactId&gt;java-8-lambda&lt;/artifactId&gt;
+    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+
+    &lt;properties&gt;
+        &lt;source-encoding&gt;UTF-8&lt;/source-encoding&gt;
+        &lt;jdk-version&gt;1.8&lt;/jdk-version&gt;
+    &lt;/properties&gt;
+
+    &lt;build&gt;
+        &lt;pluginManagement&gt;
+            &lt;plugins&gt;
+                &lt;plugin&gt;
+                    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                    &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+                    &lt;version&gt;3.1&lt;/version&gt;
+                    &lt;configuration&gt;
+                        &lt;source&gt;${jdk-version}&lt;/source&gt;
+                        &lt;target&gt;${jdk-version}&lt;/target&gt;
+                        &lt;showDeprecation&gt;true&lt;/showDeprecation&gt;
+                        &lt;encoding&gt;${source-encoding}&lt;/encoding&gt;
+                    &lt;/configuration&gt;
+                &lt;/plugin&gt;
+
+                &lt;plugin&gt;
+                    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                    &lt;artifactId&gt;maven-resources-plugin&lt;/artifactId&gt;
+                    &lt;version&gt;2.6&lt;/version&gt;
+                    &lt;configuration&gt;
+                        &lt;encoding&gt;${source-encoding}&lt;/encoding&gt;
+                    &lt;/configuration&gt;
+                &lt;/plugin&gt;
+            &lt;/plugins&gt;
+        &lt;/pluginManagement&gt;
+    &lt;/build&gt;
+&lt;/project&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_quelques_informations_suppl_mentaires">Quelques informations supplémentaires</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Si vous souhaitez en savoir plus sur la compatibilité actuelle entre Eclipse et Java 8, je vous invite à visiter cette page <a href="http://wiki.eclipse.org/JDT_Core/Java8" class="bare">http://wiki.eclipse.org/JDT_Core/Java8</a>.</p>
+</div>
+<div class="paragraph">
+<p>Si vous voulez connaître les nouveautés Java 8, vous pouvez voir la liste complète à cette adresse <a href="http://openjdk.java.net/projects/jdk8/features" class="bare">http://openjdk.java.net/projects/jdk8/features</a>.</p>
+</div>
+<div class="paragraph">
+<p>J’espère que ce petit article aidera les curieux à tester Java 8, car c’est clairement prometteur tant sur les lambdas et la nouvelle API stream que d’autres parties plus pointues tel que la suppression du Permanent Generation (ou permgen).</p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/12/16/Eclipse-Tester-Java-8.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/12/16/Eclipse-Tester-Java-8.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[java]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Mon, 16 Dec 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse : comment créer et utiliser des templates de code]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Toujours dans le but d’améliorer ma connaissance sur Eclipse, je cherche et gratte un peu sous le capot des options. Dernièrement c’est grâce à la sortie d’Eclipse Kepler que j’ai re-découvert certaines fonctionnalités intéressantes dont les templates. J’en parlais d’ailleurs de façon succincte dans <a href="/2013/07/04/Eclipse-Kepler-est-arrive.html">cet article</a>. Le but de l’article n’est pas de vous donner tous les meilleurs templates du monde mais simplement de vous expliquer comment en créer pour vous faciliter la vie.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_un_template_de_code_a_ressemble_quoi">Un template de code ça ressemble à quoi ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>La réponse est simple, ça dépend. Oui bon c’était facile. En fait, ça dépend simplement à quel type de code ou texte le template fait référence. Si l’on prend Eclipse Kepler en version JEE Developer, on trouve de nombreuses possibilités de templates. Chacune correspondant à une utilisation spécifique. Par exemple, on retrouve des templates pour les commentaires SVN, des templates pour le SQL, mais également pour le Java, le JavaScript, et les JSP.</p>
+</div>
+<div class="paragraph">
+<p>Dans Eclipse, un template correspond donc à un gabarit (en même temps c’est la traduction littérale) identifié par une chaîne de caractères. Ce gabarit contient du code formaté et modifiable facilement. Ceci permet d’une part d’avoir une certaine homogénéité dans ce que l’on écrit mais également de ne pas ressaisir à chaque fois les même lignes. En effet, le template s’active avec l’aide à la saisie avec simplement quelques caractères.</p>
+</div>
+<div class="paragraph">
+<p>Exemple d’un template pour l’écriture d’un test JUnit (identifieur : test) :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">${:import(org.junit.Test, org.junit.Assert)}
+
+@${testType:newType(org.junit.Test)}
+public void ${testName}() {
+    Assert.fail("Not yet implemented");${cursor}
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Exemple d’un template pour la création d’un nouveau fichier JSP au format xhtml (identifieur : New JSP File (xhtml)):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;?xml version="1.0" encoding="${encoding}" ?&gt;
+&lt;%@ page language="java" contentType="text/html; charset=${encoding}" pageEncoding="${encoding}"%&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+    &lt;head&gt;
+        &lt;meta http-equiv="Content-Type" content="text/html; charset=${encoding}" /&gt;
+        &lt;title&gt;Insert title here&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        ${cursor}
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_comment_cr_er_un_template">Comment créer un template</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Une fois Eclipse lancé, vous pouvez facilement créer un template en suivant la procédure suivante. Dans <strong>Window &gt; Preferences &gt; Champs de saisie pour filtrer, taper « template »</strong>. Là vous allez trouver votre bonheur. Je ne vous ai pas menti, il y a plein d’endroit où créer des templates. Je vais me concentrer sur la partie Java. Mais comme je suis sympa, en fin d’article je vous donnerai certains que j’ai créés et que j’utilise pour mes projets.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2013/08/filtrer-preferences-templates.png" alt="filtrer preferences templates.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Pour créer ou modifier un template Java, il suffit donc d’aller dans <strong>Window &gt; Preferences &gt; Java &gt; Editor &gt; Templates</strong>. Là vous pouvez soit éditer un template existant en le sélectionnant puis en cliquant sur Edit, soit cliquer sur New. Dans les deux cas, vous pouvez donc écrire le template qui vous intéresse dans l’éditeur.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2013/08/template-java.png" alt="template java.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Une fois l’éditeur ouvert, vous pouvez remarquer que celui-ci est constitué d’une zone de saisie de nom, d’un context, d’une description et d’un pattern. Le nom correspond à l’identifiant du template et c’est lui que l’on utilisera pour insérer un template dans notre code. Le context permet de filtrer les templates selon les besoins et le pattern correspond au contenu que l’on veut insérer. La description est facultative.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2013/08/creer-template-java.png" alt="creer template java.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Dans la partie pattern, plusieurs variables sont disponibles pour rendre les templates dynamique et plus interactif lors de leur utilisation. Le bouton Insert Variable… permet de les ajouter. Si vous voulez plus d’information sur chacune des variables, je vous invite à visiter <a href="http://help.eclipse.org/kepler/index.jsp?topic=%2Forg.eclipse.jdt.doc.user%2Fconcepts%2Fconcept-template-variables.htm">la page Eclipse</a> les listant toutes.</p>
+</div>
+<div class="paragraph">
+<p>Premier essai, on va créer un template permettant d’écrire une méthode main « Hello World ». Voilà la liste des caractéristiques que nous allons indiquer :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Name :</strong> helloworld</p>
+</li>
+<li>
+<p><strong>Context :</strong> Java type members. En effet, pas besoin de créer un main dans une méthode</p>
+</li>
+<li>
+<p><strong>Description :</strong> Main Hello World</p>
+</li>
+<li>
+<p><strong>Pattern :</strong></p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public static void main(String[] args) {
+    System.out.println("Hello World !");
+    ${cursor}
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Voilà c’est fait, un premier template de créé. Comme vous pouvez le voir, ça n’a pas été compliqué surtout qu’ici, la seule variable utilisée est ${cursor}. On va donc passer la vitesse supérieure et se tester un peu plus de variables.</p>
+</div>
+<div class="paragraph">
+<p>Donc deuxième essai, on va créer un template plus utile et utilisant quelques variables. Par exemple, créer un logger sur le modèle slf4j.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Name :</strong> logger</p>
+</li>
+<li>
+<p><strong>Context :</strong> Java type members. En effet, pas besoin de créer un logger dans une méthode</p>
+</li>
+<li>
+<p><strong>Description :</strong> Logger for SLF4J</p>
+</li>
+<li>
+<p><strong>Pattern :</strong></p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">${:import(org.slf4j.Logger, org.slf4j.LoggerFactory)}
+
+private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Tout d’abord sur la première ligne on gère les imports des classes que l’on va utiliser. Ceci évite de devoir fixer les imports par la suite. Ensuite sur la deuxième ligne on utilise la variable ${enclosing_type}. Celle-ci permet de récupérer directement le nom de la classe dans laquelle on travaille. De ce fait, on peut indiquer le .class correspondant pour la création du logger. Dans ce cas, ceci permet avec les templates de créer des logger rapidement sans risque de ne pas mettre la bonne classe. Vous savez, genre avec un bon vieux copié/merdé.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_comment_utiliser_les_templates_eclipse">Comment utiliser les templates Eclipse</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Bon voilà, on a rapidement vu comment créer des templates, il faut peut être maintenant savoir comment les utiliser. Sinon, ce que l’on a fait sert à rien. En fait, vous allez voir c’est tout simple. Tellement simple que vous en utilisez peut être déjà. Par exemple « sysout » pour afficher directement « System.out.println(); ».</p>
+</div>
+<div class="paragraph">
+<p>Donc on va ouvrir un créer une classe et ouvrir l’éditeur Java pour tester les templates. Au niveau des membres de la classe, il suffit de commencer à taper le nom du template puis sur ctrl + espace pour lancer l’autocomplétion. Normalement si tout se passe bien, une petite fenêtre d’autocomplétion apparaît et le template est présent. Cela devrait ressembler à ça :</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2013/11/utilisation-template-1.png" alt="utilisation template 1.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Comme toute autocomplétion l’appuie sur la touche « entrée » permet de valider le choix et engendre la mise en place du logger comme sur l’image suivante.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2013/11/utilisation-template-2.png" alt="utilisation template 2.png">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exporter_importer_des_templates">Exporter / Importer des templates</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Je suppose que comme moi, lorsque vous créerez vos propres templates, vous serez intéressé par les partager avec vos collègues, vos amis développeurs ou tout autre personnes susceptibles d’être intéressées.</p>
+</div>
+<div class="paragraph">
+<p>Je ne sais pas si vous avez fait attention, mais la fenêtre listant tous les templates permet également de les exporter et de les importer. Pour l’export, il faut sélectionner au préalables les templates que vous souhaitez exporter et de sauvegarder le fichier généré.</p>
+</div>
+<div class="paragraph">
+<p>Pour l’import c’est tout aussi simple. Il faut cliquer sur le bouton « import » puis sélectionner le fichier xml à importer. <strong>Attention tout de même à ne pas importer plusieurs fois les même templates</strong>. En effet, Eclipse permet d’avoir plusieurs templates pour un même mot clé (par exemple pour le mot « for »). De ce fait, rien n’empêche l’ajout d’un template existant. Ceci aura pour conséquence d’enrichir de façon inutile la liste des templates.</p>
+</div>
+<div class="paragraph">
+<p>Pour récupérer les templates que j&#8217;utilises, je vous invite à accéder à ce dépôt Github : <a href="https://github.com/jabby/eclipse-configuration" class="bare">https://github.com/jabby/eclipse-configuration</a>. Pour les utiliser, vous devez utiliser l’un des noms de template suivant :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Partie logger :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>logger</p>
+</li>
+<li>
+<p>trace</p>
+</li>
+<li>
+<p>debug</p>
+</li>
+<li>
+<p>info</p>
+</li>
+<li>
+<p>warn</p>
+</li>
+<li>
+<p>error</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Partie collections :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>list</p>
+</li>
+<li>
+<p>map</p>
+</li>
+<li>
+<p>queue</p>
+</li>
+<li>
+<p>set</p>
+</li>
+<li>
+<p>sortedmap</p>
+</li>
+<li>
+<p>sortedset</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Si vous avez des idées de templates autres, je suis preneur. Je mettrais tout ça sur le github correspondant.</p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/12/07/Eclipse-comment-creer-et-utiliser-des-templates-de-code.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/12/07/Eclipse-comment-creer-et-utiliser-des-templates-de-code.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[templates]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Sat, 07 Dec 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Mockito, le mock facile]]></title><description><![CDATA[<div class="paragraph">
+<p>Il y a quelques temps j’écrivais un truc sur le <a href="/2013/05/05/Mockito-on-peut-aussi-mocker-partiellement.html">mock partiel d’une classe avec Mockito</a>. Force est de constater que je connaissais mal cette bibliothèque. En effet, en échangeant avec un ami, il m’a montré que Mockito possédait déjà un mécanisme prévu pour mocker partiellement un objet réel. Il s’agit de la méthode Mockito.spy().</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2013/11/mockito.jpg" alt="mockito.jpg">
+</div>
+</div>
+<div class="paragraph">
+<p>J’avais donc décidé de vous parler plus en détail de Mockito, mais il a déjà écrit pas mal de choses sur les tests, le TDD et la bibliothèque Mockito. Donc plutôt que de reprendre ce qu’il dit, je préfère vous indiquer la bonne adresse en question.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="http://tddev.wordpress.com/2013/10/16/mockito-introduction/">Mockito : Qu’est-ce que c’est ? Comment mocker une classe ?</a></p>
+</li>
+<li>
+<p><a href="http://tddev.wordpress.com/2013/10/06/mockito-definir-les-comportements/">Mockito : Comment définir des comportements ?</a></p>
+</li>
+<li>
+<p><a href="http://tddev.wordpress.com/2013/10/19/mockito-aide-memoire/">Mockito : Aide-mémoire</a></p>
+</li>
+<li>
+<p><a href="http://tddev.wordpress.com/2013/10/16/mockito-exemple-dutilisation-de-mockito-dans-un-test-unitaire/">Mockito : Exemple d’utilisation dans un test unitaire</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>J’espère que vous ferez bonne lecture de ces articles et même du blog <a href="http://tddev.wordpress.com/">Tests De Dev’s</a> en général.</p>
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/11/12/Mockito-le-mock-facile.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/11/12/Mockito-le-mock-facile.html</guid><category><![CDATA[java]]></category><category><![CDATA[mockito]]></category><category><![CDATA[tdd]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Tue, 12 Nov 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Nantes JUG 2013-11-04 : Amélioration de la qualité du code par restriction du langage]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Comme tous les mois j’ai assisté au JUG Nantes. Cet événement est pour moi un bon moyen de voir de nouvelles choses mais également d’échanger sur les outils, les techniques et les différentes bonnes pratiques avec des développeurs plus confirmés que moi. Cette session présentait un talk intitulé « Du SQL au NoSQL en moins d’une heure » ainsi qu’un quickie dont j’ai honteusement pompé le nom pour cet article. C’est sur ce dernier que va porter mon petit billet.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_qu_est_ce_que_la_qualit_de_code">Qu’est ce que la qualité de code ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="http://www.hugowood.net/">Hugo Wood</a> a tout d’abord rappelé ce qu’était la qualité de code pour lui. Ce n’est pas parce que l’on a 100% de couverture de code, pleins de TU, plein de TI ainsi que des tests UI automatisés que la qualité est au rendez-vous. Il faut avant tout que le code soit <strong>maintenable</strong>. Sans cela pas de qualité. Ceci passe principalement par de la modularité et donc de la testabilité (notamment via la pratique du TDD).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_apporter_des_restrictions_pour_tre_plus_maintenable">Apporter des restrictions pour être plus maintenable</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Après ce rapide constat auquel j’adhère totalement, Hugo présente plusieurs restrictions de code sur Java pour aider à améliorer la qualité du code.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Ne pas utiliser <strong>null</strong> : ce n’est pas orienté objet, ce n’est pas type-safe</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Solution proposée :</strong> renvoyer toujours un objet (exemple chaîne vide au lieu de null pour les String).</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Eviter d’utiliser les méthodes privées</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Lorsque l’on créé des méthodes privées pour découper le métier d’une méthode publique obèse, les tests ne sont pas découpés car il n’y a pas de nouveaux points d’entré pour tester.</p>
+</li>
+<li>
+<p><strong>Solution proposée :</strong> Préférer un découpage en méthodes de type public/protected/default voir en plusieurs objets pour découper les tests.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>L’héritage peut être un piège</p>
+<div class="ulist">
+<ul>
+<li>
+<p>si on teste une classe fille, on teste partiellement la mère en même temps via les super()</p>
+</li>
+<li>
+<p>Couplage fort et rupture de l’encapsulation (accès aux membres protected ou default)</p>
+</li>
+<li>
+<p><strong>Solution proposée :</strong> utiliser uniquement les interfaces pour le polymorphisme et utiliser la composition pour la réutilisation du code</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Static dispatch ou l’enfer 2.0</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Potentiellement difficile à tester et à maintenir</p>
+</li>
+<li>
+<p>Détruit le polymorphisme</p>
+</li>
+<li>
+<p><strong>Solution proposée :</strong> Ne pas utiliser 😀</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bilan_de_la_pr_sentation">Bilan de la présentation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Avant tout Hugo rappelle que les restrictions sont très intéressantes mais qu’il ne faut pas non plus être un intégriste en ne faisant que ça. Il faut savoir peser le pour et le contre dans l’utilisation ou non de toutes les possibilité du langage. Par contre, l’application au cas par cas des restrictions peut dérouter les débutants. Dans ce cas, l’application systématique des restrictions de langage permet de cadrer les débutants afin de garder un certain niveau de qualité de code.</p>
+</div>
+<div class="paragraph">
+<p>Si le sujet vous intéresse, vous pouvez retrouver les slides de la présentation à cette adresse : Lien vers les <a href="http://fr.slideshare.net/mercury_wood/amliorer-la-qualit-du-code-par-restriction-du-langage">slides de la présentation</a>.</p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/11/08/Nantes-JUG-2013-11-04-Amelioration-de-la-qualite-du-code-par-restriction-du-langage.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/11/08/Nantes-JUG-2013-11-04-Amelioration-de-la-qualite-du-code-par-restriction-du-langage.html</guid><category><![CDATA[Nantes JUG]]></category><category><![CDATA[java]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 08 Nov 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Kepler est arrivé]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Comme tous les ans, la fondation Eclipse nous gratifie d’une sortie simultanée de ses projets. Dans le lot on retrouve bien entendu l’IDE du même nom. La version 4.3 est désormais disponible au téléchargement et j’ai commencé à la tester en version JEE developer. Voilà un premier retour sur cette mouture.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2013/07/splash-kepler.png" alt="splash kepler.png">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_remarques_g_n_rales">Remarques générales</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Ca ne concerne pas l’IDE en soit, mais la sortie des projets Eclipse est toujours aussi impressionnante. Cette année 71 projets de la fondation sont mis à jour. La liste est trouvable à cette adresse : <a href="http://eclipse.org/kepler/projects.php" class="bare">http://eclipse.org/kepler/projects.php</a>. Pour la blague c’est la première année que la fondation sort moins de projets. L’an dernier il y en avait 72.</p>
+</div>
+<div class="paragraph">
+<p>Revenons à l’IDE. Premier constat, j’aime bien cette version de l’IDE. Il pèse un peu plus lourd au téléchargement que la précédente version (les deux versions sont le packaging JEE Developer) mais au vu des ajouts, je ne trouve pas à y redire pour le moment. De plus sur ma machine (qui est loin d’être un veau), je ne vois pas de dégradation dans les performances. Ce qui somme toute n’est pas un mal au vu de la sortie catastrophique de la 4.2.0. Je n’ai pas encore assez testé pour jugé d’une réelle amélioration des performances.</p>
+</div>
+<div class="paragraph">
+<p>Je ne sais pas si c’était le cas sur la version précédente, mais au lancement de Kepler sur un workspace déjà existant, l’IDE propose d’installer les plugins qui étaient déjà installés avant. C’est plutôt pratique et utile. Ça m’a évité de devoir passer par le marketplace pour récupérer un à un les plugins qui m’intéressaient. En gros on peut repartir sur une installation propre et avoir un rappel de ce que l’on avait ajouté précédemment.</p>
+</div>
+<div class="paragraph">
+<p>Pour les passionnés de la branche 3 d’Eclipse, vous n’aurez plus de mise à jour. En effet, l’an dernier 2 versions existaient du côté d’Eclipse (3.8 et 4.2). Cette année seule la 4.3 est sortie. Donc bon gré, mal gré, un jour vous allez devoir passer à la nouvelle mouture ou changer d’IDE. Notamment si vous souhaitez avoir le support de JEE 7.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_les_points_importants_pour_moi">Les points importants (pour moi)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Après des remarques générales, je vais m’attarder un peu plus sur ce qui me plaît dans la dernière version d’Eclipse.</p>
+</div>
+<div class="sect2">
+<h3 id="_int_gration_de_m2e_et_m2e_wtp_dans_le_package_jee">Intégration de m2e et m2e-wtp dans le package JEE</h3>
+<div class="paragraph">
+<p>Étant développer JEE, je prend systématiquement le package JEE Developper d’Eclipse. Ainsi j’ai déjà une palanqué d’outils pré-installés et c’est donc Eclipse est plus rapidement utilisable sans avoir à passer par l’ajout fastidieux de tous les plugins que l’on veut utiliser notamment pour les Java EE Developer Tools et JavaScript Development Tools. J’avoue ne pas me servir de tout, mais je trouve que c’est un compromis valable. D’ailleurs si vous voulez comparer des packages d’Eclipse, vous pouvez aller ici. Bien que ça soit pratique, il me manquait à minima la prise en charge de maven. Maintenant c’est bon, tout est déjà présent y compris le m2e-wtp qui est sorti en version 1.0.</p>
+</div>
+<div class="paragraph">
+<p>Au programme, on a donc une nouvelle version de m2e qui passe à la version 1.4.0. Au final plusieurs bugs ont été corrigé ainsi que l’ajout de quelques nouveautés. La plus importante pour moi est le ALT-F5 sur un projet. Ceci permet de faire l’équivalent de « Clic droit &gt; Maven &gt; Update Project… ». C’est pas grand chose, mais ça sera toujours plus rapide de faire comme ça. Il est bien entendu possible de changer le raccourci clavier.</p>
+</div>
+<div class="paragraph">
+<p>Du côté de m2e-wtp, c’est la première release. En effet, le plugin a terminé sa période de validation (Incubation) pour passer en version 1.0. Ce projet fourni en fait tout un lot de connecteur m2e pour gérer les spécificités de JEE. On retrouve notamment les supports suivants :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Projets WAR</strong> : ajoute les facettes « Java » et « Dynamic Web » sur le projet</p>
+</li>
+<li>
+<p><strong>Projets EJB</strong> : ajoute les facettes « Java » et « EJB » sur le projet</p>
+</li>
+<li>
+<p><strong>Projets EAR</strong> : ajoute la facette EAR et gère la génération des fichiers application.xml et jboss.xml</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Pour les autres fonctionnalités de m2e-wtp, je vous invite à visiter <a href="http://www.eclipse.org/m2e-wtp/">cette page</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_support_de_jee7">Support de JEE7</h3>
+<div class="paragraph">
+<p>C’est peut être passé inaperçu pour certains, voir d’autres faisait l’amalgame entre la sortie de Java 7 et la sortie de JEE7 mais JEE7 est sorti le 12/06/2013. Qui dit nouvelle version dit nouvelles possibilités et spécificités. La liste complète est disponible à <a href="http://www.oracle.com/technetwork/java/javaee/overview/index.html?origref=http://www.oracle.com/us/corporate/press/1957557">cette adresse</a> et vous trouverez les slides de présentation sur <a href="http://fr.slideshare.net/lukaszromanowski1981/poland-31-nov12-java-ee-7-in-details">slideshare</a>.</p>
+</div>
+<div class="paragraph">
+<p>Donc le projet Eclipse WTP est passé en version 3.5 et apporte notamment le support de nouvelles JSR. Pour ma part, ce qui m’intéresse le plus est la prise en compte de JPA 2.1, le support de la version 2.5 d’EclipseLink mais également des spécifications pour JAX-RS 2.0 et Servlet 3.1. Pour le reste, je suis moins intéressé car je n’utilise pas ou peu les EAR et EJB. J’ai fouillé un peu pour vous trouver la liste des mise à jour de WTP c’est <a href="http://eclipse.org/webtools/releases/3.5.0/NewAndNoteworthy/">ici que ça se passe</a>. J’ai trouvé ça un peu trop concis mais l’essentiel y est. Y-a-plus qu’à tester.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_utilisation_des_templates_une_ergonomie_mise_jour">Utilisation des templates : une ergonomie mise à jour</h3>
+<div class="paragraph">
+<p>En fait, après pas mal d’échanges avec mes collègues de boulot ainsi que mes amis informaticiens, je me suis rendu compte que la majorité des développeurs sous Eclipse ne savent pas ce que sont les templates de codes.</p>
+</div>
+<div class="paragraph">
+<p>Pour remettre dans le contexte, dans une classe Java c’est ce qui vous permet par exemple en tapant « syso » puis en utilisant l’autocomplétion de générer automatiquement la ligne System.out.println();. Pour les amateurs du debug à l’ancienne c’est quand même pratique.</p>
+</div>
+<div class="paragraph">
+<p>Il existe plusieurs templates mais jusqu’à la version 4.2 de l’IDE, ils n’étaient pas mis en avant. En effet pour avoir des templates de proposés par Eclipse, il fallait commencer par taper une lettre puis appeler l’autocompletion. Ce qui nous donnait un truc du genre selon si on met une lettre ou pas avant d’appeler l’autocomplétion.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2013/07/template-juno-avec-lettre.png" alt="template juno avec lettre.png">
+</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2013/07/template-juno.png" alt="template juno.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Ceci a changé dans Eclipse Kepler et donc tous les développeurs pourront voir l’existence des templates et donc les utiliser. Ceci c’est fait grâce à la contribution de Lars Vogel. J’ai déjà dû parler de lui sur le blog car j’apprécie généralement ses articles et tutoriaux. Il a proposé un patch pour changer le fonctionnement et ça a été intégré à Kepler. Voilà ce que ça donne maintenant :</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2013/07/template-kepler.png" alt="template kepler.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Je dois dire que c’est peut être une petite évolution mais moi ça me change la vie. En fait, j’ai même découvert des templates que je ne connaissais pas. Je connaissais le mécanisme mais pas tout ce qui était déjà proposé par l’IDE. D’ailleurs, il faudra que je poste un article à part entière sur les templates car ça change la vie quand on veut coder rapidement.</p>
+</div>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/07/04/Eclipse-Kepler-est-arrive.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/07/04/Eclipse-Kepler-est-arrive.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[kepler]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Thu, 04 Jul 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse : améliorer l’aide à la saisie]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Pour rester informer sur Eclipse, j’ai tendance à suivre d’autres blogueurs. Parmi ceux-ci l’un retient souvent mon attention et me permet d’apprendre des choses souvent indispensables par la suite sur mon IDE préféré. Il s’agit de <a href="http://www.vogella.com/people/larsvogel.html">Lars Vogel</a>. Via l’un de ses derniers articles, j’ai découvert que l’on pouvait améliorer le temps de réponse de l’auto-complétion (<a href="http://www.vogella.com/blog/2013/05/30/eclipse-papercut-13-reduce-delay-in-code-completion/">l’article en question</a>). J’ai fouillé un peu et voilà un très bref récapitulatif de ce que j’ai découvert.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_am_liorer_la_rapidit_de_l_auto_compl_tion">Améliorer la rapidité de l’auto-complétion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Cette astuce vient de Lars Vogel et c’est ce qui m’a fait chercher les autres astuces par la suite. Par exemple si l’on tape le nom d’un objet suivi d’un « . », Eclipse va proposer automatiquement une liste de méthodes disponibles pour l’objet en question. Vous pouvez trouver comme moi que ce n’est pas assez rapide. Lars Vogel indique que ce paramétrage est modifiable dans les paramètres du workspace.</p>
+</div>
+<div class="paragraph">
+<p>Par défaut, la valeur est d’attente pour le déclenchement de l’auto-complétion est réglé à 200ms. J’ai testé plusieurs paramétrage et j’avoue être assez proche de celui proposé par Lars Vogel. En effet, une valeur de 0ms est un peut trop rapide à mon goût. Par contre 40ms est un bon compromis entre rapidité et non-affichage des propositions lorsque l’on continue à taper du texte.</p>
+</div>
+<div class="paragraph">
+<p>Pour modifier la valeur prédéfinie il faut aller dans : Window &gt; Preferences &gt; Java &gt; Editor &gt; Content Assist puis modifier la valeur du champ « Auto activation delay (ms) ». Une fois la modification effectuée, appliquer les changements. Vous pourrez voir une nette différence.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2013/06/autocomplete-delay.png" alt="Réglage de l’auto-complétion">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_supprimer_le_menu_d_auto_compl_tion_swt">Supprimer le menu d’auto-complétion SWT</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Lorsque l’on fait des développement web et que l’on n’a pas besoin de SWT, il peut être assez casse-pied d’avoir des propositions pour SWT dans l’auto-complétion. Je m’explique. Si l’on veut l’auto-complétion, on fait ctrl + espace. Si l’on refait ça une seconde fois, on a un menu pour SWT. Enfin si on le fait une troisième fois on a les éventuels templates de code que l’on a défini. L’étape des propositions SWT nous pousse à matraquer sur ce pauvre raccourci clavier ctrl + espace. Il est pourtant possible de le désactiver.</p>
+</div>
+<div class="paragraph">
+<p>Pour cela il faut aller dans : Window &gt; Preferences &gt; Java &gt; Editor &gt; Content Assist &gt; Advanced puis décocher la case spécifique à SWT. Maintenant plusieurs appuie sur ctrl + espace vous évitera de passer par les propositions SWT (qui sont vides dans le cas d’un développement Web classique).</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2013/06/swt-proposals.png" alt="Proposition SWT dans Eclipse">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_d_sactiver_les_propositions_des_m_thodes_obsol_tes">Désactiver les propositions des méthodes obsolètes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Lorsque l’on développe, il arrive que l’on soit parfois noyé par les propositions de l’auto-complétion pour certains objets. Ceci est particulièrement gênant lorsque la méthode en question est surchargée un nombre incalculable de fois et qu’elle possède des définitions obsolètes (@Deprecated). Il existe une méthode simple dans Eclipse pour empêcher l’IDE de nous proposer de telles méthodes.</p>
+</div>
+<div class="paragraph">
+<p>Toujours en allant dans : Window &gt; Preferences &gt; Java &gt; Editor &gt; Content Assist, il faut cocher la case « Hide deprecated references ». Voici la différence pour les instances de java.util.Date :</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2013/06/disabled-depracated-proposals-001.png" alt="Auto-complétion avant la modification du paramètre">
+</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2013/06/disabled-depracated-proposals-002.png" alt="Modification du paramètre permettant de cacher les méthodes obsolètes">
+</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2013/06/disabled-depracated-proposals-003.png" alt="Auto-complétion une fois le paramètre activé">
+</div>
+</div>
+<div class="paragraph">
+<p>Comme vous pouvez le remarquer, c’est tout de suite moins le bordel. En plus vous serez moins tenté d’utiliser ces méthodes qui parfois peuvent avoir des effets non désirés. Vous pouvez néanmoins les utiliser et le code compile toujours si elles sont utilisés dans une partie de l’application. Vous n’aurez simplement plus d’aide à la saisie de ces méthodes.</p>
+</div>
+<div class="paragraph">
+<p>Voilà fin du second billet sur mon IDE préféré.</p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/06/03/Eclipse-ameliorer-laide-a-la-saisie.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/06/03/Eclipse-ameliorer-laide-a-la-saisie.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[auto-complétion]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Mon, 03 Jun 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Mockito : on peut aussi mocker partiellement]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Il y a un peu plus d’un an, j’ai découvert réellement la mise en place de tests unitaires dans une application Java. Oui j’ai mis le temps mais bon je vais pas épiloguer sur ça. Donc je me suis mis à rédiger mes tests unitaires avec différents frameworks selon les projets. Depuis mon arrivée sur Nantes, j’utilise <a href="https://github.com/mockito/mockito">Mockito</a> pour gérer les mock. Plutôt simple à utiliser je viens d’être confronté à une problématique nouvelle pour moi. Mocker partiellement un objet.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_qu_est_ce_qu_un_mock_et_quoi_a_sert">Qu’est ce qu’un mock et à quoi ça sert ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Avant de parler de la résolution de mon problème, je vais quand même rappeler le but d’un mock. En fait, un mock permet d’émuler le fonctionnement d’un objet pour savoir de façon certaine comment il va se comporter. Jusqu’à présent, je m’en suis servi pour spécifier les retours que j’attendais de mes DAO dans mes services.</p>
+</div>
+<div class="paragraph">
+<p>Comme un exemple est parfois plus parlant, voilà mon utilisation habituelle. On va prendre un service utilisant un DAO pour compter un nombre d’élément en base de données et qui renvoi vrai si on a assez d’élément. Voici le code du service.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.jabbytechs.tutorial.mockito;
+
+public class ExampleService {
+
+    private static final Integer MINIMUM_NUMBER_OF_ELEMENT = 50;
+
+    private ExampleDAO exampleDAO;
+
+    public Boolean verifyIfEnougthNumberOfElement() {
+        Integer numberOfElement = exampleDAO.countElements();
+
+        if (numberOfElement &gt;= MINIMUM_NUMBER_OF_ELEMENT) {
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
+
+    /**
+     * Use for mock.
+     *
+     * @param exampleDAO the exampleDAO to set
+     */
+    public void setExampleDAO(ExampleDAO exampleDAO) {
+        this.exampleDAO = exampleDAO;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si je veux tester tous les cas possibles de ma méthode verifyIfEnougthNumberOfElement, j’ai besoin de pouvoir indiquer la valeur de retour la méthode du DAO utilisé. Pour cela, j’utilise Mockito. La classe de test est alors la suivante en combinant junit et Mockito.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.jabbytechs.tutorial.mockito;
+
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+public class ExampleServiceTest {
+
+    private static final Integer NOT_ENOUGHT = 25;
+    private static final Integer JUST_ENOUGHT = 50;
+    private static final Integer ENOUGHT = 100;
+
+    private ExampleService exampleService;
+
+    private ExampleDAO exampleDAOMock;
+
+    @Before
+    public void setUp() throws Exception {
+        exampleService = new ExampleService();
+        exampleDAOMock = Mockito.mock(ExampleDAO.class);
+        exampleService.setExampleDAO(exampleDAOMock);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        exampleDAOMock = null;
+        exampleService = null;
+    }
+
+    @Test
+    public void testVerifyIfEnougthNumberOfElementButNotEnougth() throws Exception {
+        Mockito.when(exampleDAOMock.countElements()).thenReturn(NOT_ENOUGHT);
+        Assert.assertFalse(exampleService.verifyIfEnougthNumberOfElement());
+    }
+
+    @Test
+    public void testVerifyIfEnougthNumberOfElementAndJustEnougth() throws Exception {
+        Mockito.when(exampleDAOMock.countElements()).thenReturn(JUST_ENOUGHT);
+        Assert.assertTrue(exampleService.verifyIfEnougthNumberOfElement());
+    }
+
+    @Test
+    public void testVerifyIfEnougthNumberOfElementAndEnougth() throws Exception {
+        Mockito.when(exampleDAOMock.countElements()).thenReturn(ENOUGHT);
+        Assert.assertTrue(exampleService.verifyIfEnougthNumberOfElement());
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dans le code de la classe de test, je créé un mock à la ligne 22 et je le mets dans le service. Ensuite aux lignes 34, 40 et 46, j’indique quelle valeur de retour je souhaites renvoyer. Ceci me permet de vérifier de façon certaine et unitaire ma méthode de service.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_et_pour_le_mock_partiel">Et pour le mock partiel ?</h2>
+<div class="sectionbody">
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<strong>Avant de lire la suite qui n’est pas spécialement la meilleure pratique, je vous invite à voir <a href="https://jabby.github.io/2013/11/12/Mockito-le-mock-facile.html">cet article</a> et les articles auxquels il fait référence</strong>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Oui c’est vrai, je me suis un peu laissé emporté par la problématique initiale de l’article. Le but est de dire comment on mock partiellement un objet avec Mockito. Pour la petite histoire j’en ai eu besoin pour tester un service générant des nombres pseudo-aléatoires et faisant des tests dessus. Par définition, un nombre pseudo aléatoire est difficilement prédictible et donc dans ce service il me fallait mettre en place un mock partiel pour pouvoir tester certaines méthodes tout en m’assurant des valeurs de retour de la méthode générant les nombres pseudo-aléatoires. Donc modifions un peu notre classe de service. Plus de DAO mais directement 2 méthodes dans le service.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.jabbytechs.tutorial.mockito;
+
+import java.util.Random;
+
+public class ExampleService {
+
+    private static final Integer MINIMUM_NUMBER_OF_ELEMENT = 50;
+
+    public Boolean verifyIfEnougthNumberOfElement() {
+        Integer numberOfElement = generateNumberOfElement();
+
+        if (numberOfElement &gt;= MINIMUM_NUMBER_OF_ELEMENT) {
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
+
+    public Integer generateNumberOfElement() {
+        Random random = new Random();
+        return random.nextInt();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pour pouvoir tester de façon certaine ce service, il est nécessaire de mocker la méthode generateNumberOfElement() mais pas verifyIfEnougthNumberOfElement(). En effet, si on mock les 2 méthodes, ça ne sert à rien de tester. Voici la classe de test modifiée pour tester ceci de façon correcte.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.jabbytechs.tutorial.mockito;
+
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+public class ExampleServiceTest {
+
+    private static final Integer NOT_ENOUGHT = 25;
+    private static final Integer JUST_ENOUGHT = 50;
+    private static final Integer ENOUGHT = 100;
+
+    private ExampleService exampleService;
+
+    @Before
+    public void setUp() throws Exception {
+        exampleService = Mockito.mock(ExampleService.class);
+        Mockito.when(exampleService.verifyIfEnougthNumberOfElement()).thenCallRealMethod();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        exampleService = null;
+    }
+
+    @Test
+    public void testVerifyIfEnougthNumberOfElementButNotEnougth() throws Exception {
+        Mockito.when(exampleService.generateNumberOfElement()).thenReturn(NOT_ENOUGHT);
+        Assert.assertFalse(exampleService.verifyIfEnougthNumberOfElement());
+    }
+
+    @Test
+    public void testVerifyIfEnougthNumberOfElementAndJustEnougth() throws Exception {
+        Mockito.when(exampleService.generateNumberOfElement()).thenReturn(JUST_ENOUGHT);
+        Assert.assertTrue(exampleService.verifyIfEnougthNumberOfElement());
+    }
+
+    @Test
+    public void testVerifyIfEnougthNumberOfElementAndEnougth() throws Exception {
+        Mockito.when(exampleService.generateNumberOfElement()).thenReturn(ENOUGHT);
+        Assert.assertTrue(exampleService.verifyIfEnougthNumberOfElement());
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ligne 19, je créé un mock sur mon service. Par défaut, toute les valeurs de retour de toutes les méthodes sont les valeurs par défaut (0 pour un Integer, false pour un Boolean et ainsi de suite). Ensuite, ligne 20, j’indique à Mockito que pour la méthode que je veux tester, on va l’appeler réellement et non pas la mocker. Enfin lignes 30, 36 et 42, je mock ma méthode de génération aléatoire de nombres et j’indique les valeurs retour attendues comme je le fais habituellement.</p>
+</div>
+<div class="paragraph">
+<p>Voilà, c’est fait, j’ai créé un mock partiel d’un objet pour tester le comportement d’un méthode sans être perturbé par les autres méthodes de mon service.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusion_pour_en_faire_une">Conclusion… pour en faire une</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Via Mockito, il est aussi simple de mocker un attribut pour gérer les retours des méthodes appelés que de mocker partiellement un objet pour être sûr d’isoler le comportement d’une méthode. Ceci nous permet de valider de façon certaine le fonctionnement unitaire de notre méthode. Une chose à ne pas oublier lorsque l’on pense que ça va être compliqué de tester un comportement parce qu’un résultat n’est pas prédictible.</p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/05/05/Mockito-on-peut-aussi-mocker-partiellement.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/05/05/Mockito-on-peut-aussi-mocker-partiellement.html</guid><category><![CDATA[java]]></category><category><![CDATA[mockito]]></category><category><![CDATA[tdd]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Sun, 05 May 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Juno SR2 : peut être enfin une version rapide]]></title><description><![CDATA[<div class="paragraph">
+<p>Même si je ne connais pas encore Eclipse en profondeur, j’adore cet IDE. Enfin ça dépend de la version. Indigo par exemple, est pour moi un bon cru. IDE stable, avec une intégration de maven plus sympa, ainsi que plusieurs évolutions sur les <a href="https://jabby.github.io/2013/02/23/Eclipse-Les-raccourcis-claviers-utiles.html">raccourcis clavier</a>. En fait, une version très bien pour mes besoins.</p>
+</div>
+<div class="paragraph">
+<p>Et puis il y a eu Juno. Juno le « beau gosse » avec son style bleuté, mais surtout Juno le traine la patte en juillet 2012. J’ai testé et je n’ai pas aimé la style par défaut mais osef. Par contre les problèmes de performances m’ont rapidement incité à reprendre Indigo sur mon pc. Et là j’ai laissé courir jusqu’à la SR1 de Juno. J’ai retesté, c’était un poil mieux mais pas encore ça. Donc je suis resté à Indigo.</p>
+</div>
+<div class="paragraph">
+<p>Par contre hier sortait la SR2 de Juno et je pense que là je vais tenter l’aventure Juno sur le plus long terme. En effet, il y a eu pas mal de boulot par les commiteurs et contributeurs d’Eclipse.</p>
+</div>
+<div class="paragraph">
+<p>Je ne vais pas faire un résumé donc, si vous voulez en savoir plus, je vous invite à lire cette <a href="http://wiki.eclipse.org/Platform_UI/Juno_Performance_Investigation">page du wiki</a> d’Eclipse ainsi que de voir les listes de <a href="https://bugs.eclipse.org/bugs/buglist.cgi?keywords=performance&amp;keywords_type=allwords&amp;list_id=3048745&amp;resolution=FIXED&amp;classification=Eclipse&amp;query_format=advanced&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;product=JDT&amp;product=PDE&amp;product=Platform&amp;target_milestone=3.8.1&amp;target_milestone=4.2.1">bugs résolus en SR1</a> puis <a href="https://bugs.eclipse.org/bugs/buglist.cgi?keywords=performance&amp;keywords_type=allwords&amp;list_id=3048750&amp;resolution=FIXED&amp;classification=Eclipse&amp;query_format=advanced&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;target_milestone=3.8.2&amp;target_milestone=4.2.2&amp;product=JDT&amp;product=PDE&amp;product=Platform">ceux résolus en SR2</a>.</p>
+</div>
+<div class="paragraph">
+<p>Pour télécharger la dernière version d’Eclipse, ça se passe par là : <a href="http://eclipse.org/downloads/" class="bare">http://eclipse.org/downloads/</a></p>
+</div>
+<div class="paragraph">
+<p>Pour ceux qui sont déjà sur Juno, vous pouvez passer par la mise à jour directe dans l’IDE. Il suffit d’aller dans <strong>Help &gt; Check for Updates</strong>. Ensuite, vous attendez le listing par l’IDE et vous lancez la mise à jour.
+Il y a des chances que dans le listing vous ne voyez pas la mise à jour du cœur d’Eclipse Juno. C’est normal, elle est remontée en dépendance par le plugin <strong>Eclipse IDE for Java EE Developers en version 1.5.2.20130211-1820</strong>. Donc c’est au moins celui-là que vous devrez prendre.</p>
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/03/02/Eclipse-Juno-SR2-peut-etre-enfin-une-version-rapide.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/03/02/Eclipse-Juno-SR2-peut-etre-enfin-une-version-rapide.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[IDE]]></category><category><![CDATA[juno]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Sat, 02 Mar 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse : Les raccourcis claviers utiles]]></title><description><![CDATA[<div class="paragraph">
+<p>Allez hop go, on se lance dans le premier article sur la prise en main d’Eclipse. Enfin plutôt sur l’amélioration de ma productivité via l’utilisation d’Eclipse. Cet article est le premier de la série sur mon apprentissage de mon IDE préféré. Non je ne trolle pas, c’est bien mon IDE préféré. J’avoue ne pas en avoir testé des milliers mais, je préfère Eclipse à Netbeans (surement parce que je le connais mieux en fait). Les goûts ça ne se commande pas.</p>
+</div>
+<div class="paragraph">
+<p>Dans cet article, je vais présenter les raccourcis claviers que j’apprécie pour travailler plus vite et mieux. J’en connaissais certains depuis longtemps, d’autres m’ont été présentés par un nouveau collègue et d’autres, j’ai fouillé un peu dans Eclipse pour les découvrir. Ce n’est pas du tout une liste exhaustive des raccourcis qui existent. Il y en a beaucoup et on peut facilement en créer d’autres.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>ctrl + shift + L</strong> : raccourci affichant la liste des raccourcis. Je le met en premier car finalement c’est le plus important pour s’améliorer. Un second appuis ouvre la fenêtre d’édition des raccourcis</p>
+</li>
+<li>
+<p><strong>ctrl + espace</strong> : en toute logique, ça vous connaissez déjà. Il permet l’autocomplétion lorsque l’on écrit notre code. Oui mais il ne fait pas qu’une simple autocomplétion sur le nom d’une méthode, d’un attribut ou d’une variable. Ce raccourci clavier a un comportement adapté au context dans lequel on travaille. Par exemple, si l’on est entrain d’écrire un nom, ctrl + espace nous montrera la liste des élements dont le nom correspond. Dans le cas où l’on est en dehors d’une méthode et que l’on commence à taper le nom d’une méthode, le raccourci propose les méthode dont le nom correspond. Là vous allez me dire que c’est pareil. Oui mais suivi d’un appuie sur entrée, on obtient une surcharge de la dite méthode. Je vous conseille d’apprendre à vous en servir au maximum (moi j’ai encore du boulot sur ce côté là).</p>
+</li>
+<li>
+<p><strong>ctrl + 1</strong> : le quick fix. Sur un clavier US c’est juste ctrl + 1, sur un clavier azerty, il faut bien penser à faire <strong>ctrl + shift + touche 1/&amp;</strong>. Lorsque l’on est sur une erreur, un warning, on a la solution de bouger la souris pour voir afficher une pop-up d’aide. Ce raccourci vous permet de l’afficher directement. Ensuite plus qu’à jouer avec les flèches pour sélectionner la solution que vous voulez.</p>
+</li>
+<li>
+<p><strong>ctrl + shift + R</strong> : Affiche la fenêtre d’ouverture de ressources (fichiers). Ecrire dans la partie filtre pour retrouver rapidement l’élément que l’on souhaite et sélectionner le fichier pour directement ouvrir l’éditeur associé. Le nom écrit peut utiliser le caractère <strong>*</strong> pour éviter de tout écrire entre 2 lettres que vous connaissez. Personnellement j’adore ce raccourci. Pour information dans le cas de classes Java, vous pouvez directement taper que les lettres majuscules dans la partie filtre. C’est beaucoup plus rapide. Par exemple : taper MC pour MaClasse.</p>
+</li>
+<li>
+<p><strong>ctrl + shift + T</strong> : Affiche la fenêtre d’ouverture de classes. C’est un plus ou moins la même fenêtre que précédemment mais focalisé sur les classes. Il y a par contre toutes les classes disponibles telles que celles des bibliothèques/frameworks que vous utilisez.</p>
+</li>
+<li>
+<p><strong>ctrl + O</strong> : Lorsque l’on est dans une classe, ce raccourci propose la liste des méthode et attributs de la classe. Tout comme pour les raccoucis précédents, vous pouvez filtrer les données affichées en tapant le début du nom de l’élément auquel vous souhaitez accéder.</p>
+</li>
+<li>
+<p><strong>ctrl + shift + O</strong> : permet d’organiser les imports (ajouter ceux qui manquent et supprimer ceux qui sont inutiles)</p>
+</li>
+<li>
+<p><strong>ctrl + T</strong> : ouvre la hiérarchie d’un type. Ceci permet sur une classe/interface d’afficher en pop-up les classes mères et filles. Utile notamment si l’on fait passer d’une interface à l’une des implémentations</p>
+</li>
+<li>
+<p><strong>ctrl + shift + /</strong> ou <strong>ctrl + shift + c</strong> : petite préférence pour le second. Permet de commenter/décommenter du code. Sse raccourci s’adapte au type de fichier en cours d’édition notamment si l’on édite du JS, du html ou des tags dans les .jsp/.jspx</p>
+</li>
+<li>
+<p><strong>alt + shift + R</strong> : permet de renommer. Fonctionne sur les variables, les méthodes mais également sur les classes/interfaces en renommant le fichier. Ce raccourci met également à jour les références de l’élément renommé. Peut parfois générer des erreurs si certaines références ne peuvent pas être mises à jour. Prend en compte également les références dans la javadoc</p>
+</li>
+<li>
+<p><strong>alt + shift + S</strong> : affiche le menu « source » (celui que l’on obtient par clic droit &gt; source). Nettement plus rapide pour ce qui est lié à la génération de code, de commentaires… Je l’apprécie générallement dans la création de mes JavaBeans</p>
+</li>
+<li>
+<p><strong>alt + shift + Z</strong> : affiche un menu proposant d’encapsuler le code sélectionné. Permet d’encapsuler rapidement dans des if, des boucles ou des try/catch du code existant</p>
+</li>
+<li>
+<p><strong>alt + shift + M</strong> : extrait le code sélectionné dans une méthode privé. Super pratique lors du refactoring du code. Ne pas hésiter à en abuser notamment lors d’évolution rendant le code illisible</p>
+</li>
+<li>
+<p><strong>ctrl + L</strong> : accède à la ligne indiqué</p>
+</li>
+<li>
+<p><strong>ctrl + D</strong> : supprime la ligne sur laquelle on est. Plus rapide que de la sélectionner et de la supprimer (je dis ça mais les habitudes ont la vie dure)</p>
+</li>
+<li>
+<p><strong>ctrl + F11</strong> : le petit (gros ?) plus que j’ai appris récemment (enfin que je retiens maintenant). Rejoue la dernière Run Configuration lancé. Super pratique dans le cas du TDD ou simplement de la correction/mise en place de TU</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Bien entendu, la liste de ces raccourcis n’est pas exhaustive. Loin de là en fait. Par contre c’est ceux que j’utilise le plus et auquels je pense. N’hésitez pas à m’indiquer ceux que vous utilisez de votre côté, je les rajouterais.</p>
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/02/23/Eclipse-Les-raccourcis-claviers-utiles.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/02/23/Eclipse-Les-raccourcis-claviers-utiles.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[IDE]]></category><category><![CDATA[raccourcis clavier]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Sat, 23 Feb 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse : cet IDE que je ne connais pas vraiment]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Cette semaine après finalement 4 bonnes années à utiliser Eclipse, je me suis rendu compte que je ne connaissais pas vraiment mon IDE. En effet, je suis un utilisateur plutôt lambda qui sait ouvrir l’éditeur et coder des trucs dedans. J’ai bien entendu un tas d’habitudes notamment quelques raccourcis clavier par-ci par-là, mais je ne connais pas en profondeur mon environnement de travail.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_constats_sur_ce_manque_de_connaissances">Constats sur ce manque de connaissances</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Cette méconnaissance m’a amené à me poser plusieurs questions assez simple. Est ce grave ? Quels sont les impacts ? Y-a-t-il des avantages significatifs à connaître Eclipse sur le bout des doigts ? Est ce que ça va sauver un chat ? Après une rapide réflexion je me suis dit que d’une part, le fait de ne pas maîtriser mon IDE me faisais perdre du temps. Si l’on connais bien son IDE, on peut faire certaines actions plus vite, voir éviter de faire certaines choses car Eclipse peut le faire pour moi. La perspective de gagner du temps et d’avoir moins à en faire m’intéresse. Je resterais moins longtemps au travail donc j’aurais plus de temps pour les loisirs (enfin ça, c’est la théorie). D’autre part, peut être que ça sauvera un petit chat en dégageant du temps pour le nourrir (par contre le portefeuille en prendra un coup !).</p>
+</div>
+<div class="paragraph">
+<p>De cette réflexion, je me suis demandé où trouver des informations récentes qui m’époustouflerait. La réponse est simple pour moi. Une bonne partie des informations se trouve dans Eclipse, il n’y a qu’à lire les aides fournies et la documentation. Comme dirait les anglais (ou les informaticiens), <strong>RTFM !!!</strong>. Bien entendu, l’autre source d’information est Internet lui-même via de bon moteur de recherche.</p>
+</div>
+<div class="paragraph">
+<p>Ceci m’incite donc à faire quelques petits efforts et à apprendre à utiliser Eclipse. Je vais donc écrire quelques articles à ce sujet. Je ferais peut être plusieurs catégories de « Tips » mais je ne sais pas encore. L’avenir nous le dira.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_apprendre_utiliser_eclipse">Apprendre à utiliser Eclipse</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Voici la liste des articles actuellement disponibles. Elle sera bien entendu enrichie en fonction des articles que je publierais.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/2013/02/23/Eclipse-Les-raccourcis-claviers-utiles.html">Les raccourcis claviers utiles</a></p>
+</li>
+<li>
+<p><a href="/2013/06/03/Eclipse-ameliorer-laide-a-la-saisie.html">Améliorer l’aide à la saisie</a></p>
+</li>
+<li>
+<p><a href="/2013/12/07/Eclipse-comment-creer-et-utiliser-des-templates-de-code.html">Comment créer et utiliser des templates de code</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/02/22/Eclipse-cet-IDE-que-je-ne-connais-pas-vraiment.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/02/22/Eclipse-cet-IDE-que-je-ne-connais-pas-vraiment.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[IDE]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 22 Feb 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Configurer son accès SVN à un hébergement OVH pro : partie 2]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<strong>Mise à jour :</strong> Le chemin pour accéder à SVN via SSH a changé. Une note a été ajouté pour bien mettre en avant cette modification de configuration.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Il y a quelques jours, heu non semaines…, enfin plutôt mois en fait, j’ai écrit <a href="/2011/09/30/Configurer-son-acces-SVN-a-un-hebergement-OVH-pro-partie-1.html">un article sur la configuration d’un accès à un dépôt SVN situé sur un hébergement OVH pro</a>. Ca se passait par là. Je reviens aujourd’hui pour expliquer succinctement comment l’utiliser sur son poste en Windows 7 via <a href="http://tortoisesvn.tigris.org/">Tortoise SVN</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation_de_tortoise_svn">Installation de Tortoise SVN</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Pour ma part, je vais utiliser la version anglaise 64 bits de Tortoise. En fait, il suffit de télécharger l’installateur principal puis de l’exécuter. Un assistant d’installation vous permettra de l’installer facilement. Au cas où vous souhaiteriez la version française, je vous mets également un lien direct vers la dernière version courante du pack de langue. Il suffit de le télécharger puis de lancer le programme après avoir installé la version standard.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="http://downloads.sourceforge.net/tortoisesvn/TortoiseSVN-1.7.0.22068-x64-svn-1.7.0.msi?download">Installateur de Tortoise SVN x64</a></p>
+</li>
+<li>
+<p><a href="http://downloads.sourceforge.net/tortoisesvn/LanguagePack_1.7.0.22068-x64-fr.msi?download">Pack de la langue française x64</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Si vous souhaitez une autre version vous pouvez récupérer celle qu’il vous faut <a href="http://tortoisesvn.net/downloads.html">ici même</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_utilisation_de_pageant">Utilisation de pageant</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Une fois Tortoise SVN installé on va configurer un petit agent SSH. Celui-ci nous permettra d’utiliser l’authentification par clé ssh. Cet agent est pageant. Il permet en fait de mettre « en cache » des clés SSH sur un OS Windows.</p>
+</div>
+<div class="paragraph">
+<p>Vous pouvez le télécharger en <a href="http://the.earth.li/~sgtatham/putty/latest/x86/pageant.exe">cliquant ici</a>. Une fois téléchargé, notez son chemin d’accès dans un coin.</p>
+</div>
+<div class="paragraph">
+<p>Si vous lancez l’exécutable vous verrez dans la barre des tâches un <a href="http://fr.wikipedia.org/wiki/Daemon_%28informatique%29">daemon</a>. Via un clic droit dessus vous aurez alors la possibilité de charger une clé SSH. Ceci est pratique mais lors d’une utilisation régulière, on se rend compte que charger manuelle la clé est une tâche récurrente. Nous allons donc directement charger une clé au démarrage de pageant.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2012/01/daemon-pageant.png" alt="daemon pageant.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Pour ajouter automatiquement notre clé lors du lancement de pageant, nous allons créer un raccourci vers l’exécutable sur le bureau (l’emplacement final du raccourci est peu important). Une fois le raccourci créé, nous allons l’éditer. Clic droit sur le raccourci, puis Propriétés.</p>
+</div>
+<div class="paragraph">
+<p>Dans l’onglet raccourci, nous allons modifier la valeur du champ texte « Cible : ». Dans mon cas la valeur de départ est la suivante : <strong>"C:\Program Files (x86)\WinSCP\PuTTY\pageant.exe"</strong>. On rajoute à la suite de cette chaîne de caractère une nouvelle chaîne indiquant l’emplacement de la clé à charger par défaut. Dans mon cas ce sera : <strong>"D:\informatique\projets\Jabby Tech’s\ssh-svn-key\key-tuto-svn.ppk"</strong>. La chaîne complète du champ cible devient donc :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>"C:\Program Files (x86)\WinSCP\PuTTY\pageant.exe" "D:\informatique\projets\Jabby Tech’s\ssh-svn-key\key-tuto-svn.ppk"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Il est important de mettre les doubles quotes autour du chemin vers la clé privé SSH. En effet, dans le cas où le chemin contiendrait des espaces, Windows n’interprétera pas la fin du chemin et donc vous n’obtiendrez pas le chargement automatique de la clé lors du lancement de pageant. Cliquer sur OK pour valider les modifications. Vous pouvez dès à présent fermer pageant et le relancer via le raccourci. La clé SSH sera automatiquement chargée.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_utilisation_de_tortoise_pour_acc_der_un_svn_travers_un_tunnel_ssh">Utilisation de Tortoise pour accéder à un SVN à travers un tunnel SSH</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Pour vérifier si votre connexion fonctionne. Cliquer droit sur un dossier. Comme vous pouvez le constater, le menu contextuel a été enrichie de plusieurs options relatives à tortoiseSVN. Choisissez l’option tortoiseSVN puis Repo-browser (pour la version anglaise)</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2012/01/tortoise-menu-repobrowser.png" alt="tortoise menu repobrowser.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Une nouvelle fenêtre s’ouvre. Elle permet de spécifier où se trouve un dépot auquel vous souhaiter accéder. Il est possible d’utiliser différents protocole pour l’accès. Dans le cas d’un dépôt configuré sous OVH mutualisé, nous utiliserons le protocole svn+ssh.</p>
+</div>
+<div class="paragraph">
+<p>L’adresse doit être de la forme suivant : <strong>svn+ssh://$USER@$URL/$REPOSITORY/</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>$USER</strong> : votre identifiant de connexion en ssh sur l’hébergement OVH mutualisé</p>
+</li>
+<li>
+<p><strong>$URL</strong> : url de connexion pour votre compte ssh <em class="line-through">(correspond également à votre domaine principal)</em></p>
+</li>
+<li>
+<p><strong>$REPOSITORY</strong> : le nom du dépôt auquel vous souhaitez vous connecter. Dans notre cas ce sera celui créé dans le tutoriel précédent (projets)</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Attention l’url n’est plus celle du nom de domaine. Une mise à jour de la part d’OVH a été effectuée.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Par exemple pour le cas de Jabby Tech’s et le cluster 001 (cf. le lien OVH pour savoir sur quel cluster vous êtes), on pourrait avoir l’url suivante svn+ssh://jabberwock@ssh.cluster001.ovh.net/projets/</p>
+</div>
+<div class="paragraph">
+<p><em class="line-through">Par exemple, dans le cas de Jabby Tech’s, on pourrait avoir l’url suivante svn+ssh://jabberwock@jabby-techs.fr/projets/</em></p>
+</div>
+<div class="paragraph">
+<p>Notez l’url et faites « OK ». Deux fenêtre s’ouvre directement (enfin si tout fonctionne bien). La première correspond au navigateur. La second qui se trouve par dessus la première vous demande si vous faites confiance à l’hôte et si vous souhaitez donc ajouter l’empreinte du serveur svn dans les empreintes connues par votre ordinateur. Ce message apparaît car on utilise le protocole svn+ssh. Accepter le serveur (si vous êtes sûr du serveur bien entendu). Si tout se passe normalement, vous devriez obtenir un écran similaire à celui-ci (moins les numéros que j’ai rajoutés)</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2012/01/depot-distant.png" alt="depot distant.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Voilà, la configuration est officiellement opérationnelel. Bien joué et amusez-vous bien !</p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2012/01/06/Configurer-son-acces-SVN-a-un-hebergement-OVH-pro-partie-2.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2012/01/06/Configurer-son-acces-SVN-a-un-hebergement-OVH-pro-partie-2.html</guid><category><![CDATA[OVH]]></category><category><![CDATA[svn]]></category><category><![CDATA[pageant]]></category><category><![CDATA[tortoise]]></category><category><![CDATA[mutualisé pro]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 06 Jan 2012 00:00:00 GMT</pubDate></item><item><title><![CDATA[Configurer son accès SVN à un hébergement OVH pro : partie 1]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Il y a de cela un an environ, j’ai commencé à vouloir utiliser mon hébergement mutualisé OVH pro pour stocker mon dépôt SVN. Je n’avais alors qu’un petit dépôt local sur mon poste et j’ai faillit le perdre à cause d’une mauvaise manipulation.</p>
+</div>
+<div class="paragraph">
+<p>Armé de ma non-connaissance sur les possibilités de mon hébergement, je me suis mis en route pour configurer un dépôt SVN accessible via SSH dans Eclipse, ou Tortoise. Ayant pas mal galéré, je publie maintenant cet article et les quelques suivants pour montrer les différentes étapes nécessaires à la configuration.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pr_requis">Pré-requis</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Je vais supposer que vous aller à terme travailler sous le même environnement que moi. La partie serveur est normalement commune à tous les OS mais je n’ai testé la configuration que sous Windows 7 x64. Il semble que ceci fonctionne également sous Windows XP 32 bits. Je n’ai pas fait le test mais un ami a réussi à se connecter à mon SVN en suivant la même procédure pour un poste sous Windows XP 32 bits.</p>
+</div>
+<div class="paragraph">
+<p>Pour la configuration complète du côté serveur, nous allons avoir besoin de quelques outils :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>avoir un hébergement OVH mutualisé PRO ou supérieur</p>
+</li>
+<li>
+<p>puttygen</p>
+</li>
+<li>
+<p>un accès SSH sur le serveur par exemple via putty</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cr_ation_de_cl_s_publiques_et_priv_s_pour_la_connexion_ssh">Création de clés publiques et privés pour la connexion SSH</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Afin d’éviter les demandes d’authentification SSH pour le SVN nous allons utiliser un mécanisme de clés publiques/privés.</p>
+</div>
+<div class="paragraph">
+<p>Dans cette partie, je ne parlerais pas de la création des clés sous Linux. Je n’utilise pas dans le cadre de mon travail ce type d’OS (sauf en tant que serveur).</p>
+</div>
+<div class="paragraph">
+<p>Donc sous Windows 7 (et ancienne version également) nous allons utiliser le logiciel puttygen. Il est en anglais mais très simple d’utilisation. Vous pouvez le télécharger à cette adresse : <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">télécharger puttygen</a></p>
+</div>
+<div class="paragraph">
+<p>Pour ceux qui utilise habituellement WinSCP pour se connecter en SFTP ou FTP, sachez qu’il est également présent suite à l’intallation. Par défaut, il se trouve dans le répertoire $WINSCP_HOME/PuTTY où $WINSCP_HOME correspond au repertoire d’installation de WinSCP.
+Un des avantages de puttygen est qu’il ne nécessite pas d’installation.</p>
+</div>
+<div class="paragraph">
+<p>Lancer l’utilitaire puttygen. Vous devrier obtenir une interface similaire à celle-ci :</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2011/09/puttygen-1.png" alt="puttygen 1.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Sur l’interface, sélectionner le type de clé SSH-2 DSA puis cliquer sur Generate. Pensez à bouger la souris pour accélerer un peu la génération des clés. Une fois les clés générés vous devrier obtenir à peut près ceci :</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2011/09/puttygen-2.png" alt="puttygen 2.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Sauvegardez les deux clés générés via les options suivantes :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Save public key : sauvegarde de la clé publique</p>
+</li>
+<li>
+<p>Save private key : sauvegarde de la clé privé</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Les clés sont générées, on passe à la suite.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cr_ation_d_un_d_p_t_svn_sur_le_serveur">Création d’un dépôt SVN sur le serveur</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Ici, je fais une petite parenthèse sur la création d’un dépôt car d’une part, j’en ai eu besoin et d’autre part, pour la mise en place de notre clé ssh sur le serveur, nous aurons besoin de spécifier le chemin vers le dépôt SVN auquel on souhaite accéder.</p>
+</div>
+<div class="paragraph">
+<p>Dans mon cas, je prendrais un exemple simple pour la création d’un premier dépôt. En effet, une fois connecté sur votre serveur mutualisé en SSH créer l’arborescence suivante :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-linenums" data-lang="linenums">svn
+ -- repository
+ -- scripts</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Vous pouvez bien entendu adapter directement cette arborescence à vos besoins. Dans mon cas, je créé un répertoire scripts pour stocker certains scripts utile pour l’administration de mes dépôts SVN.</p>
+</div>
+<div class="paragraph">
+<p>Pour créer cette arborescence, utiliser les commandes suivantes :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-linenums" data-lang="linenums">mkdir -p svn/repository
+mkdir -p svn/scripts</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Une fois cela fait utilisez la commande suivante pour créer votre premier dépôt. Dans mon cas, je le nommerais « projets ».</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-linenums" data-lang="linenums">svnadmin create svn/repository/projets</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Votre premier dépôt est maintenant créé. Vous pouvez vérifier l’arborescence du dépôt avec la commande suivante :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-linenums" data-lang="linenums">ls -la svn/repository/projets/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Vous devez obtenir ceci :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-linenums" data-lang="linenums">drwxr-xr-x+ 7 $NAME users   9 2010-11-12 09:36 .
+drwxr-xr-x+ 4 $NAME users   4 2010-11-12 09:36 ..
+drwxr-xr-x+ 2 $NAME users   5 2010-11-12 09:36 conf
+drwxr-xr-x+ 2 $NAME users   2 2010-11-12 09:36 dav
+drwxr-sr-x+ 5 $NAME users  10 2010-11-12 09:36 db
+-r--r--r--+ 1 $NAME users   2 2010-11-12 09:36 format
+drwxr-xr-x+ 2 $NAME users  11 2010-11-12 09:36 hooks
+drwxr-xr-x+ 2 $NAME users   4 2010-11-12 09:36 locks
+-rw-r--r--+ 1 $NAME users 229 2010-11-12 09:36 README.txt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>où <strong>$NAME</strong> correspond au nom d’utilisateur SSH.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ajout_de_la_cl_publique_sur_le_serveur_mutualis">Ajout de la clé publique sur le serveur mutualisé</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Repassons maintenant à la partie SSH en ajoutant maintenant notre clé sur notre serveur. Une fois cela fait, nous en aurons fini avec la partie serveur. On va donc créer l’arborescence suivante pour stocker notre clé à la racine du home de l’utilisateur.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-linenums" data-lang="linenums">.ssh
+ -- authorized_keys2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pour créer cette arborescence et entrer directement en mode édition, utiliser les commandes suivantes :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-linenums" data-lang="linenums">mkdir .ssh
+chmod 700 .ssh
+vi .ssh/authorized_keys2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dans l’éditeur vi, vous devez ajouter une ligne dont le format est le suivant :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-linenums" data-lang="linenums">command="/usr/bin/svnserve --root=$REPOSITORY_PATH --tunnel --tunnel-user=$USER_NAME",no-port-forwarding,no-agent-forwarding,no-X11-forwarding,no-pty ssh-dss $SSH_KEY $SSH_KEY_DATE</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>où les valeurs doivent être :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>$REPOSITORY_PATH</strong> : le chemin complet vers le dépôt c’est à dire quelque chose ressemblant à /home.XXX/loginSFTP/svn/repository</p>
+</li>
+<li>
+<p><strong>$USER_NAME</strong> : le nom de l’utilisateur dans le dépôt SVN. Cela servira pour la configuration dans SVN mais également pour savoir qui a fait quelle modification</p>
+</li>
+<li>
+<p><strong>$SSH_KEY</strong> : la clé publique SSH générée précédemment sur une seule ligne. Elle se situe dans le fichier key-tuto-svn.pub entre la ligne de commentaire et la dernière ligne du fichier</p>
+</li>
+<li>
+<p><strong>$SSH_KEY_DAT</strong> : le tag en bas de la clé publique par exemple dsa-key-20110918</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Voilà pour la partie configuration du côté serveur. On verra dans un prochain article comment utiliser directement notre clé pour se connecter via Tortoise puis via Eclipse et le plugin Subclipse.</p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2011/09/30/Configurer-son-acces-SVN-a-un-hebergement-OVH-pro-partie-1.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2011/09/30/Configurer-son-acces-SVN-a-un-hebergement-OVH-pro-partie-1.html</guid><category><![CDATA[OVH]]></category><category><![CDATA[svn]]></category><category><![CDATA[mutualisé pro]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 30 Sep 2011 00:00:00 GMT</pubDate></item><item><title><![CDATA[Rendre un script Ant plus simple à utiliser via Antform]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Je vous présentais récemment un article sur la <a href="/2011/08/04/Creer-un-tag-svn-en-utilisant-Ant.html">manipulation d’un dépôt SVN via antsvn</a>. Ce script est assez pratique mais manque tout de même d’une couche graphique permettant de le rendre plus simple et agréable. Un deuxième avantage à l’interface graphique est de permettre une confirmation avant d’effectuer la manipulation sur le dépôt SVN.</p>
+</div>
+<div class="paragraph">
+<p>J’ai également décidé d’adapter le script pour pouvoir l’utiliser sur mon dépôt SVN personnel. En effet, celui-ci est accessible via un tunnel ssh et le script initial ne fonctionne pas. J’ai d’ailleurs posté sur le <a href="http://www.developpez.net/forums/d1118102/java/edi-outils-java/build/ant/svnant-protocole-svnpssh/">forum développez.net</a> une demande d’aide à laquelle j’ai moi-même répondu. Vous pouvez y voir ma solution ou lire l’article en entier.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_r_cup_ration_des_biblioth_ques_pour_l_utilisation_de_antform">Récupération des bibliothèques pour l’utilisation de Antform</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>On va utiliser deux bibliothèques pour atteindre notre premier objectif. La première, antform, nous permettra de créer des formulaires de saisie. La seconde, ant-contrib, nous permettra de faciliter nos tests en ajoutant notamment les instructions if else…
+Les bibliothèques sont disponibles aux adresses suivantes :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Antform : <a href="http://antforms.sourceforge.net/" class="bare">http://antforms.sourceforge.net/</a></p>
+</li>
+<li>
+<p>ant-contrib : <a href="http://ant-contrib.sourceforge.net/" class="bare">http://ant-contrib.sourceforge.net/</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Une fois ces deux jar téléchargés, on les ajoute au dossier lib du projet. Je suppose ici que vous vous basez sur le précédent article et les sources fournies à la fin. Ensuite, on va ajouter dans notre fichier ant la déclaration des deux bibliothèques.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;!-- ****************************************************************** --&gt;
+&lt;!-- Definition du path pour antform                                    --&gt;
+&lt;!-- ****************************************************************** --&gt;
+&lt;path id="runtime.cp"&gt;
+    &lt;pathelement location="bin/" /&gt;
+    &lt;fileset dir="lib" includes="antform.jar" /&gt;
+&lt;/path&gt;
+&lt;taskdef name="antform" classname="com.sardak.antform.AntForm" classpathref="runtime.cp" /&gt;
+&lt;taskdef name="antmenu" classname="com.sardak.antform.AntMenu" classpathref="runtime.cp" /&gt;
+
+&lt;!-- ****************************************************************** --&gt;
+&lt;!-- Definition du path pour antcontrib                                    --&gt;
+&lt;!-- ****************************************************************** --&gt;
+&lt;path id="path.antcontrib"&gt;
+    &lt;pathelement location="${basedir}/lib/ant-contrib-1.0b3.jar"/&gt;
+&lt;/path&gt;
+&lt;taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="path.antcontrib" /&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cr_ation_d_une_fen_tre_de_dialogue">Création d’une fenêtre de dialogue</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_d_claration_de_svn_tag_ask">Déclaration de svn-tag-ask</h3>
+<div class="paragraph">
+<p>Commençons par créer une nouvelle tâche à notre fichier ant. Celle-ci sera nommée <strong>svn-tag-ask</strong>. Elle n’aura pas de description particulière puisque ce sera une tâche dite « privée ».</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;!-- ****************************************************************** --&gt;
+&lt;!-- svn-tag-ask : remplissage des infos pour la création                 --&gt;
+&lt;!--             d'un TAG pour le projet                                 --&gt;
+&lt;!-- ****************************************************************** --&gt;
+&lt;target id="svn-tag-ask" name="svn-tag-ask"&gt;
+
+    &lt;!-- Initialisation des variables --&gt;
+    &lt;property name="svn.project.url" value="${svn.repository.url}/${project.name}" /&gt;
+    &lt;property name="svn.tag.name" value="${svn.tag.name.base}" /&gt;
+
+    &lt;!-- Permet de lister les branches existantes sur le projet --&gt;
+    &lt;svn refid="svn.settings"&gt;
+        &lt;list delimiter="," listdirs="true" onlynames="true" property="svn.branches.list" url="${svn.project.url}/branches"/&gt;
+    &lt;/svn&gt;
+
+    &lt;!-- Création de l'interface graphique --&gt;
+    &lt;antform save="svn-tag.properties" title="Création d'un tag"&gt;
+
+        &lt;label&gt;Essai.&lt;/label&gt;
+
+        &lt;controlbar&gt;
+            &lt;button type="cancel" label="${antform.no}" /&gt;
+            &lt;button type="ok" label="${antform.yes}" /&gt;
+        &lt;/controlbar&gt;
+    &lt;/antform&gt;
+&lt;/target&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pour le moment, si vous lancez svn-tag-ask, vous devriez obtenir une fenêtre simple avec un message et deux boutons. Il se peut que les messages pour les boutons soient vides. Dans ce cas, il suffira de déclarer les deux variables antform.yes et antform.no dans le fichier <strong>svn-utilities.properties</strong> et de leur mettre une valeur. Pour expliquer un peu ce que fait la tâche, elle liste sur le svn les différentes branches qui ont été créées puis elle affiche un message via la balise antform. Pour cette balise, notez que l’on sauvegardera les données saisies dans un fichier svn-tag.properties que l’on utilisera ensuite dans la tâche svn-tag.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ajout_des_champs_de_saisie_l_interface">Ajout des champs de saisie à l’interface</h3>
+<div class="paragraph">
+<p>Maintenant que notre fenêtre est fonctionnelle, nous allons nous concentrer sur les champs de saisie à remplir pour notre script de tag. Dans la version précédente du script nous avions besoin des données suivantes. Elles étaient listées dans le fichier de properties.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>une url source à laquelle on trouvait le trunk à taguer</p>
+</li>
+<li>
+<p>une url de destination dans laquelle on voulait stocker le tag</p>
+</li>
+<li>
+<p>un message pour la création du tag</p>
+</li>
+<li>
+<p>un login pour le svn</p>
+</li>
+<li>
+<p>un mot de passe pour le svn</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Nous allons donc ajouter ces différents éléments tout en en ajoutant d’autres afin d’enrichir les possibilités. En effet, on pourrait très bien vouloir créer un tag à partir d’une branche de correction au lieu du trunk. Notre interface graphique nous permettra de faire ce choix.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;!-- ****************************************************************** --&gt;
+&lt;!-- svn-tag-ask : remplissage des infos pour la création                 --&gt;
+&lt;!--             d'un TAG pour le projet                                 --&gt;
+&lt;!-- ****************************************************************** --&gt;
+&lt;target id="svn-tag-ask" name="svn-tag-ask"&gt;
+
+    &lt;!-- Initialisation des variables --&gt;
+    &lt;property name="svn.project.url" value="${svn.repository.url}/${project.name}" /&gt;
+    &lt;property name="svn.tag.name" value="${svn.tag.name.base}" /&gt;
+
+    &lt;!-- Permet de lister les branches existantes sur le projet --&gt;
+    &lt;svn refid="svn.settings"&gt;
+        &lt;list delimiter="," listdirs="true" onlynames="true" property="svn.branches.list" url="${svn.project.url}/branches"/&gt;
+    &lt;/svn&gt;
+
+    &lt;!-- Création de l'interface graphique --&gt;
+    &lt;antform save="svn-tag.properties" title="Création d'un tag"&gt;
+
+        &lt;label&gt;Vous devez remplir les differentes donnees demandées. Le nom de la branche source n'est pas obligatoire. Si vous souhaitez créer un tag à partir du trunk, n'oubliez pas de le préciser grâce au radiobutton.&lt;/label&gt;
+
+        &lt;textproperty label="Chemin du projet :" property="svn.project.url" required="true" /&gt;
+        &lt;listproperty label="Nom de la branche :" property="svn.tag.branch.name" values="                              ,${svn.branches.list}"  /&gt;
+        &lt;textproperty label="Nom du tag :" property="svn.tag.name" required="true" /&gt;
+
+        &lt;textproperty label="Login :" property="svn.username" required="true" /&gt;
+        &lt;textproperty label="Mot de passe :" property="svn.password" required="true" /&gt;
+
+        &lt;multilinetextproperty label="Commentaire du tag" property="svn.tag.message" required="true" /&gt;
+
+        &lt;radioselectionproperty label="Créer a partir du trunk ?" property="svn.tag.trunk" values="${antform.no}, ${antform.yes}" /&gt;
+
+        &lt;controlbar&gt;
+            &lt;button type="cancel" label="${antform.no}" /&gt;
+            &lt;button type="ok" label="${antform.yes}" /&gt;
+        &lt;/controlbar&gt;
+    &lt;/antform&gt;
+&lt;/target&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>On se retrouve donc avec les champs suivants :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>L’url du projet dans le dépôt : toutes les url seront construite à partir de celle-là. Elle peut être pré-remplie</p>
+</li>
+<li>
+<p>La liste des branches existantes : elle peut être vide. Il faudra cliquer sur les flèches pour choisir le nom de la branche</p>
+</li>
+<li>
+<p>Le nom du tag : il peut être pré-rempli et est obligatoire</p>
+</li>
+<li>
+<p>Le login de l’utilisateur : il est obligatoire.</p>
+</li>
+<li>
+<p>Le mot de passe de l’utilisateur : il est obligatoire.</p>
+</li>
+<li>
+<p>Le commentaire : ce champ peut contenir plusieurs lignes. Il est obligatoire</p>
+</li>
+<li>
+<p>Un radio button indiquant si l’on veut créer le tag à partir du trunk</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Voici la fenêtre que vous devriez obtenir :</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2011/08/rendre-un-script-ant-plus-simple-a-utiliser-via-antform-pic1.png" alt="Fenêtre antform pour la tâche svn-tag-ask">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_modification_de_svn_tag">Modification de svn-tag</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Maintenant que nous avons une tâche dédiée à la création de notre interface utilisateur, nous allons modifier la tâche svn-tag. Tout d’abord nous devront obligatoirement appeler la méthode svn-tag-ask lors du lancement de svn-tag. Ensuite, il faudra prendre en compte plusieurs cas de figures pour créer le tag. Les différents cas de figure sont les suivants :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>le fichier de properties créé par svn-tag-ask n’existe pas</p>
+</li>
+<li>
+<p>l’option « à partir du trunk » est à oui</p>
+</li>
+<li>
+<p>l’option « à partir du trunk » est à non et le nom de la branche est vide</p>
+</li>
+<li>
+<p>l’option « à partir du trunk » est à non et le nom de la branche est renseigné</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Pour pouvoir appeler ant-tag-ask à partir de ant-tag, nous allons simplement utiliser l’attribut depends de la balise target. La déclaration de la target svn-tag devient :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;target name="svn-tag" depends="svn-tag-ask" description="creation d'un tag d'un projet sur le svn"&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ensuite, pour tester les différents cas, nous utiliserons la bibliothèque ant-contrib. Voici avec ant-contrib les différents tests que nous devrons effectuer.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;if&gt;
+    &lt;available file="svn-tag.properties" /&gt;
+    &lt;then&gt;
+        &lt;!-- Code a executer si l'on a un fichier --&gt;
+
+    &lt;/then&gt;
+    &lt;else&gt;
+        &lt;!-- Affichage d'un message à l'utilisateur pour le prévenir --&gt;
+        &lt;antform title="Erreur pour la création d'un tag"&gt;
+            &lt;label rows="1" columns="20"&gt;
+                Le fichier de propriétés pour le tag n'a pas été créé correctement. Le tag n'a pas été effectué.
+            &lt;/label&gt;
+            &lt;controlbar&gt;
+                &lt;button type="cancel" label="fermer" /&gt;
+            &lt;/controlbar&gt;
+        &lt;/antform&gt;
+    &lt;/else&gt;
+&lt;/if&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Construction de l’url selon les cas suivant :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>l’option « à partir du trunk » est à oui</p>
+</li>
+<li>
+<p>l’option « à partir du trunk » est à non et le nom de la branche est renseigné</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;if&gt;
+    &lt;equals arg1="${svn.tag.trunk}" arg2="${antform.yes}" trim="true" /&gt;
+    &lt;then&gt;
+        &lt;!-- Creation de l'url source pour le trunk --&gt;
+        &lt;var name="src.url" value="${svn.project.url}/trunk" /&gt;
+    &lt;/then&gt;
+    &lt;else&gt;
+        &lt;if&gt;
+            &lt;not&gt;
+                &lt;equals arg1="${svn.tag.branch.name}" arg2="" trim="true" /&gt;
+            &lt;/not&gt;
+            &lt;then&gt;
+                &lt;!-- Creation de l'url source pour la branche si le nom de branche est non vide et que l'on n'a pas demandé le trunk --&gt;
+                &lt;var name="src.url" value="${svn.project.url}/branches/${svn.tag.branch.name}" /&gt;
+            &lt;/then&gt;
+        &lt;/if&gt;
+    &lt;/else&gt;
+&lt;/if&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Test de l’url de la source. Si elle est vide, cela correspond au cas suivant :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>l’option « à partir du trunk » est à non et le nom de la branche est vide</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;if&gt;
+    &lt;not&gt;
+        &lt;equals arg1="${src.url}" arg2="" trim="true" /&gt;
+    &lt;/not&gt;
+    &lt;then&gt;
+        &lt;!-- Creation du tag --&gt;
+
+    &lt;/then&gt;
+    &lt;else&gt;
+        &lt;!-- Affichage d'un message : on passe ici uniquement si la branche n'est pas spécifiée et qu'elle est sencé être la source. --&gt;
+        &lt;antform title="Erreur pour la création d'un tag"&gt;
+            &lt;label rows="1" columns="20"&gt;Le chemin de la branche source est vide.&lt;/label&gt;
+            &lt;controlbar&gt;
+                &lt;button type="cancel" label="fermer" /&gt;
+            &lt;/controlbar&gt;
+        &lt;/antform&gt;
+    &lt;/else&gt;
+&lt;/if&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Avec les différents tests précédents, il ne reste plus qu’à les mettre dans le bon ordre ou à les inclure les uns dans les autres pour arriver au script final. Je ne vais pas directement mettre la target ant-tag ici. Elle est disponible dans le fichier zip téléchargeable à la fin de l’article. Par contre, un point important ici est de réévaluer le svnSetting. En effet, il est global à tout le fichier Ant. Or, si les données saisies dans l’interface graphique ne sont pas similaire à celles pré-remplies dans le fichier de propriétés, alors la connexion pourrait ne pas fonctionner. Il faut donc penser à rajouter ceci juste avant l’appel à la tâche svn.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;svnSetting
+    javahl="${svnant.javahl}"
+    svnkit="${svnant.svnkit}"
+    username="${svn.username}"
+    password="${svn.password}"
+    failonerror="false"
+    id="svn.settings"
+    /&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_prise_en_compte_du_protocole_svn_ssh">Prise en compte du protocole svn+ssh</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Lors de mes différents tests chez moi, j’ai rencontré quelques problèmes pour dialoguer avec mon dépôt SVN. Celui-ci est en fait accessible via le protocole svn+ssh. Quelques recherches m’ont permis rapidement de trouver qu’il manquait une bibliothèque pour prendre en compte ce protocole. Je l’ai donc ajouté au projet afin de l’utiliser.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>trilead-ssh2-build213-svnkit-1.3-patch.jar : non maintenue actuellement, ce jar permet la connexion via un tunnel ssh. <a href="https://maven.atlassian.com/content/repositories/atlassian-3rdparty/com/trilead/trilead-ssh2/build213-svnkit-1.3-patch/">Télécharger le jar</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>L’ajout se fait directement en enrichissant le path de svnant.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;path id="path.svnant"&gt;
+    &lt;pathelement location="${basedir}/lib/svnant.jar" /&gt;
+    &lt;pathelement location="${basedir}/lib/svnClientAdapter.jar" /&gt;
+    &lt;pathelement location="${basedir}/lib/svnkit.jar" /&gt;
+    &lt;pathelement location="${basedir}/lib/svnjavahl.jar" /&gt;
+    &lt;pathelement location="${basedir}/lib/ganymed.jar" /&gt;
+    &lt;pathelement location="${basedir}/lib/trilead-ssh2-build213-svnkit-1.3-patch.jar" /&gt;
+&lt;/path&gt;
+&lt;typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="path.svnant" /&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Puis pour utiliser le script, il faudra également penser à inverser les booléens javahl et svnkit de svnSetting afin de préciser que l’on veut utiliser javahl. Enfin, il faudra qu’une version de javahl en adéquation avec l’IDE (32 ou 64bits) soit installée est configurée pour utiliser un tunnel ssh via échange de clé privée/publique.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Ce petit article montre une amélioration du script initial que j’avais créé. Ce n’est pas forcément la meilleure mais elle répond à mes attentes. Il existe encore de nombreuses améliorations possible ne serait-ce que pour les script de checkout et d’export de projet. Je ne le ferais pas pour le moment car je n’en ai pas l’utilité. Je vous invite donc à consulter la documentation officielle des différentes bibliothèques utilisées afin d’améliorer le script selon vos propres besoins.</p>
+</div>
+<div class="paragraph">
+<p>Vous trouverez sur le lien suivant un projet Eclipse presque pret à l’emploi. Il faudra pour la partie svn+ssh installer et configurer javahl. Le projet fr.jabbytechs.ant.svnutilities en version 1.0. Télécharger fr.jabbytechs.ant.svnutilities-1.0.zip</p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2011/08/17/Rendre-un-script-Ant-plus-simple-a-utiliser-via-Antform.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2011/08/17/Rendre-un-script-Ant-plus-simple-a-utiliser-via-Antform.html</guid><category><![CDATA[ant]]></category><category><![CDATA[java]]></category><category><![CDATA[svn]]></category><category><![CDATA[svnant]]></category><category><![CDATA[antform]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Wed, 17 Aug 2011 00:00:00 GMT</pubDate></item><item><title><![CDATA[Créer un tag svn en utilisant Ant]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Comme beaucoup d’informaticiens, je n’aime pas spécialement effectuer des tâches répétitives. Si une tâche l’est, alors il vaut mieux la remplacer par un script automatique. Le gain est d’ailleurs double. On ne se lasse pas à cause d’un processus un peu long ou ennuyeux, et surtout on évite les bourdes dues au facteur humain.</p>
+</div>
+<div class="paragraph">
+<p>Alors comme aujourd’hui, j’en avais plus qu’assez de faire toujours mes tags de livraison sur le SVN de la boîte de façon manuelle, je me suis créé un petit script Ant pour ça. L’article va donc présenter les différentes étapes pour mettre en place ce système.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_r_cup_rer_les_biblioth_ques_utiles">Récupérer les bibliothèques utiles</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Tout d’abord, commençons par récupérer les bibliothèques utiles. Ne connaissant pas spécialement les bibliothèques permettant de manipuler un dépôt svn via ant, j’ai décidé arbitrairement de prendre celle fournie par le projet Subclipse. Vous pouvez directement télécharger le contenu de la bibliothèque à l’adresse suivante. Accéder à svnant.</p>
+</div>
+<div class="paragraph">
+<p>Téléchargement direct des bibliothèques :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="http://subclipse.tigris.org/files/documents/906/49042/svnant-1.3.1.zip">svnant 1.3.1</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cr_er_un_script_de_tags">Créer un script de tags</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>On va commencer sous Eclipse par créer un projet Java simple. Personnellement, je l’ai nommé <strong>fr.jabbytechs.ant.svnutilities</strong>.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2011/08/creer-un-tag-svn-en-utilisant-ant-pic-1.png" alt="creer un tag svn en utilisant ant pic 1.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Une fois le projet créé vous obtenez normalement ceci :</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2011/08/creer-un-tag-svn-en-utilisant-ant-pic-2.png" alt="creer un tag svn en utilisant ant pic 2.png">
+</div>
+</div>
+<div class="paragraph">
+<p>On ajoute un répertoire lib pour nos futures bibliothèques, ainsi que deux fichiers. Le premier est un fichier xml et le second un .properties. On peut par exemple les nommer <strong>svn-utilities.xml</strong> et <strong>svn-utilities.properties</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Ajouter les bibliothèques suivantes dans le dossier lib de notre projet. Elles sont disponibles dans l’archive de svnant.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>jna.jar</p>
+</li>
+<li>
+<p>svnant.jar</p>
+</li>
+<li>
+<p>svnClientAdapter.jar</p>
+</li>
+<li>
+<p>svnjavahl.jar</p>
+</li>
+<li>
+<p>svnkit.jar</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Vous devriez obtenir quelque chose semblable à l’arborescence suivante. A noter que l’on a pas besoin de ganymed.jar pour la suite. D’ailleurs, je n’ai pas non plus vérifié à quoi il servait puisque cela fonctionne sans.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/images/2011/08/creer-un-tag-svn-en-utilisant-ant-pic-3.png" alt="creer un tag svn en utilisant ant pic 3.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Commençons maintenant par ajouter les lignes suivantes à notre fichier xml. Ensuite rafraîchir le projet Java afin qu’Eclipse prennent en compte le fait que notre fichier est de type Ant. Ce sera plus pratique pour la suite.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0"?&gt;
+&lt;project name="fr.jabbytechs.ant.svnutilities" basedir="."&gt;
+    &lt;property file="svn-utilities.properties" /&gt;
+&lt;/project&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>On ajoute maintenant la configuration pour faire fonctionner svnant.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0"?&gt;
+&lt;project name="fr.jabbytechs.ant.svnutilities" basedir="."&gt;
+
+    &lt;property file="svn-utilities.properties" /&gt;
+
+    &lt;path id="path.svnant"&gt;
+        &lt;pathelement location="${basedir}/lib/svnant.jar" /&gt;
+        &lt;pathelement location="${basedir}/lib/svnClientAdapter.jar" /&gt;
+        &lt;pathelement location="${basedir}/lib/svnkit.jar" /&gt;
+        &lt;pathelement location="${basedir}/lib/svnjavahl.jar" /&gt;
+        &lt;pathelement location="${basedir}/lib/jne.jar" /&gt;
+    &lt;/path&gt;
+
+    &lt;typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="path.svnant" /&gt;
+
+    &lt;!-- ****************************************************************** --&gt;
+    &lt;!-- svn.settings : correspond aux différentes réglages pour les       --&gt;
+    &lt;!--         tâches svnant. Les données d'entrées se situes dans le     --&gt;
+    &lt;!--         fichiers svn-utilities.properties                    --&gt;
+    &lt;!-- ****************************************************************** --&gt;
+    &lt;svnSetting
+        javahl="${svnant.javahl}"
+        svnkit="${svnant.svnkit}"
+        username="${svn.username}"
+        password="${svn.password}"
+        failonerror="false"
+        id="svn.settings"
+        /&gt;
+&lt;/project&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La première balise ajoutée est « path ». Elle permet d’enrichir le classpath d’exécution de ant. On y liste les bibliothèques que l’on a ajouté au projet java. La seconde balise que l’on ajoute, correspond à la recherche dans le classpath des implémentations des fonctions que nous utiliserons. Sans ça, svnant ne fonctionnera pas. Enfin la dernière correspond à la configuration de antsvn. J’y ai listé les différentes informations dont nous aurons besoin. Comme vous pouvez le remarquer, je n’ai pas mis directement les valeur mais des variables de la forme <strong>${XXX}</strong>. Nous y reviendrons.</p>
+</div>
+<div class="paragraph">
+<p>La configuration est maintenant terminé. On va pouvoir s’atteler à notre tâche Ant de création d’un tag. Vous allez voir c’est vraiment très simple.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;!-- ****************************************************************** --&gt;
+&lt;!-- svntag: cree un TAG pour le projet                                 --&gt;
+&lt;!-- ****************************************************************** --&gt;
+&lt;target name="svn-tag" description="creation d'un tag d'un projet sur le svn"&gt;
+
+    &lt;property name="src.url" value="${svn.repository.url}/${project.name}/trunk/" /&gt;
+    &lt;property name="dest.url" value="${svn.repository.url}/${project.name}/tags/${tag.name}" /&gt;
+
+    &lt;echo message="${src.url}" /&gt;
+    &lt;echo message="${dest.url}" /&gt;
+    &lt;echo message="${svn.tag.message}" /&gt;
+
+    &lt;svn refid="svn.settings" &gt;
+        &lt;copy srcUrl="${src.url}" destUrl="${dest.url}" message="${svn.tag.message}" /&gt;
+    &lt;/svn&gt;
+
+&lt;/target&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pour ceux qui débute juste avec Ant, quelques petites explication s’imposent. La balise property permet de déclarer une nouvelle propriété. D’ailleurs un peu après j’utilise les deux créées en début de tâche. Ensuite, la balise echo permet d’afficher un message. Là, ça nous permettra d’afficher dans la console Eclipse les données que l’on a en entrée.
+Enfin, la dernière balise permet de faire le tag en lui même. Elle prend peu de paramètre. La configuration créée précédemment, le chemin de la source, le chemin de destination et le message du tag. Tout le reste du travail se fera automatiquement.</p>
+</div>
+<div class="paragraph">
+<p>Maintenant, revenons vers nos différentes variables <strong>${XXX}</strong> utilisées dans le script. Elles sont au nombre de 11.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>${basedir}</strong> : répertoire de départ par rapport auquel on construit les chemins relatifs nécessaire</p>
+</li>
+<li>
+<p><strong>${svnant.javahl}</strong> : permet de dire si nous utiliserons javahl pour lire/modifier le dépôt SVN</p>
+</li>
+<li>
+<p><strong>${svnant.svnkit}</strong> : permet de dire si nous utiliserons svnkit pour lire/modifier le dépôt SVN</p>
+</li>
+<li>
+<p><strong>${svn.username}</strong> : nom d’un utilisateur du dépôt. En l’occurence, il faut les droits de modification pour notre cas</p>
+</li>
+<li>
+<p><strong>${svn.password}</strong> : mot de passe de l’utilisateur</p>
+</li>
+<li>
+<p><strong>${svn.repository.url}</strong> : url vers le dépôt SVN</p>
+</li>
+<li>
+<p><strong>${project.name}</strong> : nom du projet sous le dépôt. Ceci permettra dans mon cas de réutiliser le script pour d’autres projets.</p>
+</li>
+<li>
+<p><strong>${tag.name}</strong> : nom du tag que l’on veut créer</p>
+</li>
+<li>
+<p><strong>${src.url}</strong> : url à partir de laquelle on va copier nos données pour créer le tag</p>
+</li>
+<li>
+<p><strong>${dest.url}</strong> : url dans laquelle on va copier les données</p>
+</li>
+<li>
+<p><strong>${svn.tag.message}</strong> : message qui sera mis sur le dépôt SVN au niveau du tag</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Nous allons les déclarer et indiquer leur valeur dans le fichier svn-utilities.properties que nous avons créé au tout départ. Toutes ne seront pas listé dans le fichier. En effet, ${basedir} a déjà été déclaré à la seconde ligne du fichier Ant et pour ${src.url} et ${dest.url}, elles sont construite dans la tâche Ant.
+Voici le contenu du fichier.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-linenums" data-lang="linenums">svn.repository.url=svn://localhost/MON_DEPOT
+project.name=monprojet
+tag.name=1.0
+svn.tag.message=Creation du tag ${tag.name} pour le projet ${project.name} a partir du trunk
+svnant.javahl=false
+svnant.svnkit=true
+svn.username=jabberwock
+svn.password=jabby</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Il ne vous reste plus qu’à paramétrer le script selon vos besoins et à le lancer via Eclipse. Clic droit sur le fichier Ant &gt; Run as… &gt; Ant build</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_quelques_autres_scripts_de_manipulation_du_svn_utiles">Quelques autres scripts de manipulation du svn utiles</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_cr_ation_d_une_branche">Création d’une branche</h3>
+<div class="paragraph">
+<p>Le système est similaire à la création d’un tag.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;!-- ****************************************************************** --&gt;
+&lt;!-- svn-branch: creation d'une branche de travail pour le projet        --&gt;
+&lt;!-- ****************************************************************** --&gt;
+&lt;target name="svn-branch" description="Creation d'une nouvelle branche de travail pour un projet"&gt;
+
+    &lt;property name="src.url"  value="${svn.repository.url}/${project.name}/${branch.source}"/&gt;
+    &lt;property name="dest.url" value="${svn.repository.url}/${project.name}/branches/${svn.branch.name}"/&gt;
+
+    &lt;echo message="${svn.branch.message}"/&gt;
+    &lt;echo message="${src.url}"/&gt;
+    &lt;echo message="${dest.url}"/&gt;
+
+    &lt;svn refid="svn.settings"&gt;
+        &lt;copy srcUrl="${src.url}" destUrl="${dest.url}" message="${svn.branch.message}"/&gt;
+    &lt;/svn&gt;
+&lt;/target&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_exporter_un_projet">Exporter un projet</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;!-- ****************************************************************** --&gt;
+&lt;!-- svn-export: cree un export d'un projet                             --&gt;
+&lt;!-- ****************************************************************** --&gt;
+&lt;target name="svn-export" description="Permet d'exporter un projet"&gt;
+
+    &lt;property name="src.url"  value="${svn.repository.url}/${project.name}/tags/${tag.name}"/&gt;
+    &lt;property name="dest.url" value="${svn.export.dest.url}"/&gt;
+
+    &lt;echo message="${svn.export.message}"/&gt;
+
+    &lt;svn refid="svn.settings"&gt;
+        &lt;export srcUrl="${src.url}" destPath="${dest.url}/${project.name}"/&gt;
+    &lt;/svn&gt;
+&lt;/target&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_faire_un_checkout_d_un_projet">Faire un checkout d’un projet</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;!-- ****************************************************************** --&gt;
+&lt;!-- svn-checkout-latest: daire le checkout d'un projet                    --&gt;
+&lt;!-- ****************************************************************** --&gt;
+&lt;target name="svn-checkout"&gt;
+    &lt;property name="src.url"  value="${svn.repository.url}/${project.name}/trunk"/&gt;
+    &lt;property name="dest.url" value="${svn.checkout.dest.url}"/&gt;
+
+    &lt;svn refid="svn.settings"&gt;
+        &lt;checkout url="${src.url}" revision="${svn.checkout.revision}" destPath="${dest.url}" /&gt;
+    &lt;/svn&gt;
+&lt;/target&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Voilà pour les quelques exemples d’utilisation de svnant pour manipuler son dépôt SVN. Bien entendu, ce n’est pas les seuls scripts qui peuvent être créé et je vous invite à consulter la documentation officielle de svnant pour améliorer/enrichir ces scripts.</p>
+</div>
+<div class="paragraph">
+<p>Vous trouverez sur le lien suivant un projet Eclipse pret à l’emploi. Il contient les Ant postés dans cet article. fr.jabbytechs.ant.svnutilities</p>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2011/08/04/Creer-un-tag-svn-en-utilisant-Ant.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2011/08/04/Creer-un-tag-svn-en-utilisant-Ant.html</guid><category><![CDATA[ant]]></category><category><![CDATA[java]]></category><category><![CDATA[svn]]></category><category><![CDATA[svnant]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Thu, 04 Aug 2011 00:00:00 GMT</pubDate></item></channel></rss>
