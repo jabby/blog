@@ -11,13 +11,39 @@
     "cover": "/images/cover-1920x1080.jpg",
     "postsPerPage": "5",
     "googleAnalytics": "UA-24824748-2",
-    "disqus": "jabbytechs"
+    "disqus": "jabbytechs",
+    "logo": "",
+    "delay": ""
   },
   "socialnetwork": {
     "twitter": "https://twitter.com/darkjabberwock",
-    "github": "https://github.com/jabby"
+    "github": "https://github.com/jabby",
+    "email": "",
+    "facebook": "",
+    "googleplus": "",
+    "instagram": "",
+    "pinterest": "",
+    "flickr": "",
+    "linkedin": "",
+    "stackoverflow": ""
   },
   "theme": {
-    "name": "ichi"
+    "name": "the-shell"
+  },
+  "urls": {
+    "site": "http://blog.jabby-techs.fr",
+    "hubpress": "https://blog.jabby-techs.fr",
+    "theme": "//blog.jabby-techs.fr/themes/ichi",
+    "images": "http://blog.jabby-techs.fr/images"
+  },
+  "initialisationConfigComponent": {
+    "name": "initialise-configuration",
+    "computed": {},
+    "methods": {},
+    "staticRenderFns": [
+      null,
+      null,
+      null
+    ]
   }
 }
