@@ -1,38 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <script>
+        // UNCOMMENT AND USE YOUR VARIABLES FOR DISQUS AND GOOGLE ANALYTICS
+        // var d_id  = '',
+        //     g_id  = 'UA-XXXXXXXX-X', // Format: UA-########-#, Example: UA-11220899-1
+        //     g_url = 'XXXXXXX.XXX' // Format: #####.####, Example: webdesignporto.com
+    </script>
 
     <title>Eclipse : améliorer l’aide à la saisie</title>
     <meta name="description" content="" />
 
     <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="shortcut icon" href="http://blog.jabby-techs.fr/favicon.ico">
-
-    <script type="text/javascript" src="//blog.jabby-techs.fr/themes/ichi/assets/js/vendor/fastclick.js?v=1466729495916"></script>
-    <script type="text/javascript" src="//blog.jabby-techs.fr/themes/ichi/assets/js/vendor/modernizr.js?v=1466729495916"></script>
-
-
-    <link rel="stylesheet" type="text/css" href="//blog.jabby-techs.fr/themes/ichi/assets/css/normalize.css?v=1466729495916" />
-    <link rel="stylesheet" type="text/css" href="//blog.jabby-techs.fr/themes/ichi/assets/css/foundation.min.css?v=1466729495916" />
-    <!--[if lte IE 8]>
-        <link rel="stylesheet" type="text/css" href="//blog.jabby-techs.fr/themes/ichi/assets/css/outdatedBrowser.min.css?v=1466729495916">
-    <![endif]-->
-    <link rel="stylesheet" type="text/css" href="//blog.jabby-techs.fr/themes/ichi/assets/fonts/foundation-icons/foundation-icons.css?v=1466729495916" />
-    <link rel="stylesheet" type="text/css" href="//blog.jabby-techs.fr/themes/ichi/assets/css/styles.css?v=1466729495916" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:300,700,400|Source+Sans+Pro:300,400,600,700,900,300italic,400italic,600italic,700italic,900italic" />
+    <link rel="stylesheet" type="text/css" href="//blog.jabby-techs.fr/themes/the-shell/assets/highlighter/prettify.css?v=1490358363666" />
+    <link rel="stylesheet" type="text/css" href="//blog.jabby-techs.fr/themes/the-shell/assets/css/screen.css?v=1490358363666" />
 
     <link rel="canonical" href="http://blog.jabby-techs.fr/2013/06/03/Eclipse-ameliorer-laide-a-la-saisie.html" />
     <meta name="referrer" content="origin" />
     
     <meta property="og:site_name" content="Jabby Tech&#x27;s" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="article" />
     <meta property="og:title" content="Eclipse : améliorer l’aide à la saisie" />
     <meta property="og:description" content="Pour rester informer sur Eclipse, j’ai tendance à suivre d’autres blogueurs. Parmi ceux-ci l’un retient souvent mon attention et me permet d’apprendre des choses souvent indispensables par la suite sur mon IDE préféré. Il s’agit de Lars Vogel. Via l’un de ses derniers articles," />
     <meta property="og:url" content="http://blog.jabby-techs.fr/2013/06/03/Eclipse-ameliorer-laide-a-la-saisie.html" />
+    <meta property="article:published_time" content="2013-06-03T00:00:00.000Z" />
     <meta property="article:tag" content="eclipse" />
     <meta property="article:tag" content="auto-complétion" />
     
@@ -42,92 +38,61 @@
     <meta name="twitter:url" content="http://blog.jabby-techs.fr/2013/06/03/Eclipse-ameliorer-laide-a-la-saisie.html" />
     
     <script type="application/ld+json">
-null
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "Jabby Tech's",
+    "author": {
+        "@type": "Person",
+        "name": "jabby",
+        "image": "https://avatars.githubusercontent.com/u/1883932?v=3",
+        "url": "http://blog.jabby-techs.fr/author/jabby/",
+        "sameAs": "http://www.jabby-techs.fr/"
+    },
+    "headline": "Eclipse : améliorer l’aide à la saisie",
+    "url": "http://blog.jabby-techs.fr/2013/06/03/Eclipse-ameliorer-laide-a-la-saisie.html",
+    "datePublished": "2013-06-03T00:00:00.000Z",
+    "keywords": "eclipse, auto-complétion",
+    "description": "Pour rester informer sur Eclipse, j’ai tendance à suivre d’autres blogueurs. Parmi ceux-ci l’un retient souvent mon attention et me permet d’apprendre des choses souvent indispensables par la suite sur mon IDE préféré. Il s’agit de Lars Vogel. Via l’un de ses derniers articles,"
+}
     </script>
 
     <meta name="generator" content="HubPress" />
     <link rel="alternate" type="application/rss+xml" title="Jabby Tech&#x27;s" href="http://blog.jabby-techs.fr/rss/" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/atom-one-dark.min.css">
+
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-24824748-2', 'auto');
+    ga('send', 'pageview');
+
+    </script>
 </head>
 <body class="post-template tag-eclipse tag-auto-completion">
 
-<div id="outdated">
-    <h6>Your browser is out-of-date!</h6>
-    <p>Update your browser to view this website correctly. <a id="btnUpdate" href="http://outdatedbrowser.com/">Update my browser now</a></p>
-</div>
-
-<nav class="top-bar hide-for-large-up" data-topbar style="background: none">
-  <ul class="title-area">
-    <li class="name">
-
-    </li>
-    <li class="home"><a class="fi-home" href="http://blog.jabby-techs.fr"></a></li>
-    <li class="toggle-topbar"><a href="#" id="trigger-overlay" class="fi-list"></a></li>
-  </ul>
-
-<div class="overlay overlay-scale">
-    <button type="button" class="overlay-close">Close</button>
-    <nav>
-        <ul>
-            <li><a href="http://blog.jabby-techs.fr">Home</a></li>
-        </ul>
-    </nav>
-</div>
-
-</nav>
-
-<div class="row">
-
-<div class="small-16 medium-16 large-4 columns right head-area bgimage" style="background-image: url(/images/cover-1920x1080.jpg)">
-
-<header class="site-head">
-    <div class="vertical">
-        <div class="site-head-content inner">
-            <ul class="side-nav blog-menu show-for-large-up">
-                <li><a class="fi-home" href="http://blog.jabby-techs.fr"></a></li>
-                <li><a class="fi-torso" href="http://blog.jabby-techs.fr/about"></a></li>
-                <li><a class="fi-mail" href="http://blog.jabby-techs.fr/contact"></a></li>
-            </ul>
-            
-            <h1 class="blog-title">Jabby Tech&#x27;s</h1>
-            <hr>
-            <p class="blog-description">You will never code alone !</p>
-            <div class="blog-network">
-<!--                 <a href="#" class="fi-social-pinterest"></a>
-                <a href="#" class="fi-social-linkedin"></a>
-                <a href="#" class="fi-social-behance"></a>
-                <a href="#" class="fi-social-deviant-art"></a>
-                <a href="#" class="fi-social-dribbble"></a>
-                <a href="#" class="fi-social-flickr"></a>
-                <a href="#" class="fi-social-github"></a>
-                <a href="#" class="fi-social-skype"></a>
-                <a href="#" class="fi-social-snapchat"></a>
-                <a href="#" class="fi-social-steam"></a>
-                <a href="#" class="fi-social-xbox"></a>
-                <a href="#" class="fi-social-reddit"></a> -->
-                  <a href="https://github.com/jabby" class="fi-social-github"></a>
-                  <a href="https://twitter.com/darkjabberwock" class="fi-social-twitter"></a>
-            </div>
-        </div>
-    </div>
-</header>
-
-</div>
-
-
-<div class="small-16 medium-16 large-12 columns main-column left">
     
 
 <main class="content" role="main">
 
     <article class="post tag-eclipse tag-auto-completion">
 
+        <header class="post-header">
+            <a id="blog-logo" href="http://blog.jabby-techs.fr">
+                    Jabby Tech&#x27;s
+            </a>
+        </header>
 
-            <h1 class="post-title">Eclipse : améliorer l’aide à la saisie</h1>
 
-            <span class="post-meta label"><time datetime="2013-06-03">03 Jun 2013</time></span>
+        <span class="post-meta"><time datetime="2013-06-03">03 Jun 2013</time> on <a href="http://blog.jabby-techs.fr/tag/eclipse/">eclipse</a> | <a href="http://blog.jabby-techs.fr/tag/auto-completion/">auto-complétion</a></span>
 
-            <section class="post-content">
-                <div id="preamble">
+        <h1 class="post-title">Eclipse : améliorer l’aide à la saisie</h1>
+
+        <section class="post-content">
+            <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Pour rester informer sur Eclipse, j’ai tendance à suivre d’autres blogueurs. Parmi ceux-ci l’un retient souvent mon attention et me permet d’apprendre des choses souvent indispensables par la suite sur mon IDE préféré. Il s’agit de <a href="http://www.vogella.com/people/larsvogel.html">Lars Vogel</a>. Via l’un de ses derniers articles, j’ai découvert que l’on pouvait améliorer le temps de réponse de l’auto-complétion (<a href="http://www.vogella.com/blog/2013/05/30/eclipse-papercut-13-reduce-delay-in-code-completion/">l’article en question</a>). J’ai fouillé un peu et voilà un très bref récapitulatif de ce que j’ai découvert.</p>
@@ -201,74 +166,63 @@ null
 </div>
 </div>
 </div>
-                        <aside class="tags fi-pricetag-multiple">Posted on <a href="http://blog.jabby-techs.fr/tag/eclipse/">eclipse</a>, <a href="http://blog.jabby-techs.fr/tag/auto-completion/">auto-complétion</a></aside>
-            </section>
-            <hr>
-            <footer class="post-footer">
+        </section>
 
-                <section class="share">
-                    <h4>Liked this post ? Share it.</h4>
-                    <a class="fi-social-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.jabby-techs.fr/"
-                        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
-                    </a>
-                    <a class="fi-social-twitter" href="https://twitter.com/share?text=Eclipse%20%3A%20am%C3%A9liorer%20l%E2%80%99aide%20%C3%A0%20la%20saisie&amp;url=http://blog.jabby-techs.fr/"
-                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
-                    </a>
-                    <a class="fi-social-google-plus" href="https://plus.google.com/share?url=http://blog.jabby-techs.fr/"
-                       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
-                    </a>
-                </section>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+        var disqus_shortname = 'jabbytechs'; // required: replace example with your forum shortname
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        
+
+        <footer class="post-footer">
 
                 <section class="author">
-                    <header>
-                        <span>About the author</span>
-                    </header>
-                    <section>
-                        <h4>jabby</h4>
-                        <img src="https://avatars.githubusercontent.com/u/1883932?v&#x3D;3">
-                        <span>Nantes, France</span>
-                        <a href="http://www.jabby-techs.fr/">http://www.jabby-techs.fr/</a>
-                    </section>
-                    <footer>
-                         <p></p>
-                    </footer>
+                    <h4>jabby</h4>
+                    <p></p>
                 </section>
 
-        <div class="clearfix"></div>
-                    <hr>
+            <section class="share">
+                <h4>Share this</h4>
+                <a class="icon-twitter" href="http://twitter.com/share?text=Eclipse : améliorer l’aide à la saisie&url=http://blog.jabby-techs.fr/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.jabby-techs.fr/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://blog.jabby-techs.fr/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
 
-            </footer>
-
-        <h3 class="title-disqus"><span class="fi-comments"></span>Discussions</h3>
-
-
-
-
-        <section class="post-comments">
-          <div id="disqus_thread"></div>
-          <script type="text/javascript">
-          var disqus_shortname = 'jabbytechs'; // required: replace example with your forum shortname
-          /* * * DON'T EDIT BELOW THIS LINE * * */
-          (function() {
-            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-          })();
-          </script>
-          <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-          <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-        </section>
+        </footer>
 
 
     </article>
 
 </main>
 
-</div>
 
-</div>
+    <footer class="site-footer">
+        <!-- <a class="subscribe icon-feed" href="http://blog.jabby-techs.fr/rss/"><span class="tooltip">Subscribe!</span></a> -->
+        <div class="inner">
+             <section class="copyright">All content copyright <a href="/">Jabby Tech&#x27;s</a> &copy; 2017 &bull; All rights reserved.</section>
+             <section class="poweredby">Proudly published with <a href="http://hubpress.io">HubPress</span></a> in <a href="https://github.com/mityalebedev/The-Shell">The Shell</a> theme.</section>
+        </div>
+    </footer>
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js?v="></script> 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/highlight.min.js?v="></script> 
       <script type="text/javascript">
         jQuery( document ).ready(function() {
           // change date with ago
@@ -280,25 +234,10 @@ null
 
         hljs.initHighlightingOnLoad();
       </script>
+       
+    <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
-    <!--[if lte IE 8]>
-        <script type="text/javascript" src="//blog.jabby-techs.fr/themes/ichi/assets/js/outdatedBrowser.min.js?v=1466729495916"></script>
-    <![endif]-->
-    <script type="text/javascript" src="//blog.jabby-techs.fr/themes/ichi/assets/js/min/built.js?v=1466729495916"></script>
-
-    <script>
-      $(document).foundation();
-    </script>
-
-    <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-24824748-2', 'auto');
-    ga('send', 'pageview');
-
-    </script>
+    <script type='text/javascript' src="//blog.jabby-techs.fr/themes/the-shell/assets/highlighter/prettify.js?v=1490358363666"></script>
+    <script type='text/javascript' src="//blog.jabby-techs.fr/themes/the-shell/assets/js/shell.js?v=1490358363666"></script>
 </body>
 </html>
