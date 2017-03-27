@@ -33,7 +33,7 @@
   "urls": {
     "site": "http://blog.jabby-techs.fr",
     "hubpress": "https://blog.jabby-techs.fr",
-    "theme": "//blog.jabby-techs.fr/themes/ichi",
+    "theme": "//blog.jabby-techs.fr/themes/the-shell",
     "images": "http://blog.jabby-techs.fr/images"
   },
   "initialisationConfigComponent": {
