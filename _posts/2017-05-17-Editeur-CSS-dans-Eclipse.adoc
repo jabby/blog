@@ -1,0 +1,21 @@
+= Editeur CSS dans Eclipse
+
+Lorsque je développe, j'apprécie de pouvoir utiliser mon IDE Java pour la partie web. 
+Malheureusement le constat n'est pas très bon sur les fonctionnalités fournies par WTP. 
+
+== Editeur CSS du projet WTP
+
+=== Rapide constat
+
+J'ai un certains nombres de "grief" L'éditeur CSS ne permet pas de prendre en compt
+
+J'ai donc entrepris en septembre dernier de patcher un peu l'éditeur CSS fourni par le projet WTP d'Eclipse.
+Clairement, il y a beaucoup de travail et j'ai essayé de faire de petits patchs pour améliorer l'utilisabilité du produit. 
+
+
+Certaines ont été mergées récemment.
+
+Voici la liste des changements que vous pourrez retrouver dans la prochaine version d'Eclipse
+
+
+Lien : https://git.eclipse.org/r/#/q/project:sourceediting/webtools.sourceediting+status:merged+owner:gautier.desaintmartinlacaze%2540gmail.com
