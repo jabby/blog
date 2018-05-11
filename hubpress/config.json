@@ -13,7 +13,8 @@
     "googleAnalytics": "UA-24824748-2",
     "disqus": "jabbytechs",
     "logo": "",
-    "delay": ""
+    "delay": "",
+    "blogPath": ""
   },
   "socialnetwork": {
     "twitter": "https://twitter.com/darkjabberwock",
@@ -25,10 +26,12 @@
     "pinterest": "",
     "flickr": "",
     "linkedin": "",
-    "stackoverflow": ""
+    "stackoverflow": "",
+    "paypalme": "",
+    "opencollective": ""
   },
   "theme": {
-    "name": "the-shell"
+    "name": "casper"
   },
   "urls": {
     "site": "http://blog.jabby-techs.fr",
@@ -49,5 +52,6 @@
     "beforeCreate": [
       null
     ]
-  }
+  },
+  "navigation": []
 }
