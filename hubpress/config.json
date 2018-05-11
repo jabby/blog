@@ -36,7 +36,7 @@
   "urls": {
     "site": "http://blog.jabby-techs.fr",
     "hubpress": "https://blog.jabby-techs.fr",
-    "theme": "//blog.jabby-techs.fr/themes/the-shell",
+    "theme": "//blog.jabby-techs.fr/themes/casper",
     "images": "http://blog.jabby-techs.fr/images"
   },
   "initialisationConfigComponent": {
