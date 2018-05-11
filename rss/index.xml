@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Jabby Tech's]]></title><description><![CDATA[You will never code alone !]]></description><link>http://blog.jabby-techs.fr</link><image><url>/images/cover-1920x1080.jpg</url><title>Jabby Tech&apos;s</title><link>http://blog.jabby-techs.fr</link></image><generator>RSS for Node</generator><lastBuildDate>Fri, 24 Mar 2017 12:26:03 GMT</lastBuildDate><atom:link href="http://blog.jabby-techs.fr/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Utiliser l'API Google Sheets via un proxy]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Jabby Tech's]]></title><description><![CDATA[You will never code alone !]]></description><link>http://blog.jabby-techs.fr</link><image><url>/images/cover-1920x1080.jpg</url><title>Jabby Tech&apos;s</title><link>http://blog.jabby-techs.fr</link></image><generator>RSS for Node</generator><lastBuildDate>Fri, 11 May 2018 15:29:17 GMT</lastBuildDate><atom:link href="http://blog.jabby-techs.fr/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Utiliser l'API Google Sheets via un proxy]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Pour un de mes clients, j&#8217;ai commencé à étudier la possibilité d&#8217;utiliser les API Google pour pousser des données de son application métier vers <a href="https://www.google.com/sheets/about/">Google Sheets</a>.
@@ -7,7 +7,7 @@ Bien que la problématique semble simple au premier abord et que le <a href="htt
 </div>
 </div>
 <div class="sect1">
-<h2 id="_sympt_me_rencontr">Symptôme rencontré</h2>
+<h2 id="_symptôme_rencontré">Symptôme rencontré</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Après avoir suivi le quickstart et démarré l&#8217;application, celle-ci crachait avec la stacktrace suivante.</p>
@@ -100,7 +100,7 @@ Et là, le problème est&#8230;&#8203; toujours présent.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_analyse_plus_profonde_du_probl_me">Analyse plus profonde du problème</h2>
+<h2 id="_analyse_plus_profonde_du_problème">Analyse plus profonde du problème</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Donc après ce nouvel échec et plusieurs tentatives de correction tout autant infructueuse telle que :</p>
@@ -163,7 +163,7 @@ A moins bien entendu que vous ayez fait <strong>encore pire</strong> (mais ça j
 </div>
 </div>
 <div class="sect1">
-<h2 id="_modification_du_quickstart_pour_fonctionner_derri_re_un_proxy">Modification du Quickstart pour fonctionner derrière un proxy</h2>
+<h2 id="_modification_du_quickstart_pour_fonctionner_derrière_un_proxy">Modification du Quickstart pour fonctionner derrière un proxy</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Comme indiqué dans la partie précédente, le soucis provient de la création dr <strong>HTTP_TRANSPORT</strong>.
@@ -194,7 +194,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 <p>Comme on peut le voir la solution à ce problème est plutôt simple.</p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2016/12/20/Utiliser-lAPI-Google-Sheets-via-un-proxy.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2016/12/20/Utiliser-lAPI-Google-Sheets-via-un-proxy.html</guid><category><![CDATA[java]]></category><category><![CDATA[ google-api]]></category><category><![CDATA[ google-sheets]]></category><category><![CDATA[ securité]]></category><category><![CDATA[ proxy]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Tue, 20 Dec 2016 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Mars - épisode 3 - Amélioration de l'ergonomie de la console]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2016/12/20/Utiliser-lAPI-Google-Sheets-via-un-proxy.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2016/12/20/Utiliser-lAPI-Google-Sheets-via-un-proxy.html</guid><category><![CDATA[java]]></category><category><![CDATA[google-api]]></category><category><![CDATA[google-sheets]]></category><category><![CDATA[securité]]></category><category><![CDATA[proxy]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Tue, 20 Dec 2016 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Mars - épisode 3 - Amélioration de l'ergonomie de la console]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>A part au niveau des éditeurs de code, un développeur passe un peu de temps dans la console pour voir comment son programme se comporte. Que ce soit pour simplement vérifier le fonctionnement général de l&#8217;application ou bien pour vérifier qu&#8217;il n&#8217;y a pas d&#8217;exceptions générées lors de l&#8217;utilisation de l&#8217;application.</p>
@@ -205,20 +205,20 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_verrouillage_automatique_du_d_filement">Verrouillage automatique du défilement</h2>
+<h2 id="_verrouillage_automatique_du_défilement">Verrouillage automatique du défilement</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Un truc assez embêtant lorsque les logs de l&#8217;application sont verbeux, c&#8217;est que l&#8217;on n&#8217;a généralement pas le temps de lire les logs que d&#8217;autres sont de nouveaux écrits dans la console. Ce qui empêche le développeur que je suis de finir de lire ce que j&#8217;avais commencé.</p>
 </div>
 <div class="paragraph">
-<p>Généralement, l&#8217;utilisateur va donc remonter avec dans les logs avec la barre de défilement. Malheureusement cela ne résout pas le problème puisqu'à chaque nouvelle ligne de log, la console réaffiche les lignes nouvellement écrites.</p>
+<p>Généralement, l&#8217;utilisateur va donc remonter avec dans les logs avec la barre de défilement. Malheureusement cela ne résout pas le problème puisqu&#8217;à chaque nouvelle ligne de log, la console réaffiche les lignes nouvellement écrites.</p>
 </div>
 <div class="paragraph">
 <p>Pour désactiver ce fonctionnement et permettre la lecture des logs, il existe un bouton permettant de bloquer le défilement. Il n&#8217;est pas activé par défaut (à mon avis heureusement) mais peut être utile de temps à autres.</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2015/06/console-scroll-lock-option.png" alt="console scroll lock option.png">
+<img src="/images/2015/06/console-scroll-lock-option.png" alt="console scroll lock option">
 </div>
 </div>
 <div class="paragraph">
@@ -227,14 +227,14 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_retour_la_ligne_pour_les_longues_lignes_de_log">Retour à la ligne pour les longues lignes de log</h2>
+<h2 id="_retour_à_la_ligne_pour_les_longues_lignes_de_log">Retour à la ligne pour les longues lignes de log</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Un autre point intéressant sur la console est le fait de pouvoir maintenant avoir un retour à la ligne automatique pour son contenu. Cela permet donc de lire le contenu de la console sans devoir se déplacer avec la barre de défilement horizontale.</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2015/06/console-without-word-wrap.png" alt="console without word wrap.png">
+<img src="/images/2015/06/console-without-word-wrap.png" alt="console without word wrap">
 </div>
 </div>
 <div class="paragraph">
@@ -242,7 +242,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2015/06/console-word-wrap-option.png" alt="console word wrap option.png">
+<img src="/images/2015/06/console-word-wrap-option.png" alt="console word wrap option">
 </div>
 </div>
 <div class="paragraph">
@@ -250,14 +250,14 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2015/06/console-word-wrap.png" alt="console word wrap.png">
+<img src="/images/2015/06/console-word-wrap.png" alt="console word wrap">
 </div>
 </div>
 <div class="paragraph">
-<p>J&#8217;espère que ces petites améliorations vous plairont autant qu'à moi.</p>
+<p>J&#8217;espère que ces petites améliorations vous plairont autant qu&#8217;à moi.</p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2015/06/10/Eclipse-Mars-episode-3-Amelioration-de-lergonomie-de-la-console.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2015/06/10/Eclipse-Mars-episode-3-Amelioration-de-lergonomie-de-la-console.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[ mars]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Wed, 10 Jun 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Mars - épisode 2 - Filtrer la popup Open Resources]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2015/06/10/Eclipse-Mars-episode-3-Amelioration-de-lergonomie-de-la-console.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2015/06/10/Eclipse-Mars-episode-3-Amelioration-de-lergonomie-de-la-console.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[mars]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Wed, 10 Jun 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Mars - épisode 2 - Filtrer la popup Open Resources]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Après un <a href="/2015/05/19/Eclipse-Mars-episode-1-Vue-hierarchique-des-projets.html">premier article</a> sur la nouvelle mouture d&#8217;Eclipse, je vais vous présenter une autre fonctionnalité intéressante de l&#8217;IDE.</p>
@@ -273,7 +273,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2015/05/open-resource-not-filtered.png" alt="open resource not filtered.png">
+<img src="/images/2015/05/open-resource-not-filtered.png" alt="open resource not filtered">
 </div>
 </div>
 <div class="paragraph">
@@ -295,7 +295,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2015/05/open-resource-select-option.png" alt="open resource select option.png">
+<img src="/images/2015/05/open-resource-select-option.png" alt="open resource select option">
 </div>
 </div>
 <div class="paragraph">
@@ -303,7 +303,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2015/05/open-resource-filtered.png" alt="open resource filtered.png">
+<img src="/images/2015/05/open-resource-filtered.png" alt="open resource filtered">
 </div>
 </div>
 <div class="paragraph">
@@ -318,7 +318,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 <p>Malheureusement c&#8217;est comme pour la vue hiérarchique présentée dans mon <a href="/2015/05/19/Eclipse-Mars-episode-1-Vue-hierarchique-des-projets.html">billet précédent</a>. Les données ne sont pas automatiquement reportées d&#8217;un workspace à l&#8217;autre.</p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2015/05/28/Eclipse-Mars-episode-2-Filtrer-la-popup-Open-Resources.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2015/05/28/Eclipse-Mars-episode-2-Filtrer-la-popup-Open-Resources.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[ mars]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Thu, 28 May 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Mars - épisode 1 - Vue hiérarchique des projets]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2015/05/28/Eclipse-Mars-episode-2-Filtrer-la-popup-Open-Resources.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2015/05/28/Eclipse-Mars-episode-2-Filtrer-la-popup-Open-Resources.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[mars]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Thu, 28 May 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Mars - épisode 1 - Vue hiérarchique des projets]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Comme tous les ans, je teste en avance la prochaine version d&#8217;Eclipse. Cette année, elle s&#8217;appelera Mars et sera à mon avis un cru plutôt intéressant. J&#8217;ai donc décidé de vous présenter quelques une des  nouveautés de cette version pour vous préparer à la sortie qui aura lieu fin juin 2015.</p>
@@ -329,7 +329,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_comment_se_passe_l_affichage_des_projets_jusqu_luna">Comment se passe l&#8217;affichage des projets jusqu'à Luna</h2>
+<h2 id="_comment_se_passe_l_affichage_des_projets_jusqu_à_luna">Comment se passe l&#8217;affichage des projets jusqu&#8217;à Luna</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Si vous utilisez maven sur vos projets, vous avez peut être des modules maven. Généralement le dossier d&#8217;un module est directement présent dans le dossier de son parent. On a donc une arborescence sur le disque équivalent à l&#8217;exemple suivant :</p>
@@ -358,16 +358,16 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2015/05/eclipse-flat-presentation-project.png" alt="eclipse flat presentation project.png">
+<img src="/images/2015/05/eclipse-flat-presentation-project.png" alt="eclipse flat presentation project">
 </div>
 </div>
 <div class="paragraph">
-<p>Il est possible de supprimer de l&#8217;affichage les simples dossiers. Ceci permet de ne plus avoir de doublons dans l&#8217;arbre. Pour moi, ceci n'était qu&#8217;un palliatif mais pas une solution optimale. A priori je n'étais pas le seul à penser cela.</p>
+<p>Il est possible de supprimer de l&#8217;affichage les simples dossiers. Ceci permet de ne plus avoir de doublons dans l&#8217;arbre. Pour moi, ceci n&#8217;était qu&#8217;un palliatif mais pas une solution optimale. A priori je n&#8217;étais pas le seul à penser cela.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_affichage_hi_rarchique_des_projets">Affichage hiérarchique des projets</h2>
+<h2 id="_affichage_hiérarchique_des_projets">Affichage hiérarchique des projets</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><a href="https://twitter.com/mickaelistria">Mickael Istria</a> de Red Hat a développé une nouvelle fonctionnalité pour le Project Explorer. Celle-ci permet de changer l&#8217;affichage de l&#8217;arbre pour ne plus avoir de doublon dans l&#8217;arbre mais également de placer les projets de façon à respecter le stockage sur disque.</p>
@@ -387,7 +387,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2015/05/eclipse-hierarchical-presentation-project.png" alt="eclipse hierarchical presentation project.png">
+<img src="/images/2015/05/eclipse-hierarchical-presentation-project.png" alt="eclipse hierarchical presentation project">
 </div>
 </div>
 </div>
@@ -406,7 +406,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2015/05/eclipse-change-presentation-project.png" alt="eclipse change presentation project.png">
+<img src="/images/2015/05/eclipse-change-presentation-project.png" alt="eclipse change presentation project">
 </div>
 </div>
 <div class="paragraph">
@@ -415,7 +415,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_est_ce_que_le_param_trage_est_cross_workspace">Est-ce que le paramétrage est cross-workspace ?</h2>
+<h2 id="_est_ce_que_le_paramétrage_est_cross_workspace">Est-ce que le paramétrage est cross-workspace ?</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Sachant que certains mécanismes sont mis en place dans Eclipse Mars pour gérer les préférences entre workspaces (je ferais un article dessus prochainement), on peut se demander si le paramétrage de la vue sera pris en compte dans tous les workspaces.</p>
@@ -424,17 +424,17 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 <p>J&#8217;ai fait le test et malheureusement ce n&#8217;est pas le cas. Je pense que cela est dû au fait que les paramétrages des perspectives ne sont pas encore sauvegardés indépendamment du modèle du workspace. Si vous voulez plus d&#8217;information sur cette partie là, je vous invite à lire le ticket suivant <a href="http://eclip.se/378811" class="bare">http://eclip.se/378811</a></p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2015/05/19/Eclipse-Mars-episode-1-Vue-hierarchique-des-projets.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2015/05/19/Eclipse-Mars-episode-1-Vue-hierarchique-des-projets.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[ mars]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Tue, 19 May 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[Pourquoi je suis passé de Wordpress à HubPress]]></title><description><![CDATA[<div class="sect1">
+</div>]]></description><link>http://blog.jabby-techs.fr/2015/05/19/Eclipse-Mars-episode-1-Vue-hierarchique-des-projets.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2015/05/19/Eclipse-Mars-episode-1-Vue-hierarchique-des-projets.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[mars]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Tue, 19 May 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[Pourquoi je suis passé de Wordpress à HubPress]]></title><description><![CDATA[<div class="sect1">
 <h2 id="_wordpress_pourquoi_et_comment">WordPress, pourquoi et comment</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>En 2011, j’ai décidé de me créer un blog. A l'époque, je n’ai pas spécialement cherché de plateforme spécifique. De nombreuses personnes utilisaient WordPress et j’avais donc pris un hébergement mutualisé chez OVH pour y installer une instance de ce CMS.</p>
+<p>En 2011, j’ai décidé de me créer un blog. A l&#8217;époque, je n’ai pas spécialement cherché de plateforme spécifique. De nombreuses personnes utilisaient WordPress et j’avais donc pris un hébergement mutualisé chez OVH pour y installer une instance de ce CMS.</p>
 </div>
 <div class="paragraph">
-<p>Depuis, la situation a changé. Je me suis rendu compte que je n'écrivais pas si souvent que cela et que la solution WordPress ne me convenait pas totalement. En fait, je suis du genre à ne pas utiliser le mode WYSIWYG fourni. Je le trouve pas mal, mais le html produit n’est pas aussi propre que celui que je voulais. Donc je gérais cette partie à la main. Ceci pose un problème de relecture. Il n’est quand même pas des plus simples de relire du texte encapsulé dans des balises html.</p>
+<p>Depuis, la situation a changé. Je me suis rendu compte que je n&#8217;écrivais pas si souvent que cela et que la solution WordPress ne me convenait pas totalement. En fait, je suis du genre à ne pas utiliser le mode WYSIWYG fourni. Je le trouve pas mal, mais le html produit n’est pas aussi propre que celui que je voulais. Donc je gérais cette partie à la main. Ceci pose un problème de relecture. Il n’est quand même pas des plus simples de relire du texte encapsulé dans des balises html.</p>
 </div>
 <div class="paragraph">
-<p>En plus de ce premier constat sur l’outil, celui-ci impose d'être mis à jour régulièrement pour éviter une attaque. Franchement vu le peu de fois où je me connecte sur l’interface d’administration par an, c’est presque un miracle que le blog n’ai jamais été piraté.</p>
+<p>En plus de ce premier constat sur l’outil, celui-ci impose d&#8217;être mis à jour régulièrement pour éviter une attaque. Franchement vu le peu de fois où je me connecte sur l’interface d’administration par an, c’est presque un miracle que le blog n’ai jamais été piraté.</p>
 </div>
 <div class="paragraph">
 <p>Troisième argument contre mon WordPress, je l’ai hébergé sur un serveur que je loue. Sérieusement ça n’a pas été la meilleure idée que j’ai eue. Je me suis servi de l’hébergement pour d’autres choses, mais le peu d’utilisation n’a pas spécialement mérité cet investissement financier.</p>
@@ -451,7 +451,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 <p>J’ai commencé à regarder un peu ce qui se faisait en fin d’année dernière. Il y a du choix. Trop presque, vous pouvez d’ailleurs passer sur ce <a href="https://staticsitegenerators.net/">site</a> pour vous rendre compte du choix disponible pour un utilisateur.</p>
 </div>
 <div class="paragraph">
-<p>Je recherchais un générateur de html à partir de fichier texte en Markdown ou Asciidoctor qui soit simple d&#8217;utilisation. J&#8217;ai testé par exemple jbake. C'était pas mal, mais comme bon nombre de ces outils, il faut une chaîne de build pour générer les pages. Et ça, ce n&#8217;est clairement pas pratique. Comment modifier ou corriger un article à partir d&#8217;un pc ne possédant pas les outils nécessaires ? WordPress le permettait vu qu&#8217;un simple navigateur était nécessaire.</p>
+<p>Je recherchais un générateur de html à partir de fichier texte en Markdown ou Asciidoctor qui soit simple d&#8217;utilisation. J&#8217;ai testé par exemple jbake. C&#8217;était pas mal, mais comme bon nombre de ces outils, il faut une chaîne de build pour générer les pages. Et ça, ce n&#8217;est clairement pas pratique. Comment modifier ou corriger un article à partir d&#8217;un pc ne possédant pas les outils nécessaires ? WordPress le permettait vu qu&#8217;un simple navigateur était nécessaire.</p>
 </div>
 <div class="paragraph">
 <p>Alors que je cherchais une solution, j&#8217;ai discuté avec <a href="http://www.anthonnyquerouil.fr/">Anthonny Quérouil</a> de ce problème. La chance m&#8217;avait souri. En fait, Anthonny avait un petit side-project utilisant asciidoctor. Un truc qui lui semblait pas mal et qui répondait à un besoin, celui de publier sur gh-pages facilement. Dans le mile, ça répondait sur le papier exactement mon besoin.</p>
@@ -494,20 +494,20 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2015/04/hubpress-edit-page.png" alt="hubpress edit page.png">
+<img src="/images/2015/04/hubpress-edit-page.png" alt="hubpress edit page">
 </div>
 </div>
 <div class="paragraph">
-<p>Autant dire que je suis plutôt content de cette solution. Tout n&#8217;est pas encore présent. Il manque par exemple la génération des flux RSS. Mais l&#8217;outil est quand même bien pratique. Il n&#8217;y a qu'à regarder l&#8217;engouement autour de l&#8217;outil pour comprendre que ce petit side-project a bien plus d&#8217;impact que l&#8217;on aurait pu le croire au tout début.</p>
+<p>Autant dire que je suis plutôt content de cette solution. Tout n&#8217;est pas encore présent. Il manque par exemple la génération des flux RSS. Mais l&#8217;outil est quand même bien pratique. Il n&#8217;y a qu&#8217;à regarder l&#8217;engouement autour de l&#8217;outil pour comprendre que ce petit side-project a bien plus d&#8217;impact que l&#8217;on aurait pu le croire au tout début.</p>
 </div>
 <div class="paragraph">
-<p>Je vous invite d&#8217;ailleurs à regarder le site <a href="https://staticsitegenerators.net/" class="bare">https://staticsitegenerators.net/</a>. HubPress est à la 15ème position en termes d'étoiles sur Github. Le tout en 3 mois. Autant dire qu&#8217;il y a pas mal de supporters.</p>
+<p>Je vous invite d&#8217;ailleurs à regarder le site <a href="https://staticsitegenerators.net/" class="bare">https://staticsitegenerators.net/</a>. HubPress est à la 15ème position en termes d&#8217;étoiles sur Github. Le tout en 3 mois. Autant dire qu&#8217;il y a pas mal de supporters.</p>
 </div>
 <div class="paragraph">
 <p>En espérant que cet article vous incitera à tester ce projet très intéressant. Et s&#8217;il vous manque quelque chose, n&#8217;hésitez pas à la demander. C&#8217;est par ici que ça se passe : <a href="https://github.com/HubPress/hubpress.io/issues" class="bare">https://github.com/HubPress/hubpress.io/issues</a></p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2015/04/13/Pourquoi-je-suis-passe-de-Wordpress-a-HubPress.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2015/04/13/Pourquoi-je-suis-passe-de-Wordpress-a-HubPress.html</guid><category><![CDATA[HubPress]]></category><category><![CDATA[ Asciidoctor]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Mon, 13 Apr 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[Problème de background dans le thème Dark d’Eclipse]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2015/04/13/Pourquoi-je-suis-passe-de-Wordpress-a-HubPress.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2015/04/13/Pourquoi-je-suis-passe-de-Wordpress-a-HubPress.html</guid><category><![CDATA[HubPress]]></category><category><![CDATA[Asciidoctor]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Mon, 13 Apr 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[Problème de background dans le thème Dark d’Eclipse]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Je ne sais pas si vous aviez lu mon article précédent, mais j’abordais rapidement le fait qu’un thème « Dark » soit nativement présent dans Eclipse depuis la version Luna. J’avais fait mention d’un petit souci de couleur de fond des éditeurs dans certains packagings et je souhaitais vous donner une solution de contournement. En fait, il y a mieux.</p>
@@ -527,14 +527,14 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 <p>Pour récupérer uniquement la correction, décocher l’option « Group Items by Category » et sélectionner le plugin nommé « Target management Terminal Widget ». Poursuivez l’installation de ce composant et redémarrer Eclipse. Il ne devrait plus y avoir de problème de background.</p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2014/07/25/Probleme-de-background-dans-le-theme-Dark-dEclipse.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/07/25/Probleme-de-background-dans-le-theme-Dark-dEclipse.html</guid><category><![CDATA[eclipse]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 25 Jul 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Sortie d’Eclipse Luna]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/07/25/Probleme-de-background-dans-le-theme-Dark-dEclipse.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/07/25/Probleme-de-background-dans-le-theme-Dark-dEclipse.html</guid><category><![CDATA[eclipse]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Fri, 25 Jul 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Sortie d’Eclipse Luna]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Comme tous les ans, la fondation Eclipse lance une nouvelle version de plusieurs de ses projets à la même date. Ce lancement simultané, appelée <a href="https://projects.eclipse.org/releases/luna">release train</a>, voit notamment l’arrivée d’une nouvelle version de l’IDE. Cette année, c’est donc Eclipse Luna qui devient la dernière version de l’IDE. Voici quelques nouveautés de l’IDE.</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2014/07/splash-luna.png" alt="splash luna.png">
+<img src="/images/2014/07/splash-luna.png" alt="splash luna">
 </div>
 </div>
 </div>
@@ -550,7 +550,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2014/07/save-actions-java-8.png" alt="save actions java 8.png">
+<img src="/images/2014/07/save-actions-java-8.png" alt="save actions java 8">
 </div>
 </div>
 <div class="paragraph">
@@ -569,7 +569,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_nouveau_th_me_pour_eclipse">Nouveau thème pour Eclipse</h2>
+<h2 id="_nouveau_thème_pour_eclipse">Nouveau thème pour Eclipse</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Au final, c’est peut être l’un des plus gros reproches fait à l’IDE, mais jusqu’à présent, il n’existait pas de thème sombre nativement. Pour en obtenir un, il fallait passer par des plugins externes. Plusieurs développeurs ont décidé de changer cela en contribuant à la plateforme. Pour cela, ils utilisent notamment les possibilités offertes par la gestion du <a href="https://wiki.eclipse.org/Eclipse4/CSS">CSS au sein même d’Eclipse</a>.</p>
@@ -582,7 +582,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2014/07/dark-theme.png" alt="dark theme.png">
+<img src="/images/2014/07/dark-theme.png" alt="dark theme">
 </div>
 </div>
 <div class="paragraph">
@@ -613,31 +613,31 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_am_liorations_diverses_de_l_espace_de_travail">Améliorations diverses de l’espace de travail</h2>
+<h2 id="_améliorations_diverses_de_l_espace_de_travail">Améliorations diverses de l’espace de travail</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Plusieurs petites améliorations sont également de la partie sur l’espace de travail. J’apprécie ces modifications même si elles peuvent être considérées comme mineure pour beaucoup de monde.</p>
 </div>
 <div class="sect2">
-<h3 id="_num_ro_de_ligne_dans_les_diteurs">Numéro de ligne dans les éditeurs</h3>
+<h3 id="_numéro_de_ligne_dans_les_éditeurs">Numéro de ligne dans les éditeurs</h3>
 <div class="paragraph">
 <p>Tout d’abord, tous les éditeurs affichent maintenant le numéro de ligne par défaut. C’était demandé depuis longtemps mais le fait que ce paramétrage soit commun à tous les éditeurs et non pas de façon indépendante, n’a pas permis avant cette année de prendre une décision. Le pouvoir du sondage a bien aidé sur ce coup-là.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_r_duction_de_l_espace_per_du_dans_les_ihm">Réduction de l’espace « per* du » dans les IHM</h3>
+<h3 id="_réduction_de_l_espace_per_du_dans_les_ihm">Réduction de l’espace « per* du » dans les IHM</h3>
 <div class="paragraph">
 <p>Ensuite de façon générale sur plusieurs thèmes, les écarts entre les vues ont été réduits. Il y a donc plus de place pour l’information utile.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_possibilit_de_masquer_le_quick_access">Possibilité de masquer le « Quick Access »</h3>
+<h3 id="_possibilité_de_masquer_le_quick_access">Possibilité de masquer le « Quick Access »</h3>
 <div class="paragraph">
 <p>Petit clin d’oeil à un collègue, le champ de saisie « Quick Access » dans la barre de menu peu maintenant être masqué. Pour cela il suffit de faire un clic droit dessus et de cocher « Hide ».</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_split_des_diteurs">Split des éditeurs</h3>
+<h3 id="_split_des_éditeurs">Split des éditeurs</h3>
 <div class="paragraph">
 <p>Enfin dernière petite amélioration des éditeurs, le split horizontal et vertical. Et oui c’est un truc que l’on n’avait pas jusque-là sur Eclipse. Il était possible de cloner l’éditeur et d’avoir deux fois le même fichier visible mais cela obligeait à avoir deux onglets pour le même fichier dans la liste des éditeurs.</p>
 </div>
@@ -648,7 +648,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_am_liorations_egit">Améliorations EGit</h2>
+<h2 id="_améliorations_egit">Améliorations EGit</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Là c’est un gros morceau. L’équipe travaillant sur EGit a sorti quatre nouvelles versions entre Kepler et Luna. On est donc passé de la 3.0 d’EGit à la 3.4. Au final, je ne listerais pas toutes les améliorations tellement elles sont nombreuses.</p>
@@ -684,7 +684,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 <p>Bien entendu, je me suis principalement concentré sur les améliorations de l’IDE Eclipse. Il ne faut pas oublier les autres projets pour autant. Vous trouverez à cette adresse la liste de tous les projets Eclipse ayant participés à la release annuelle sur <a href="https://projects.eclipse.org/releases/luna">cette page</a>.</p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2014/07/07/Sortie-dEclipse-Luna.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/07/07/Sortie-dEclipse-Luna.html</guid><category><![CDATA[eclipse]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Mon, 07 Jul 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Nouveau site pour la fondation Eclipse]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/07/07/Sortie-dEclipse-Luna.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/07/07/Sortie-dEclipse-Luna.html</guid><category><![CDATA[eclipse]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Mon, 07 Jul 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Nouveau site pour la fondation Eclipse]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Il y a des nouvelles assez simples qui ont tendances à me faire plaisir. Depuis quelques semaines déjà, il est possible de tester le futur site de la fondation Eclipse. Il faut avouer que le site actuel n’est pas super vendeur. J’aurais même tendance à dire qu’il est plutôt austère et vieillot. Voici quelques exemples du travail accomplit à l’heure actuelle.</p>
@@ -699,12 +699,12 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2014/04/site-eclipse-actuel.png" alt="site eclipse actuel.png">
+<img src="/images/2014/04/site-eclipse-actuel.png" alt="site eclipse actuel">
 </div>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2014/04/site-eclipse-futur.png" alt="site eclipse futur.png">
+<img src="/images/2014/04/site-eclipse-futur.png" alt="site eclipse futur">
 </div>
 </div>
 <div class="paragraph">
@@ -716,25 +716,25 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_une_page_de_t_l_chargement_plus_polic_e">Une page de téléchargement plus policée</h2>
+<h2 id="_une_page_de_téléchargement_plus_policée">Une page de téléchargement plus policée</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>L’une des pages où je vais le plus sur ce site est celle de téléchargement. Qui a dit que je prenais plus de packages Eclipse que de bières lors des soirées ? Oui j’avoue, je suis un grand consommateur de packages Eclipse. Ici les différences sont un peu moins marquantes mais au moins, le site reste cohérent.</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2014/04/site-eclipse-download-actuel.png" alt="site eclipse download actuel.png">
+<img src="/images/2014/04/site-eclipse-download-actuel.png" alt="site eclipse download actuel">
 </div>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2014/04/site-eclipse-download-futur.png" alt="site eclipse download futur.png">
+<img src="/images/2014/04/site-eclipse-download-futur.png" alt="site eclipse download futur">
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_et_pour_tester_c_est_par_o">Et pour tester c’est par où ?</h2>
+<h2 id="_et_pour_tester_c_est_par_où">Et pour tester c’est par où ?</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Je vous sens impatient. Donc pour tester c’est assez simple, il suffit d’aller à cette url : <a href="http://staging.eclipse.org/" class="bare">http://staging.eclipse.org/</a></p>
@@ -746,7 +746,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 <p>Article initial : <a href="http://ianskerrett.wordpress.com/2014/03/31/time-for-a-new-eclipse-org-lf/" class="bare">http://ianskerrett.wordpress.com/2014/03/31/time-for-a-new-eclipse-org-lf/</a></p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2014/04/25/Nouveau-site-pour-la-fondation-Eclipse.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/04/25/Nouveau-site-pour-la-fondation-Eclipse.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[divers]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 25 Apr 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 006 – activer l’autocomplétion sur tout]]></title><description><![CDATA[<div class="paragraph">
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/04/25/Nouveau-site-pour-la-fondation-Eclipse.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/04/25/Nouveau-site-pour-la-fondation-Eclipse.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[divers]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Fri, 25 Apr 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 006 – activer l’autocomplétion sur tout]]></title><description><![CDATA[<div class="paragraph">
 <p>J’ai découvert il y a trois jours cette petite astuce à propos de l’auto-complétion. Je devrais d’ailleurs plutôt remercier <a href="http://blog.vogella.com/author/vogella/">Lars Vogel</a> pour cette découverte.</p>
 </div>
 <div class="paragraph">
@@ -762,7 +762,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2014/03/auto-activation-triggers-for-java.png" alt="auto activation triggers for java.png">
+<img src="/images/2014/03/auto-activation-triggers-for-java.png" alt="auto activation triggers for java">
 </div>
 </div>
 <div class="paragraph">
@@ -770,7 +770,7 @@ Par défaut dans un JDK le fichier est dans $JDK_HOME/jre/lib/security</p>
 </div>
 <div class="paragraph">
 <p>Il est possible d’activer la même option pour l’éditeur JavaScript. Je n’ai pour le moment pas encore activé celle-ci vu le peu de JavaScript que je fais ces derniers jours.</p>
-</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/07/Eclipse-Tips-006-activer-lautocompletion-sur-tout.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/07/Eclipse-Tips-006-activer-lautocompletion-sur-tout.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><category><![CDATA[java]]></category><category><![CDATA[auto-complétion]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 07 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 005 : Accélérer votre debug avec le step filtering]]></title><description><![CDATA[<div class="paragraph">
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/07/Eclipse-Tips-006-activer-lautocompletion-sur-tout.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/07/Eclipse-Tips-006-activer-lautocompletion-sur-tout.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><category><![CDATA[java]]></category><category><![CDATA[auto-complétion]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Fri, 07 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 005 : Accélérer votre debug avec le step filtering]]></title><description><![CDATA[<div class="paragraph">
 <p>Le debug sous Eclipse est à mon sens pas trop mal foutu. Par contre, certains points dans la configuration de base ne sont pas spécialement pratiques. Je pense notamment au moment où l’on utilise le « Step into » (F5) et que l’on se retrouve dans les méandres de la JVM/Spring/autre mécanisme d’aop ou d’injection… Je suppose que comme moi c’est plutôt le debug de votre programme qui vous intéresse que celui de la JVM ni de ces bibliothèque qui servent à lier vos bouts de code en un tout utile.</p>
 </div>
 <div class="paragraph">
@@ -800,7 +800,7 @@ private void maMethode(StringBuilder builder) {
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2014/03/step-filtering.png" alt="step filtering.png">
+<img src="/images/2014/03/step-filtering.png" alt="step filtering">
 </div>
 </div>
 <div class="paragraph">
@@ -817,7 +817,7 @@ private void maMethode(StringBuilder builder) {
 </div>
 <div class="paragraph">
 <p>Il suffit en fait de mettre un point d’arrêt. Vous pourrez alors vérifier vos données d’entrée ou être informée d’un appel à cette méthode filtrée. Par contre, si vous essayez alors d’avancer en debug dans la méthode, Eclipse vous en refera sortir directement. Il faudra donc au cas par cas désactiver votre filtrage.</p>
-</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/07/Eclipse-Tips-005-Accelerer-votre-debug-avec-le-step-filtering.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/07/Eclipse-Tips-005-Accelerer-votre-debug-avec-le-step-filtering.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><category><![CDATA[java]]></category><category><![CDATA[debug]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 07 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 004 – Echapper les caractères lorsque l’on colle dans un String]]></title><description><![CDATA[<div class="paragraph">
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/07/Eclipse-Tips-005-Accelerer-votre-debug-avec-le-step-filtering.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/07/Eclipse-Tips-005-Accelerer-votre-debug-avec-le-step-filtering.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><category><![CDATA[java]]></category><category><![CDATA[debug]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Fri, 07 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 004 – Echapper les caractères lorsque l’on colle dans un String]]></title><description><![CDATA[<div class="paragraph">
 <p>Si vous aussi vous faîtes parti des rares personnes à <a href="http://www.commitstrip.com/fr/2014/02/24/coder-on-the-verge-of-extinction/">écrire vos RegExp à la main</a>, cette petite astuce risque de vous intéresser.</p>
 </div>
 <div class="paragraph">
@@ -831,7 +831,7 @@ private void maMethode(StringBuilder builder) {
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2014/03/escape-when-pasting.png" alt="escape when pasting.png">
+<img src="/images/2014/03/escape-when-pasting.png" alt="escape when pasting">
 </div>
 </div>
 <div class="paragraph">
@@ -848,7 +848,7 @@ public static final String EMAIL_PATTERN_PASTE_WITH_AUTO_ESCAPE = "^[_A-Za-z0-9-
 </div>
 <div class="paragraph">
 <p><strong>Attention : si la chaîne est déjà échappée, elle le sera doublement… Pensez-y avant de copier/coller vos RegExp (ou autre texte que vous collez). Dans ce cas, coller la chaîne hors des doubles quotes et ajoutez les autour après coup.</strong></p>
-</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/06/Eclipse-Tips-004-Echapper-les-caracteres-lorsque-lon-colle-dans-un-String.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/06/Eclipse-Tips-004-Echapper-les-caracteres-lorsque-lon-colle-dans-un-String.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><category><![CDATA[java]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Thu, 06 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 003 – Les favoris accélèrent le développement]]></title><description><![CDATA[<div class="paragraph">
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/06/Eclipse-Tips-004-Echapper-les-caracteres-lorsque-lon-colle-dans-un-String.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/06/Eclipse-Tips-004-Echapper-les-caracteres-lorsque-lon-colle-dans-un-String.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><category><![CDATA[java]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Thu, 06 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 003 – Les favoris accélèrent le développement]]></title><description><![CDATA[<div class="paragraph">
 <p>Lorsque l’on commence à mieux connaître Eclipse, on se rend compte que la gestion de l’auto-complétion peut être très poussée et qu’elle vous permet d’optimiser votre rapidité de développement. L’un de ses paramètres m’est d’ailleurs utile quotidiennement notamment dans le cas des tests unitaires. Il s’agit des favoris. Là tout de suite, je vous sens fébrile. Vous voulez savoir ce que c’est ?</p>
 </div>
 <div class="paragraph">
@@ -859,7 +859,7 @@ public static final String EMAIL_PATTERN_PASTE_WITH_AUTO_ESCAPE = "^[_A-Za-z0-9-
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2014/03/favorites.png" alt="favorites.png">
+<img src="/images/2014/03/favorites.png" alt="favorites">
 </div>
 </div>
 <div class="paragraph">
@@ -867,7 +867,7 @@ public static final String EMAIL_PATTERN_PASTE_WITH_AUTO_ESCAPE = "^[_A-Za-z0-9-
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2014/03/favorites-autocomplete.png" alt="favorites autocomplete.png">
+<img src="/images/2014/03/favorites-autocomplete.png" alt="favorites autocomplete">
 </div>
 </div>
 <div class="paragraph">
@@ -875,7 +875,7 @@ public static final String EMAIL_PATTERN_PASTE_WITH_AUTO_ESCAPE = "^[_A-Za-z0-9-
 </div>
 <div class="paragraph">
 <p>La réponse est bien évidemment oui, sinon, je n’aurais pas posé cette question juste au-dessus. En fait, en configurant les « Save Actions », vous pouvez automatiquement préfixer les appels statiques de méthodes avec la classe correspondante. Mais on verra ça un autre jour, peut-être demain.</p>
-</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/05/Eclipse-Tips-003-Les-favoris-accelerent-le-developpement.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/05/Eclipse-Tips-003-Les-favoris-accelerent-le-developpement.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Wed, 05 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 002 – Autocomplétion : insérer ou remplacer ?]]></title><description><![CDATA[<div class="paragraph">
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/05/Eclipse-Tips-003-Les-favoris-accelerent-le-developpement.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/05/Eclipse-Tips-003-Les-favoris-accelerent-le-developpement.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Wed, 05 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 002 – Autocomplétion : insérer ou remplacer ?]]></title><description><![CDATA[<div class="paragraph">
 <p>Aujourd’hui, je vais présenter un petit truc qui a changé ma vie (ou presque) sur l’auto-complétion Java dans Eclipse. Oui je vous sens réellement sceptique, mais lisez la suite, vous allez peut être découvrir un truc génial.</p>
 </div>
 <div class="paragraph">
@@ -903,7 +903,7 @@ date.plusMinutes(minutes)llis(millis);</code></pre>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2014/03/completion-overwrites.png" alt="completion overwrites.png">
+<img src="/images/2014/03/completion-overwrites.png" alt="completion overwrites">
 </div>
 </div>
 <div class="paragraph">
@@ -921,7 +921,7 @@ date.plusMinutes(millis);</code></pre>
 </div>
 <div class="paragraph">
 <p>Dernier point, il est également possible de faire la même chose pour l’auto-complétion JavaScript. La procédure est similaire, il faut simplement choisir l’éditeur JavaScript à la place de celui pour Java.</p>
-</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/04/Eclipse-Tips-002-Autocompletion-inserer-ou-remplacer.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/04/Eclipse-Tips-002-Autocompletion-inserer-ou-remplacer.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><category><![CDATA[auto-complétion]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Tue, 04 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 001 – raccourcir le temps de lancement]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/04/Eclipse-Tips-002-Autocompletion-inserer-ou-remplacer.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/04/Eclipse-Tips-002-Autocompletion-inserer-ou-remplacer.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><category><![CDATA[auto-complétion]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Tue, 04 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Tips 001 – raccourcir le temps de lancement]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Voilà, je commence la mission rédaction d’un petit article tous les jours. Aujourd’hui on va parler de la durée de lancement d’Eclipse IDE. Vous savez ce truc qui met parfois 20, 30 secondes voir plus à se lancer. On va voir comment optimiser un peu tout ça tranquillement et simplement.</p>
@@ -939,7 +939,7 @@ date.plusMinutes(millis);</code></pre>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2014/03/startup-and-shutdown.png" alt="startup and shutdown.png">
+<img src="/images/2014/03/startup-and-shutdown.png" alt="startup and shutdown">
 </div>
 </div>
 <div class="paragraph">
@@ -952,7 +952,7 @@ date.plusMinutes(millis);</code></pre>
 <p>Voilà c’était l’astuce du jour. Bonne journée et à demain.</p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/03/Eclipse-Tips-001-raccourcir-le-temps-de-lancement.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/03/Eclipse-Tips-001-raccourcir-le-temps-de-lancement.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Mon, 03 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Write once, run… No, write as often as possible]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/03/03/Eclipse-Tips-001-raccourcir-le-temps-de-lancement.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/03/03/Eclipse-Tips-001-raccourcir-le-temps-de-lancement.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[tips]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Mon, 03 Mar 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Write once, run… No, write as often as possible]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Après quelques années d’écriture sur ce blog, je me rends compte que je n’écris pas autant que je le souhaiterais. En fait, cela provient surtout du fait que j’ai des idées d’articles qui sont longs à écrire <em>(fausse excuse du mec qui est pas trop motivé).</em></p>
@@ -986,7 +986,7 @@ date.plusMinutes(millis);</code></pre>
 <p>Sur ces mots, je vous dis donc à lundi prochain pour un nouvel article.</p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2014/02/28/Write-once-run-No-write-as-often-as-possible.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/02/28/Write-once-run-No-write-as-often-as-possible.html</guid><category><![CDATA[divers]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 28 Feb 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse : Tester Java 8]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2014/02/28/Write-once-run-No-write-as-often-as-possible.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2014/02/28/Write-once-run-No-write-as-often-as-possible.html</guid><category><![CDATA[divers]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Fri, 28 Feb 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse : Tester Java 8]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Suite à la soirée du <a href="http://nantesjug.org/#/events/2013_12_04">Nantes JUG le 4 décembre 2013</a>, j’ai voulu tester un peu Java 8. Comme j’ai l’habitude d’utiliser Eclipse, j’ai voulu voir où en était la prise en compte des modifications du langage au sein de l’IDE. Tout n’est pas encore au point mais, je suis plutôt content de l’avancement. Voici comment installer un environnement fonctionnel.</p>
@@ -1005,7 +1005,7 @@ date.plusMinutes(millis);</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_r_cup_ration_d_un_eclipse_luna_m3">Récupération d’un Eclipse Luna M3</h2>
+<h2 id="_récupération_d_un_eclipse_luna_m3">Récupération d’un Eclipse Luna M3</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>J’aime bien faire plein de tests, alors je me suis pris également une version d’Eclipse Luna M3 (future version d’Eclipse) pour tester Java 8. Je n’ai pas tester avec une version Kepler de l’IDE. Pour cela, accédez à la page de téléchargement d’Eclipse et recherchez la partie « Developer Builds » ou cliquez directement sur ce lien <a href="http://www.eclipse.org/downloads/index-developer.php" class="bare">http://www.eclipse.org/downloads/index-developer.php</a> pour les plus flemmards d’entre vous.</p>
@@ -1110,7 +1110,7 @@ date.plusMinutes(millis);</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_quelques_informations_suppl_mentaires">Quelques informations supplémentaires</h2>
+<h2 id="_quelques_informations_supplémentaires">Quelques informations supplémentaires</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Si vous souhaitez en savoir plus sur la compatibilité actuelle entre Eclipse et Java 8, je vous invite à visiter cette page <a href="http://wiki.eclipse.org/JDT_Core/Java8" class="bare">http://wiki.eclipse.org/JDT_Core/Java8</a>.</p>
@@ -1122,7 +1122,7 @@ date.plusMinutes(millis);</code></pre>
 <p>J’espère que ce petit article aidera les curieux à tester Java 8, car c’est clairement prometteur tant sur les lambdas et la nouvelle API stream que d’autres parties plus pointues tel que la suppression du Permanent Generation (ou permgen).</p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2013/12/16/Eclipse-Tester-Java-8.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/12/16/Eclipse-Tester-Java-8.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[java]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Mon, 16 Dec 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse : comment créer et utiliser des templates de code]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/12/16/Eclipse-Tester-Java-8.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/12/16/Eclipse-Tester-Java-8.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[java]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Mon, 16 Dec 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse : comment créer et utiliser des templates de code]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Toujours dans le but d’améliorer ma connaissance sur Eclipse, je cherche et gratte un peu sous le capot des options. Dernièrement c’est grâce à la sortie d’Eclipse Kepler que j’ai re-découvert certaines fonctionnalités intéressantes dont les templates. J’en parlais d’ailleurs de façon succincte dans <a href="/2013/07/04/Eclipse-Kepler-est-arrive.html">cet article</a>. Le but de l’article n’est pas de vous donner tous les meilleurs templates du monde mais simplement de vous expliquer comment en créer pour vous faciliter la vie.</p>
@@ -1130,7 +1130,7 @@ date.plusMinutes(millis);</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_un_template_de_code_a_ressemble_quoi">Un template de code ça ressemble à quoi ?</h2>
+<h2 id="_un_template_de_code_ça_ressemble_à_quoi">Un template de code ça ressemble à quoi ?</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>La réponse est simple, ça dépend. Oui bon c’était facile. En fait, ça dépend simplement à quel type de code ou texte le template fait référence. Si l’on prend Eclipse Kepler en version JEE Developer, on trouve de nombreuses possibilités de templates. Chacune correspondant à une utilisation spécifique. Par exemple, on retrouve des templates pour les commentaires SVN, des templates pour le SQL, mais également pour le Java, le JavaScript, et les JSP.</p>
@@ -1173,14 +1173,14 @@ public void ${testName}() {
 </div>
 </div>
 <div class="sect1">
-<h2 id="_comment_cr_er_un_template">Comment créer un template</h2>
+<h2 id="_comment_créer_un_template">Comment créer un template</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Une fois Eclipse lancé, vous pouvez facilement créer un template en suivant la procédure suivante. Dans <strong>Window &gt; Preferences &gt; Champs de saisie pour filtrer, taper « template »</strong>. Là vous allez trouver votre bonheur. Je ne vous ai pas menti, il y a plein d’endroit où créer des templates. Je vais me concentrer sur la partie Java. Mais comme je suis sympa, en fin d’article je vous donnerai certains que j’ai créés et que j’utilise pour mes projets.</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2013/08/filtrer-preferences-templates.png" alt="filtrer preferences templates.png">
+<img src="/images/2013/08/filtrer-preferences-templates.png" alt="filtrer preferences templates">
 </div>
 </div>
 <div class="paragraph">
@@ -1188,7 +1188,7 @@ public void ${testName}() {
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2013/08/template-java.png" alt="template java.png">
+<img src="/images/2013/08/template-java.png" alt="template java">
 </div>
 </div>
 <div class="paragraph">
@@ -1196,7 +1196,7 @@ public void ${testName}() {
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2013/08/creer-template-java.png" alt="creer template java.png">
+<img src="/images/2013/08/creer-template-java.png" alt="creer template java">
 </div>
 </div>
 <div class="paragraph">
@@ -1274,7 +1274,7 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2013/11/utilisation-template-1.png" alt="utilisation template 1.png">
+<img src="/images/2013/11/utilisation-template-1.png" alt="utilisation template 1">
 </div>
 </div>
 <div class="paragraph">
@@ -1282,7 +1282,7 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2013/11/utilisation-template-2.png" alt="utilisation template 2.png">
+<img src="/images/2013/11/utilisation-template-2.png" alt="utilisation template 2">
 </div>
 </div>
 </div>
@@ -1360,12 +1360,12 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 <p>Si vous avez des idées de templates autres, je suis preneur. Je mettrais tout ça sur le github correspondant.</p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2013/12/07/Eclipse-comment-creer-et-utiliser-des-templates-de-code.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/12/07/Eclipse-comment-creer-et-utiliser-des-templates-de-code.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[templates]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Sat, 07 Dec 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Mockito, le mock facile]]></title><description><![CDATA[<div class="paragraph">
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/12/07/Eclipse-comment-creer-et-utiliser-des-templates-de-code.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/12/07/Eclipse-comment-creer-et-utiliser-des-templates-de-code.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[templates]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Sat, 07 Dec 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Mockito, le mock facile]]></title><description><![CDATA[<div class="paragraph">
 <p>Il y a quelques temps j’écrivais un truc sur le <a href="/2013/05/05/Mockito-on-peut-aussi-mocker-partiellement.html">mock partiel d’une classe avec Mockito</a>. Force est de constater que je connaissais mal cette bibliothèque. En effet, en échangeant avec un ami, il m’a montré que Mockito possédait déjà un mécanisme prévu pour mocker partiellement un objet réel. Il s’agit de la méthode Mockito.spy().</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2013/11/mockito.jpg" alt="mockito.jpg">
+<img src="/images/2013/11/mockito.jpg" alt="mockito">
 </div>
 </div>
 <div class="paragraph">
@@ -1389,7 +1389,7 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 </div>
 <div class="paragraph">
 <p>J’espère que vous ferez bonne lecture de ces articles et même du blog <a href="http://tddev.wordpress.com/">Tests De Dev’s</a> en général.</p>
-</div>]]></description><link>http://blog.jabby-techs.fr/2013/11/12/Mockito-le-mock-facile.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/11/12/Mockito-le-mock-facile.html</guid><category><![CDATA[java]]></category><category><![CDATA[mockito]]></category><category><![CDATA[tdd]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Tue, 12 Nov 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Nantes JUG 2013-11-04 : Amélioration de la qualité du code par restriction du langage]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/11/12/Mockito-le-mock-facile.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/11/12/Mockito-le-mock-facile.html</guid><category><![CDATA[java]]></category><category><![CDATA[mockito]]></category><category><![CDATA[tdd]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Tue, 12 Nov 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Nantes JUG 2013-11-04 : Amélioration de la qualité du code par restriction du langage]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Comme tous les mois j’ai assisté au JUG Nantes. Cet événement est pour moi un bon moyen de voir de nouvelles choses mais également d’échanger sur les outils, les techniques et les différentes bonnes pratiques avec des développeurs plus confirmés que moi. Cette session présentait un talk intitulé « Du SQL au NoSQL en moins d’une heure » ainsi qu’un quickie dont j’ai honteusement pompé le nom pour cet article. C’est sur ce dernier que va porter mon petit billet.</p>
@@ -1397,7 +1397,7 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 </div>
 </div>
 <div class="sect1">
-<h2 id="_qu_est_ce_que_la_qualit_de_code">Qu’est ce que la qualité de code ?</h2>
+<h2 id="_qu_est_ce_que_la_qualité_de_code">Qu’est ce que la qualité de code ?</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><a href="http://www.hugowood.net/">Hugo Wood</a> a tout d’abord rappelé ce qu’était la qualité de code pour lui. Ce n’est pas parce que l’on a 100% de couverture de code, pleins de TU, plein de TI ainsi que des tests UI automatisés que la qualité est au rendez-vous. Il faut avant tout que le code soit <strong>maintenable</strong>. Sans cela pas de qualité. Ceci passe principalement par de la modularité et donc de la testabilité (notamment via la pratique du TDD).</p>
@@ -1405,7 +1405,7 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 </div>
 </div>
 <div class="sect1">
-<h2 id="_apporter_des_restrictions_pour_tre_plus_maintenable">Apporter des restrictions pour être plus maintenable</h2>
+<h2 id="_apporter_des_restrictions_pour_être_plus_maintenable">Apporter des restrictions pour être plus maintenable</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Après ce rapide constat auquel j’adhère totalement, Hugo présente plusieurs restrictions de code sur Java pour aider à améliorer la qualité du code.</p>
@@ -1472,7 +1472,7 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 </div>
 </div>
 <div class="sect1">
-<h2 id="_bilan_de_la_pr_sentation">Bilan de la présentation</h2>
+<h2 id="_bilan_de_la_présentation">Bilan de la présentation</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Avant tout Hugo rappelle que les restrictions sont très intéressantes mais qu’il ne faut pas non plus être un intégriste en ne faisant que ça. Il faut savoir peser le pour et le contre dans l’utilisation ou non de toutes les possibilité du langage. Par contre, l’application au cas par cas des restrictions peut dérouter les débutants. Dans ce cas, l’application systématique des restrictions de langage permet de cadrer les débutants afin de garder un certain niveau de qualité de code.</p>
@@ -1481,20 +1481,20 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 <p>Si le sujet vous intéresse, vous pouvez retrouver les slides de la présentation à cette adresse : Lien vers les <a href="http://fr.slideshare.net/mercury_wood/amliorer-la-qualit-du-code-par-restriction-du-langage">slides de la présentation</a>.</p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2013/11/08/Nantes-JUG-2013-11-04-Amelioration-de-la-qualite-du-code-par-restriction-du-langage.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/11/08/Nantes-JUG-2013-11-04-Amelioration-de-la-qualite-du-code-par-restriction-du-langage.html</guid><category><![CDATA[Nantes JUG]]></category><category><![CDATA[java]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 08 Nov 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Kepler est arrivé]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/11/08/Nantes-JUG-2013-11-04-Amelioration-de-la-qualite-du-code-par-restriction-du-langage.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/11/08/Nantes-JUG-2013-11-04-Amelioration-de-la-qualite-du-code-par-restriction-du-langage.html</guid><category><![CDATA[Nantes JUG]]></category><category><![CDATA[java]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Fri, 08 Nov 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Kepler est arrivé]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Comme tous les ans, la fondation Eclipse nous gratifie d’une sortie simultanée de ses projets. Dans le lot on retrouve bien entendu l’IDE du même nom. La version 4.3 est désormais disponible au téléchargement et j’ai commencé à la tester en version JEE developer. Voilà un premier retour sur cette mouture.</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2013/07/splash-kepler.png" alt="splash kepler.png">
+<img src="/images/2013/07/splash-kepler.png" alt="splash kepler">
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_remarques_g_n_rales">Remarques générales</h2>
+<h2 id="_remarques_générales">Remarques générales</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Ca ne concerne pas l’IDE en soit, mais la sortie des projets Eclipse est toujours aussi impressionnante. Cette année 71 projets de la fondation sont mis à jour. La liste est trouvable à cette adresse : <a href="http://eclipse.org/kepler/projects.php" class="bare">http://eclipse.org/kepler/projects.php</a>. Pour la blague c’est la première année que la fondation sort moins de projets. L’an dernier il y en avait 72.</p>
@@ -1517,7 +1517,7 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 <p>Après des remarques générales, je vais m’attarder un peu plus sur ce qui me plaît dans la dernière version d’Eclipse.</p>
 </div>
 <div class="sect2">
-<h3 id="_int_gration_de_m2e_et_m2e_wtp_dans_le_package_jee">Intégration de m2e et m2e-wtp dans le package JEE</h3>
+<h3 id="_intégration_de_m2e_et_m2e_wtp_dans_le_package_jee">Intégration de m2e et m2e-wtp dans le package JEE</h3>
 <div class="paragraph">
 <p>Étant développer JEE, je prend systématiquement le package JEE Developper d’Eclipse. Ainsi j’ai déjà une palanqué d’outils pré-installés et c’est donc Eclipse est plus rapidement utilisable sans avoir à passer par l’ajout fastidieux de tous les plugins que l’on veut utiliser notamment pour les Java EE Developer Tools et JavaScript Development Tools. J’avoue ne pas me servir de tout, mais je trouve que c’est un compromis valable. D’ailleurs si vous voulez comparer des packages d’Eclipse, vous pouvez aller ici. Bien que ça soit pratique, il me manquait à minima la prise en charge de maven. Maintenant c’est bon, tout est déjà présent y compris le m2e-wtp qui est sorti en version 1.0.</p>
 </div>
@@ -1554,7 +1554,7 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 </div>
 </div>
 <div class="sect2">
-<h3 id="_utilisation_des_templates_une_ergonomie_mise_jour">Utilisation des templates : une ergonomie mise à jour</h3>
+<h3 id="_utilisation_des_templates_une_ergonomie_mise_à_jour">Utilisation des templates : une ergonomie mise à jour</h3>
 <div class="paragraph">
 <p>En fait, après pas mal d’échanges avec mes collègues de boulot ainsi que mes amis informaticiens, je me suis rendu compte que la majorité des développeurs sous Eclipse ne savent pas ce que sont les templates de codes.</p>
 </div>
@@ -1566,12 +1566,12 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2013/07/template-juno-avec-lettre.png" alt="template juno avec lettre.png">
+<img src="/images/2013/07/template-juno-avec-lettre.png" alt="template juno avec lettre">
 </div>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2013/07/template-juno.png" alt="template juno.png">
+<img src="/images/2013/07/template-juno.png" alt="template juno">
 </div>
 </div>
 <div class="paragraph">
@@ -1579,7 +1579,7 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2013/07/template-kepler.png" alt="template kepler.png">
+<img src="/images/2013/07/template-kepler.png" alt="template kepler">
 </div>
 </div>
 <div class="paragraph">
@@ -1587,7 +1587,7 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 </div>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2013/07/04/Eclipse-Kepler-est-arrive.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/07/04/Eclipse-Kepler-est-arrive.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[kepler]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Thu, 04 Jul 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse : améliorer l’aide à la saisie]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/07/04/Eclipse-Kepler-est-arrive.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/07/04/Eclipse-Kepler-est-arrive.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[kepler]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Thu, 04 Jul 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse : améliorer l’aide à la saisie]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Pour rester informer sur Eclipse, j’ai tendance à suivre d’autres blogueurs. Parmi ceux-ci l’un retient souvent mon attention et me permet d’apprendre des choses souvent indispensables par la suite sur mon IDE préféré. Il s’agit de <a href="http://www.vogella.com/people/larsvogel.html">Lars Vogel</a>. Via l’un de ses derniers articles, j’ai découvert que l’on pouvait améliorer le temps de réponse de l’auto-complétion (<a href="http://www.vogella.com/blog/2013/05/30/eclipse-papercut-13-reduce-delay-in-code-completion/">l’article en question</a>). J’ai fouillé un peu et voilà un très bref récapitulatif de ce que j’ai découvert.</p>
@@ -1595,7 +1595,7 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 </div>
 </div>
 <div class="sect1">
-<h2 id="_am_liorer_la_rapidit_de_l_auto_compl_tion">Améliorer la rapidité de l’auto-complétion</h2>
+<h2 id="_améliorer_la_rapidité_de_l_auto_complétion">Améliorer la rapidité de l’auto-complétion</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Cette astuce vient de Lars Vogel et c’est ce qui m’a fait chercher les autres astuces par la suite. Par exemple si l’on tape le nom d’un objet suivi d’un « . », Eclipse va proposer automatiquement une liste de méthodes disponibles pour l’objet en question. Vous pouvez trouver comme moi que ce n’est pas assez rapide. Lars Vogel indique que ce paramétrage est modifiable dans les paramètres du workspace.</p>
@@ -1614,7 +1614,7 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 </div>
 </div>
 <div class="sect1">
-<h2 id="_supprimer_le_menu_d_auto_compl_tion_swt">Supprimer le menu d’auto-complétion SWT</h2>
+<h2 id="_supprimer_le_menu_d_auto_complétion_swt">Supprimer le menu d’auto-complétion SWT</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Lorsque l’on fait des développement web et que l’on n’a pas besoin de SWT, il peut être assez casse-pied d’avoir des propositions pour SWT dans l’auto-complétion. Je m’explique. Si l’on veut l’auto-complétion, on fait ctrl + espace. Si l’on refait ça une seconde fois, on a un menu pour SWT. Enfin si on le fait une troisième fois on a les éventuels templates de code que l’on a défini. L’étape des propositions SWT nous pousse à matraquer sur ce pauvre raccourci clavier ctrl + espace. Il est pourtant possible de le désactiver.</p>
@@ -1630,7 +1630,7 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 </div>
 </div>
 <div class="sect1">
-<h2 id="_d_sactiver_les_propositions_des_m_thodes_obsol_tes">Désactiver les propositions des méthodes obsolètes</h2>
+<h2 id="_désactiver_les_propositions_des_méthodes_obsolètes">Désactiver les propositions des méthodes obsolètes</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Lorsque l’on développe, il arrive que l’on soit parfois noyé par les propositions de l’auto-complétion pour certains objets. Ceci est particulièrement gênant lorsque la méthode en question est surchargée un nombre incalculable de fois et qu’elle possède des définitions obsolètes (@Deprecated). Il existe une méthode simple dans Eclipse pour empêcher l’IDE de nous proposer de telles méthodes.</p>
@@ -1660,7 +1660,7 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 <p>Voilà fin du second billet sur mon IDE préféré.</p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2013/06/03/Eclipse-ameliorer-laide-a-la-saisie.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/06/03/Eclipse-ameliorer-laide-a-la-saisie.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[auto-complétion]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Mon, 03 Jun 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Mockito : on peut aussi mocker partiellement]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/06/03/Eclipse-ameliorer-laide-a-la-saisie.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/06/03/Eclipse-ameliorer-laide-a-la-saisie.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[auto-complétion]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Mon, 03 Jun 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Mockito : on peut aussi mocker partiellement]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Il y a un peu plus d’un an, j’ai découvert réellement la mise en place de tests unitaires dans une application Java. Oui j’ai mis le temps mais bon je vais pas épiloguer sur ça. Donc je me suis mis à rédiger mes tests unitaires avec différents frameworks selon les projets. Depuis mon arrivée sur Nantes, j’utilise <a href="https://github.com/mockito/mockito">Mockito</a> pour gérer les mock. Plutôt simple à utiliser je viens d’être confronté à une problématique nouvelle pour moi. Mocker partiellement un objet.</p>
@@ -1668,7 +1668,7 @@ private static final Logger LOGGER = Logger.getLogger(${enclosing_type}.class)</
 </div>
 </div>
 <div class="sect1">
-<h2 id="_qu_est_ce_qu_un_mock_et_quoi_a_sert">Qu’est ce qu’un mock et à quoi ça sert ?</h2>
+<h2 id="_qu_est_ce_qu_un_mock_et_à_quoi_ça_sert">Qu’est ce qu’un mock et à quoi ça sert ?</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Avant de parler de la résolution de mon problème, je vais quand même rappeler le but d’un mock. En fait, un mock permet d’émuler le fonctionnement d’un objet pour savoir de façon certaine comment il va se comporter. Jusqu’à présent, je m’en suis servi pour spécifier les retours que j’attendais de mes DAO dans mes services.</p>
@@ -1878,7 +1878,7 @@ public class ExampleServiceTest {
 <p>Via Mockito, il est aussi simple de mocker un attribut pour gérer les retours des méthodes appelés que de mocker partiellement un objet pour être sûr d’isoler le comportement d’une méthode. Ceci nous permet de valider de façon certaine le fonctionnement unitaire de notre méthode. Une chose à ne pas oublier lorsque l’on pense que ça va être compliqué de tester un comportement parce qu’un résultat n’est pas prédictible.</p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2013/05/05/Mockito-on-peut-aussi-mocker-partiellement.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/05/05/Mockito-on-peut-aussi-mocker-partiellement.html</guid><category><![CDATA[java]]></category><category><![CDATA[mockito]]></category><category><![CDATA[tdd]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Sun, 05 May 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Juno SR2 : peut être enfin une version rapide]]></title><description><![CDATA[<div class="paragraph">
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/05/05/Mockito-on-peut-aussi-mocker-partiellement.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/05/05/Mockito-on-peut-aussi-mocker-partiellement.html</guid><category><![CDATA[java]]></category><category><![CDATA[mockito]]></category><category><![CDATA[tdd]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Sun, 05 May 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse Juno SR2 : peut être enfin une version rapide]]></title><description><![CDATA[<div class="paragraph">
 <p>Même si je ne connais pas encore Eclipse en profondeur, j’adore cet IDE. Enfin ça dépend de la version. Indigo par exemple, est pour moi un bon cru. IDE stable, avec une intégration de maven plus sympa, ainsi que plusieurs évolutions sur les <a href="https://jabby.github.io/2013/02/23/Eclipse-Les-raccourcis-claviers-utiles.html">raccourcis clavier</a>. En fait, une version très bien pour mes besoins.</p>
 </div>
 <div class="paragraph">
@@ -1896,7 +1896,7 @@ public class ExampleServiceTest {
 <div class="paragraph">
 <p>Pour ceux qui sont déjà sur Juno, vous pouvez passer par la mise à jour directe dans l’IDE. Il suffit d’aller dans <strong>Help &gt; Check for Updates</strong>. Ensuite, vous attendez le listing par l’IDE et vous lancez la mise à jour.
 Il y a des chances que dans le listing vous ne voyez pas la mise à jour du cœur d’Eclipse Juno. C’est normal, elle est remontée en dépendance par le plugin <strong>Eclipse IDE for Java EE Developers en version 1.5.2.20130211-1820</strong>. Donc c’est au moins celui-là que vous devrez prendre.</p>
-</div>]]></description><link>http://blog.jabby-techs.fr/2013/03/02/Eclipse-Juno-SR2-peut-etre-enfin-une-version-rapide.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/03/02/Eclipse-Juno-SR2-peut-etre-enfin-une-version-rapide.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[IDE]]></category><category><![CDATA[juno]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Sat, 02 Mar 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse : Les raccourcis claviers utiles]]></title><description><![CDATA[<div class="paragraph">
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/03/02/Eclipse-Juno-SR2-peut-etre-enfin-une-version-rapide.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/03/02/Eclipse-Juno-SR2-peut-etre-enfin-une-version-rapide.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[IDE]]></category><category><![CDATA[juno]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Sat, 02 Mar 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse : Les raccourcis claviers utiles]]></title><description><![CDATA[<div class="paragraph">
 <p>Allez hop go, on se lance dans le premier article sur la prise en main d’Eclipse. Enfin plutôt sur l’amélioration de ma productivité via l’utilisation d’Eclipse. Cet article est le premier de la série sur mon apprentissage de mon IDE préféré. Non je ne trolle pas, c’est bien mon IDE préféré. J’avoue ne pas en avoir testé des milliers mais, je préfère Eclipse à Netbeans (surement parce que je le connais mieux en fait). Les goûts ça ne se commande pas.</p>
 </div>
 <div class="paragraph">
@@ -1956,7 +1956,7 @@ Il y a des chances que dans le listing vous ne voyez pas la mise à jour du cœu
 </div>
 <div class="paragraph">
 <p>Bien entendu, la liste de ces raccourcis n’est pas exhaustive. Loin de là en fait. Par contre c’est ceux que j’utilise le plus et auquels je pense. N’hésitez pas à m’indiquer ceux que vous utilisez de votre côté, je les rajouterais.</p>
-</div>]]></description><link>http://blog.jabby-techs.fr/2013/02/23/Eclipse-Les-raccourcis-claviers-utiles.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/02/23/Eclipse-Les-raccourcis-claviers-utiles.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[IDE]]></category><category><![CDATA[raccourcis clavier]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Sat, 23 Feb 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse : cet IDE que je ne connais pas vraiment]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/02/23/Eclipse-Les-raccourcis-claviers-utiles.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/02/23/Eclipse-Les-raccourcis-claviers-utiles.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[IDE]]></category><category><![CDATA[raccourcis clavier]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Sat, 23 Feb 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Eclipse : cet IDE que je ne connais pas vraiment]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Cette semaine après finalement 4 bonnes années à utiliser Eclipse, je me suis rendu compte que je ne connaissais pas vraiment mon IDE. En effet, je suis un utilisateur plutôt lambda qui sait ouvrir l’éditeur et coder des trucs dedans. J’ai bien entendu un tas d’habitudes notamment quelques raccourcis clavier par-ci par-là, mais je ne connais pas en profondeur mon environnement de travail.</p>
@@ -1978,7 +1978,7 @@ Il y a des chances que dans le listing vous ne voyez pas la mise à jour du cœu
 </div>
 </div>
 <div class="sect1">
-<h2 id="_apprendre_utiliser_eclipse">Apprendre à utiliser Eclipse</h2>
+<h2 id="_apprendre_à_utiliser_eclipse">Apprendre à utiliser Eclipse</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Voici la liste des articles actuellement disponibles. Elle sera bien entendu enrichie en fonction des articles que je publierais.</p>
@@ -1997,7 +1997,7 @@ Il y a des chances que dans le listing vous ne voyez pas la mise à jour du cœu
 </ul>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2013/02/22/Eclipse-cet-IDE-que-je-ne-connais-pas-vraiment.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/02/22/Eclipse-cet-IDE-que-je-ne-connais-pas-vraiment.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[IDE]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 22 Feb 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Configurer son accès SVN à un hébergement OVH pro : partie 2]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2013/02/22/Eclipse-cet-IDE-que-je-ne-connais-pas-vraiment.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2013/02/22/Eclipse-cet-IDE-que-je-ne-connais-pas-vraiment.html</guid><category><![CDATA[eclipse]]></category><category><![CDATA[IDE]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Fri, 22 Feb 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[Configurer son accès SVN à un hébergement OVH pro : partie 2]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="admonitionblock important">
 <table>
@@ -2051,7 +2051,7 @@ Il y a des chances que dans le listing vous ne voyez pas la mise à jour du cœu
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2012/01/daemon-pageant.png" alt="daemon pageant.png">
+<img src="/images/2012/01/daemon-pageant.png" alt="daemon pageant">
 </div>
 </div>
 <div class="paragraph">
@@ -2071,14 +2071,14 @@ Il y a des chances que dans le listing vous ne voyez pas la mise à jour du cœu
 </div>
 </div>
 <div class="sect1">
-<h2 id="_utilisation_de_tortoise_pour_acc_der_un_svn_travers_un_tunnel_ssh">Utilisation de Tortoise pour accéder à un SVN à travers un tunnel SSH</h2>
+<h2 id="_utilisation_de_tortoise_pour_accéder_à_un_svn_à_travers_un_tunnel_ssh">Utilisation de Tortoise pour accéder à un SVN à travers un tunnel SSH</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Pour vérifier si votre connexion fonctionne. Cliquer droit sur un dossier. Comme vous pouvez le constater, le menu contextuel a été enrichie de plusieurs options relatives à tortoiseSVN. Choisissez l’option tortoiseSVN puis Repo-browser (pour la version anglaise)</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2012/01/tortoise-menu-repobrowser.png" alt="tortoise menu repobrowser.png">
+<img src="/images/2012/01/tortoise-menu-repobrowser.png" alt="tortoise menu repobrowser">
 </div>
 </div>
 <div class="paragraph">
@@ -2123,14 +2123,14 @@ Attention l’url n’est plus celle du nom de domaine. Une mise à jour de la p
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2012/01/depot-distant.png" alt="depot distant.png">
+<img src="/images/2012/01/depot-distant.png" alt="depot distant">
 </div>
 </div>
 <div class="paragraph">
 <p>Voilà, la configuration est officiellement opérationnelel. Bien joué et amusez-vous bien !</p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2012/01/06/Configurer-son-acces-SVN-a-un-hebergement-OVH-pro-partie-2.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2012/01/06/Configurer-son-acces-SVN-a-un-hebergement-OVH-pro-partie-2.html</guid><category><![CDATA[OVH]]></category><category><![CDATA[svn]]></category><category><![CDATA[pageant]]></category><category><![CDATA[tortoise]]></category><category><![CDATA[mutualisé pro]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 06 Jan 2012 00:00:00 GMT</pubDate></item><item><title><![CDATA[Configurer son accès SVN à un hébergement OVH pro : partie 1]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2012/01/06/Configurer-son-acces-SVN-a-un-hebergement-OVH-pro-partie-2.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2012/01/06/Configurer-son-acces-SVN-a-un-hebergement-OVH-pro-partie-2.html</guid><category><![CDATA[OVH]]></category><category><![CDATA[svn]]></category><category><![CDATA[pageant]]></category><category><![CDATA[tortoise]]></category><category><![CDATA[mutualisé pro]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Fri, 06 Jan 2012 00:00:00 GMT</pubDate></item><item><title><![CDATA[Configurer son accès SVN à un hébergement OVH pro : partie 1]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Il y a de cela un an environ, j’ai commencé à vouloir utiliser mon hébergement mutualisé OVH pro pour stocker mon dépôt SVN. Je n’avais alors qu’un petit dépôt local sur mon poste et j’ai faillit le perdre à cause d’une mauvaise manipulation.</p>
@@ -2141,7 +2141,7 @@ Attention l’url n’est plus celle du nom de domaine. Une mise à jour de la p
 </div>
 </div>
 <div class="sect1">
-<h2 id="_pr_requis">Pré-requis</h2>
+<h2 id="_pré_requis">Pré-requis</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Je vais supposer que vous aller à terme travailler sous le même environnement que moi. La partie serveur est normalement commune à tous les OS mais je n’ai testé la configuration que sous Windows 7 x64. Il semble que ceci fonctionne également sous Windows XP 32 bits. Je n’ai pas fait le test mais un ami a réussi à se connecter à mon SVN en suivant la même procédure pour un poste sous Windows XP 32 bits.</p>
@@ -2165,7 +2165,7 @@ Attention l’url n’est plus celle du nom de domaine. Une mise à jour de la p
 </div>
 </div>
 <div class="sect1">
-<h2 id="_cr_ation_de_cl_s_publiques_et_priv_s_pour_la_connexion_ssh">Création de clés publiques et privés pour la connexion SSH</h2>
+<h2 id="_création_de_clés_publiques_et_privés_pour_la_connexion_ssh">Création de clés publiques et privés pour la connexion SSH</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Afin d’éviter les demandes d’authentification SSH pour le SVN nous allons utiliser un mécanisme de clés publiques/privés.</p>
@@ -2185,7 +2185,7 @@ Un des avantages de puttygen est qu’il ne nécessite pas d’installation.</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2011/09/puttygen-1.png" alt="puttygen 1.png">
+<img src="/images/2011/09/puttygen-1.png" alt="puttygen 1">
 </div>
 </div>
 <div class="paragraph">
@@ -2193,7 +2193,7 @@ Un des avantages de puttygen est qu’il ne nécessite pas d’installation.</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2011/09/puttygen-2.png" alt="puttygen 2.png">
+<img src="/images/2011/09/puttygen-2.png" alt="puttygen 2">
 </div>
 </div>
 <div class="paragraph">
@@ -2215,7 +2215,7 @@ Un des avantages de puttygen est qu’il ne nécessite pas d’installation.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_cr_ation_d_un_d_p_t_svn_sur_le_serveur">Création d’un dépôt SVN sur le serveur</h2>
+<h2 id="_création_d_un_dépôt_svn_sur_le_serveur">Création d’un dépôt SVN sur le serveur</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Ici, je fais une petite parenthèse sur la création d’un dépôt car d’une part, j’en ai eu besoin et d’autre part, pour la mise en place de notre clé ssh sur le serveur, nous aurons besoin de spécifier le chemin vers le dépôt SVN auquel on souhaite accéder.</p>
@@ -2280,7 +2280,7 @@ drwxr-xr-x+ 2 $NAME users   4 2010-11-12 09:36 locks
 </div>
 </div>
 <div class="sect1">
-<h2 id="_ajout_de_la_cl_publique_sur_le_serveur_mutualis">Ajout de la clé publique sur le serveur mutualisé</h2>
+<h2 id="_ajout_de_la_clé_publique_sur_le_serveur_mutualisé">Ajout de la clé publique sur le serveur mutualisé</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Repassons maintenant à la partie SSH en ajoutant maintenant notre clé sur notre serveur. Une fois cela fait, nous en aurons fini avec la partie serveur. On va donc créer l’arborescence suivante pour stocker notre clé à la racine du home de l’utilisateur.</p>
@@ -2332,7 +2332,7 @@ vi .ssh/authorized_keys2</code></pre>
 <p>Voilà pour la partie configuration du côté serveur. On verra dans un prochain article comment utiliser directement notre clé pour se connecter via Tortoise puis via Eclipse et le plugin Subclipse.</p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2011/09/30/Configurer-son-acces-SVN-a-un-hebergement-OVH-pro-partie-1.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2011/09/30/Configurer-son-acces-SVN-a-un-hebergement-OVH-pro-partie-1.html</guid><category><![CDATA[OVH]]></category><category><![CDATA[svn]]></category><category><![CDATA[mutualisé pro]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Fri, 30 Sep 2011 00:00:00 GMT</pubDate></item><item><title><![CDATA[Rendre un script Ant plus simple à utiliser via Antform]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2011/09/30/Configurer-son-acces-SVN-a-un-hebergement-OVH-pro-partie-1.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2011/09/30/Configurer-son-acces-SVN-a-un-hebergement-OVH-pro-partie-1.html</guid><category><![CDATA[OVH]]></category><category><![CDATA[svn]]></category><category><![CDATA[mutualisé pro]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Fri, 30 Sep 2011 00:00:00 GMT</pubDate></item><item><title><![CDATA[Rendre un script Ant plus simple à utiliser via Antform]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Je vous présentais récemment un article sur la <a href="/2011/08/04/Creer-un-tag-svn-en-utilisant-Ant.html">manipulation d’un dépôt SVN via antsvn</a>. Ce script est assez pratique mais manque tout de même d’une couche graphique permettant de le rendre plus simple et agréable. Un deuxième avantage à l’interface graphique est de permettre une confirmation avant d’effectuer la manipulation sur le dépôt SVN.</p>
@@ -2343,7 +2343,7 @@ vi .ssh/authorized_keys2</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_r_cup_ration_des_biblioth_ques_pour_l_utilisation_de_antform">Récupération des bibliothèques pour l’utilisation de Antform</h2>
+<h2 id="_récupération_des_bibliothèques_pour_l_utilisation_de_antform">Récupération des bibliothèques pour l’utilisation de Antform</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>On va utiliser deux bibliothèques pour atteindre notre premier objectif. La première, antform, nous permettra de créer des formulaires de saisie. La seconde, ant-contrib, nous permettra de faciliter nos tests en ajoutant notamment les instructions if else…
@@ -2386,10 +2386,10 @@ Les bibliothèques sont disponibles aux adresses suivantes :</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_cr_ation_d_une_fen_tre_de_dialogue">Création d’une fenêtre de dialogue</h2>
+<h2 id="_création_d_une_fenêtre_de_dialogue">Création d’une fenêtre de dialogue</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_d_claration_de_svn_tag_ask">Déclaration de svn-tag-ask</h3>
+<h3 id="_déclaration_de_svn_tag_ask">Déclaration de svn-tag-ask</h3>
 <div class="paragraph">
 <p>Commençons par créer une nouvelle tâche à notre fichier ant. Celle-ci sera nommée <strong>svn-tag-ask</strong>. Elle n’aura pas de description particulière puisque ce sera une tâche dite « privée ».</p>
 </div>
@@ -2428,7 +2428,7 @@ Les bibliothèques sont disponibles aux adresses suivantes :</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_ajout_des_champs_de_saisie_l_interface">Ajout des champs de saisie à l’interface</h3>
+<h3 id="_ajout_des_champs_de_saisie_à_l_interface">Ajout des champs de saisie à l’interface</h3>
 <div class="paragraph">
 <p>Maintenant que notre fenêtre est fonctionnelle, nous allons nous concentrer sur les champs de saisie à remplir pour notre script de tag. Dans la version précédente du script nous avions besoin des données suivantes. Elles étaient listées dans le fichier de properties.</p>
 </div>
@@ -2717,7 +2717,7 @@ Les bibliothèques sont disponibles aux adresses suivantes :</p>
 <p>Vous trouverez sur le lien suivant un projet Eclipse presque pret à l’emploi. Il faudra pour la partie svn+ssh installer et configurer javahl. Le projet fr.jabbytechs.ant.svnutilities en version 1.0. Télécharger fr.jabbytechs.ant.svnutilities-1.0.zip</p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2011/08/17/Rendre-un-script-Ant-plus-simple-a-utiliser-via-Antform.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2011/08/17/Rendre-un-script-Ant-plus-simple-a-utiliser-via-Antform.html</guid><category><![CDATA[ant]]></category><category><![CDATA[java]]></category><category><![CDATA[svn]]></category><category><![CDATA[svnant]]></category><category><![CDATA[antform]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Wed, 17 Aug 2011 00:00:00 GMT</pubDate></item><item><title><![CDATA[Créer un tag svn en utilisant Ant]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>http://blog.jabby-techs.fr/2011/08/17/Rendre-un-script-Ant-plus-simple-a-utiliser-via-Antform.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2011/08/17/Rendre-un-script-Ant-plus-simple-a-utiliser-via-Antform.html</guid><category><![CDATA[ant]]></category><category><![CDATA[java]]></category><category><![CDATA[svn]]></category><category><![CDATA[svnant]]></category><category><![CDATA[antform]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Wed, 17 Aug 2011 00:00:00 GMT</pubDate></item><item><title><![CDATA[Créer un tag svn en utilisant Ant]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Comme beaucoup d’informaticiens, je n’aime pas spécialement effectuer des tâches répétitives. Si une tâche l’est, alors il vaut mieux la remplacer par un script automatique. Le gain est d’ailleurs double. On ne se lasse pas à cause d’un processus un peu long ou ennuyeux, et surtout on évite les bourdes dues au facteur humain.</p>
@@ -2728,7 +2728,7 @@ Les bibliothèques sont disponibles aux adresses suivantes :</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_r_cup_rer_les_biblioth_ques_utiles">Récupérer les bibliothèques utiles</h2>
+<h2 id="_récupérer_les_bibliothèques_utiles">Récupérer les bibliothèques utiles</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Tout d’abord, commençons par récupérer les bibliothèques utiles. Ne connaissant pas spécialement les bibliothèques permettant de manipuler un dépôt svn via ant, j’ai décidé arbitrairement de prendre celle fournie par le projet Subclipse. Vous pouvez directement télécharger le contenu de la bibliothèque à l’adresse suivante. Accéder à svnant.</p>
@@ -2746,14 +2746,14 @@ Les bibliothèques sont disponibles aux adresses suivantes :</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_cr_er_un_script_de_tags">Créer un script de tags</h2>
+<h2 id="_créer_un_script_de_tags">Créer un script de tags</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>On va commencer sous Eclipse par créer un projet Java simple. Personnellement, je l’ai nommé <strong>fr.jabbytechs.ant.svnutilities</strong>.</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2011/08/creer-un-tag-svn-en-utilisant-ant-pic-1.png" alt="creer un tag svn en utilisant ant pic 1.png">
+<img src="/images/2011/08/creer-un-tag-svn-en-utilisant-ant-pic-1.png" alt="creer un tag svn en utilisant ant pic 1">
 </div>
 </div>
 <div class="paragraph">
@@ -2761,7 +2761,7 @@ Les bibliothèques sont disponibles aux adresses suivantes :</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2011/08/creer-un-tag-svn-en-utilisant-ant-pic-2.png" alt="creer un tag svn en utilisant ant pic 2.png">
+<img src="/images/2011/08/creer-un-tag-svn-en-utilisant-ant-pic-2.png" alt="creer un tag svn en utilisant ant pic 2">
 </div>
 </div>
 <div class="paragraph">
@@ -2794,7 +2794,7 @@ Les bibliothèques sont disponibles aux adresses suivantes :</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="/images/2011/08/creer-un-tag-svn-en-utilisant-ant-pic-3.png" alt="creer un tag svn en utilisant ant pic 3.png">
+<img src="/images/2011/08/creer-un-tag-svn-en-utilisant-ant-pic-3.png" alt="creer un tag svn en utilisant ant pic 3">
 </div>
 </div>
 <div class="paragraph">
@@ -2940,7 +2940,7 @@ svn.password=jabby</code></pre>
 <h2 id="_quelques_autres_scripts_de_manipulation_du_svn_utiles">Quelques autres scripts de manipulation du svn utiles</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_cr_ation_d_une_branche">Création d’une branche</h3>
+<h3 id="_création_d_une_branche">Création d’une branche</h3>
 <div class="paragraph">
 <p>Le système est similaire à la création d’un tag.</p>
 </div>
@@ -3016,4 +3016,4 @@ svn.password=jabby</code></pre>
 <p>Vous trouverez sur le lien suivant un projet Eclipse pret à l’emploi. Il contient les Ant postés dans cet article. fr.jabbytechs.ant.svnutilities</p>
 </div>
 </div>
-</div>]]></description><link>http://blog.jabby-techs.fr/2011/08/04/Creer-un-tag-svn-en-utilisant-Ant.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2011/08/04/Creer-un-tag-svn-en-utilisant-Ant.html</guid><category><![CDATA[ant]]></category><category><![CDATA[java]]></category><category><![CDATA[svn]]></category><category><![CDATA[svnant]]></category><dc:creator><![CDATA[jabby]]></dc:creator><pubDate>Thu, 04 Aug 2011 00:00:00 GMT</pubDate></item></channel></rss>
+</div>]]></description><link>http://blog.jabby-techs.fr/2011/08/04/Creer-un-tag-svn-en-utilisant-Ant.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2011/08/04/Creer-un-tag-svn-en-utilisant-Ant.html</guid><category><![CDATA[ant]]></category><category><![CDATA[java]]></category><category><![CDATA[svn]]></category><category><![CDATA[svnant]]></category><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Thu, 04 Aug 2011 00:00:00 GMT</pubDate></item></channel></rss>
