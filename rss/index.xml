@@ -1,4 +1,264 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Jabby Tech's]]></title><description><![CDATA[You will never code alone !]]></description><link>http://blog.jabby-techs.fr</link><image><url>/images/cover-1920x1080.jpg</url><title>Jabby Tech&apos;s</title><link>http://blog.jabby-techs.fr</link></image><generator>RSS for Node</generator><lastBuildDate>Sat, 12 May 2018 14:20:15 GMT</lastBuildDate><atom:link href="http://blog.jabby-techs.fr/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Utiliser l'API Google Sheets via un proxy]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Jabby Tech's]]></title><description><![CDATA[You will never code alone !]]></description><link>http://blog.jabby-techs.fr</link><image><url>/images/cover-1920x1080.jpg</url><title>Jabby Tech&apos;s</title><link>http://blog.jabby-techs.fr</link></image><generator>RSS for Node</generator><lastBuildDate>Wed, 29 Aug 2018 12:05:44 GMT</lastBuildDate><atom:link href="http://blog.jabby-techs.fr/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Comment amener une ESN vers la contribution open source]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Cet article est inspiré d&#8217;une session du Software Craftmanship Nantes en juin 2018.
+Il a pour but de résumer les échanges et les pistes que les participants ont partagés pendant environ 1h.</p>
+</div>
+<div class="paragraph">
+<p>Comme cet article a mis du temps à s&#8217;écrire, j&#8217;en profite pour ajouter en fin de l&#8217;article quelques liens que je trouve intéressants autout de l&#8217;open source.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_quel_type_de_contribution">Quel type de contribution ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Forcément lorsque l&#8217;on se pose la question, <code>Tiens et comment on fait pour amener une ESN vers la contribution open source ?</code> on dérive.</p>
+</div>
+<div class="paragraph">
+<p>Pour moi, la première question à se poser est : <code>quelle type de contribution l&#8217;ESN souhaite effectuer ?</code></p>
+</div>
+<div class="paragraph">
+<p>En effet, il existe plusieurs façons de contribuer à l&#8217;open source.
+On pense souvent en premier lieu à la contribution de code.
+Ce n&#8217;est pourtant pas la seule contribution possible.
+Elle peut être assez complexe dans certains cas.</p>
+</div>
+<div class="paragraph">
+<p>Il faut en fait penser aux contributions suivantes :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>remontée de bugs</p>
+</li>
+<li>
+<p>demande de nouvelles fonctionnalités</p>
+</li>
+<li>
+<p>amélioration de la documentation</p>
+</li>
+<li>
+<p>participation à la communauté</p>
+</li>
+<li>
+<p>corriger des bugs / ou développer de nouvelles fonctionnalités</p>
+</li>
+<li>
+<p>partager son propre projet interne</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Une autre contribution qui nous ait venu à l&#8217;esprit pourrait être dans le cas où l&#8217;ESN possèderait une équipe dédiée à la sécurité (audit du code produit par les équipes et également sur les bibliothèques utilisées).
+Dans ce cas, l&#8217;ESN pourrait remonter voir corriger les vulnérabilités aux projets open source utilisés.
+Personnellement, je vois moins les ESN que je connais travailler sur ce point.
+Par contre ceux indiqué précédemment ne sont pas si complexes</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Pour information si vous n'avez pas d'équipe d'analyse, l'OWASP fournit des outils pour analyser vos dépendances (au moins en java via maven ou gradle).
+
+D'autres outils doivent certainement exister.
+Il ne faut pas hésiter à chercher.
+C'est pour une bonne cause : la sécurité</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_quel_coût">Quel coût ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Une entreprise n&#8217;est pas par vocation philantrope.
+Se pose donc la question du coût pour l&#8217;entreprise des contributions à des projets open source.
+Par défaut c&#8217;est un coût (que je préfère voir comme un investissement. cf. prochaine partie).</p>
+</div>
+<div class="paragraph">
+<p>On peu estimer que les coûts seront liés à la taille de l&#8217;investissement dans le projet open source.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Pour un investissement moindre (voir nul car absorbé dans le travail quotidien des équipes) :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Remonter les bugs (code / documentation)</p>
+</li>
+<li>
+<p>Demander des fonctionnalités</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Avec un investissement plus important, on peut trouver :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Contribution de code (correction des bugs ou implémentation de nouvelles fonctionnalités)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Au plus cher, on aura bien entendu les cas suivants :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Créer et gérer un projet open source complet :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Gestion du code</p>
+</li>
+<li>
+<p>Gestion des bugs / vulnérabilités</p>
+</li>
+<li>
+<p>Ajout de fonctionnalité</p>
+</li>
+<li>
+<p>Animation de la communauté</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Faire la même chose mais pour un projet déjà existant</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Ce ne sont que des pistes, elles ne sont pas exhaustives.
+L&#8217;important pour moi reste la contribution en tant que telle car à plusieurs on peut aller plus facilement plus loin.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_le_retour_sur_investissement">Le retour sur investissement</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Juste avant on parlait de coût et j&#8217;indiquais que je préférais voir un investissement.
+Oui un investissement car pour moi il y a un vrai retour sur cet investissement.</p>
+</div>
+<div class="paragraph">
+<p>Le premier retour sur investissement que nous avons identifié est au niveau ressources humaines</p>
+</div>
+<div class="paragraph">
+<p>Si l&#8217;on contribue à des projets open source (les siens ou d&#8217;autres que l&#8217;on utilise), une ESN gagne alors en visibilité auprès d&#8217;une partie des développeurs et développeuses.
+Cette visibilité peut avoir pour effet de recruter plus facilement des profils expérimentés ou tout du moins des profils intéressés par l&#8217;open source, voir ayant une expertise sur certains logiciels open source.</p>
+</div>
+<div class="paragraph">
+<p>Autre point intéressant au niveau ressources humaines est la réduction de la <code>fuite des cerveaux</code>.
+Par cette expression, je veux dire que des profils expérimentés internes auront potentiellement plus d&#8217;intérêts à rester s&#8217;ils participent à des projets ouverts.</p>
+</div>
+<div class="paragraph">
+<p>Le second retour sur investissemnt auquel nous avons pensé est au niveau commercial.
+En ayant des profils participants à des projets open source, une ESN peut mettre en avant ces compétences lors d&#8217;appels d&#8217;offre ou simplement pour une mission de conseil ou d&#8217;expertise.
+Il est donc envisageable d&#8217;avoir un retour financier sur investissement dans l&#8217;open source.
+Vraissemblablement ce n&#8217;est pas un retour financier complet, mais joint au autres retours, ça commence à être très intéressant.</p>
+</div>
+<div class="paragraph">
+<p>Pour garder enfin un point de vue de développeur, il faut peut être également retourner le problème du retour sur investissement.</p>
+</div>
+<div class="paragraph">
+<p>En effet, le premier reflexe est se dire, <code>Ok on investit dans de l&#8217;open source, mais qu&#8217;est ce que cela nous rapporte ?</code>.
+La réalité c&#8217;est que la majorité des ESN (toutes à mon avis) utilisent des projets open source.
+Que ce soit des IDEs, des bibliothèques reconnues.
+Que ce soit pour la création de leurs propres outils, de ceux de leur client ou simplement de l&#8217;infrastructure,</p>
+</div>
+<div class="paragraph">
+<p>Dans ce cas, est ce que contribuer à l&#8217;open source n&#8217;est pas simplement un cercle vertueux ?</p>
+</div>
+<div class="paragraph">
+<p>Pour reprendre une phrase d&#8217;un de mes comparses lors du Software Craftmanship Nantes : <code>Contribuer à l&#8217;open source est un investissement sur retour plutôt qu&#8217;un retour sur investissement</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+j&#8217;espère ne pas m&#8217;être planté sur la phrase précédente.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_les_questions_à_prendre_en_compte_en_se_lançant">Les questions à prendre en compte en se lançant</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Forcément il y a des questions à se poser, et l&#8217;affaire récente autour de Redis est un point à prendre en considération.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Il faut penser à la propriété intellectuelle</p>
+</li>
+<li>
+<p>Il faut également faire attention aux licences sur lesquelles ont contribue</p>
+</li>
+<li>
+<p>Lorsque l&#8217;on utilise des projets dit open source, il faut vraiment regarder tous les cas. (Coucou Common Clause).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_oui_mais_au_final_on_fait_comment">Oui mais au final on fait comment ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Premièrement c&#8217;est une culture à développer dans l&#8217;entreprise.
+Ce n&#8217;est pas spécialement une culture d&#8217;entreprise comme pour Redhat (ndlr. tous les projets Redhat sont open source).</p>
+</div>
+<div class="paragraph">
+<p>L&#8217;une des façons les plus simples est de laisser un peu de liberté aux développeurs et développeuses pour qu&#8217;ils remontent les bugs ou les demandes de fonctionnalités.
+Il ne faut pas oublier de communiquer sur cette liberté.
+L&#8217;humain est prompt à s&#8217;interdire certaines actions dans le cadre du travail.</p>
+</div>
+<div class="paragraph">
+<p>Autre action possible, si des personnes sont déjà sensibilisés à l&#8217;open source, il faut leur permettre de participer sur leur temps de travail.
+Quelques jours par mois peut permettre de contribuer régulièrement sur un ou deux projets.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>En dessous de quelques jours par mois, cela reste intéressant, mais le temps utilisé sera vraisemblablement plus sur de la veille technologique que de la contribution open source.
+Cela reste intéressant mais ce n'est plus contribuer.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Bon allez maintenant vous savez ce qui vous reste à faire ?</strong>
+<strong>Poussez cet article dans vos ESN pour lancer le débat.</strong></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_quelques_liens_intéressants">Quelques liens intéressants</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Un article intéressant sur le risque de mort des projets open source : <a href="https://framablog.org/2018/08/29/les-logiciels-libres-meurent-lentement-sans-contributions/" class="bare">https://framablog.org/2018/08/29/les-logiciels-libres-meurent-lentement-sans-contributions/</a></p>
+</li>
+<li>
+<p>Un article sur la Common Clause : <a href="https://scinfolex.com/2018/08/26/la-commons-clause-de-redis-une-mauvaise-reponse-a-de-vraies-questions/" class="bare">https://scinfolex.com/2018/08/26/la-commons-clause-de-redis-une-mauvaise-reponse-a-de-vraies-questions/</a></p>
+</li>
+<li>
+<p>Un article sur les logos des projets open source : <a href="http://www.maiwann.net/blog/pourquoi-les-logos-des-logiciels-libres-sont-ils-si-moches/" class="bare">http://www.maiwann.net/blog/pourquoi-les-logos-des-logiciels-libres-sont-ils-si-moches/</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>]]></description><link>http://blog.jabby-techs.fr/2018/08/29/Comment-amener-une-ESN-vers-la-contribution-open-source.html</link><guid isPermaLink="true">http://blog.jabby-techs.fr/2018/08/29/Comment-amener-une-ESN-vers-la-contribution-open-source.html</guid><dc:creator><![CDATA[Gautier de Saint Martin Lacaze]]></dc:creator><pubDate>Wed, 29 Aug 2018 00:00:00 GMT</pubDate></item><item><title><![CDATA[Utiliser l'API Google Sheets via un proxy]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Pour un de mes clients, j&#8217;ai commencé à étudier la possibilité d&#8217;utiliser les API Google pour pousser des données de son application métier vers <a href="https://www.google.com/sheets/about/">Google Sheets</a>.
