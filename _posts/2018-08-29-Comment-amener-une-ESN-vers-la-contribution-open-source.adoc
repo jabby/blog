@@ -1,0 +1,133 @@
+= Comment amener une ESN vers la contribution open source
+
+Cet article est inspiré d'une session du Software Craftmanship Nantes en juin 2018. 
+Il a pour but de résumer les échanges et les pistes que les participants ont partagés pendant environ 1h. 
+
+Comme cet article a mis du temps à s'écrire, j'en profite pour ajouter en fin de l'article quelques liens que je trouve intéressants autout de l'open source.
+
+== Quel type de contribution ?
+
+Forcément lorsque l'on se pose la question, `Tiens et comment on fait pour amener une ESN vers la contribution open source ?` on dérive. 
+
+Pour moi, la première question à se poser est : `quelle type de contribution l'ESN souhaite effectuer ?`
+
+En effet, il existe plusieurs façons de contribuer à l'open source. 
+On pense souvent en premier lieu à la contribution de code. 
+Ce n'est pourtant pas la seule contribution possible. 
+Elle peut être assez complexe dans certains cas. 
+
+Il faut en fait penser aux contributions suivantes : 
+
+* remontée de bugs
+* demande de nouvelles fonctionnalités
+* amélioration de la documentation
+* participation à la communauté 
+* corriger des bugs / ou développer de nouvelles fonctionnalités
+* partager son propre projet interne
+
+Une autre contribution qui nous ait venu à l'esprit pourrait être dans le cas où l'ESN possèderait une équipe dédiée à la sécurité (audit du code produit par les équipes et également sur les bibliothèques utilisées). 
+Dans ce cas, l'ESN pourrait remonter voir corriger les vulnérabilités aux projets open source utilisés. 
+Personnellement, je vois moins les ESN que je connais travailler sur ce point.
+Par contre ceux indiqué précédemment ne sont pas si complexes
+
+[NOTE]
+---- 
+Pour information si vous n'avez pas d'équipe d'analyse, l'OWASP fournit des outils pour analyser vos dépendances (au moins en java via maven ou gradle).
+
+D'autres outils doivent certainement exister. 
+Il ne faut pas hésiter à chercher. 
+C'est pour une bonne cause : la sécurité
+----
+
+== Quel coût ?
+
+
+Une entreprise n'est pas par vocation philantrope. 
+Se pose donc la question du coût pour l'entreprise des contributions à des projets open source. 
+Par défaut c'est un coût (que je préfère voir comme un investissement. cf. prochaine partie).
+
+On peu estimer que les coûts seront liés à la taille de l'investissement dans le projet open source. 
+
+* Pour un investissement moindre (voir nul car absorbé dans le travail quotidien des équipes) : 
+** Remonter les bugs (code / documentation)
+** Demander des fonctionnalités
+* Avec un investissement plus important, on peut trouver : 
+** Contribution de code (correction des bugs ou implémentation de nouvelles fonctionnalités)
+* Au plus cher, on aura bien entendu les cas suivants : 
+** Créer et gérer un projet open source complet : 
+*** Gestion du code
+*** Gestion des bugs / vulnérabilités
+*** Ajout de fonctionnalité
+*** Animation de la communauté
+** Faire la même chose mais pour un projet déjà existant
+
+Ce ne sont que des pistes, elles ne sont pas exhaustives. 
+L'important pour moi reste la contribution en tant que telle car à plusieurs on peut aller plus facilement plus loin. 
+
+== Le retour sur investissement
+
+Juste avant on parlait de coût et j'indiquais que je préférais voir un investissement. 
+Oui un investissement car pour moi il y a un vrai retour sur cet investissement. 
+
+Le premier retour sur investissement que nous avons identifié est au niveau ressources humaines
+
+Si l'on contribue à des projets open source (les siens ou d'autres que l'on utilise), une ESN gagne alors en visibilité auprès d'une partie des développeurs et développeuses. 
+Cette visibilité peut avoir pour effet de recruter plus facilement des profils expérimentés ou tout du moins des profils intéressés par l'open source, voir ayant une expertise sur certains logiciels open source.
+
+Autre point intéressant au niveau ressources humaines est la réduction de la `fuite des cerveaux`. 
+Par cette expression, je veux dire que des profils expérimentés internes auront potentiellement plus d'intérêts à rester s'ils participent à des projets ouverts. 
+
+Le second retour sur investissemnt auquel nous avons pensé est au niveau commercial. 
+En ayant des profils participants à des projets open source, une ESN peut mettre en avant ces compétences lors d'appels d'offre ou simplement pour une mission de conseil ou d'expertise. 
+Il est donc envisageable d'avoir un retour financier sur investissement dans l'open source. 
+Vraissemblablement ce n'est pas un retour financier complet, mais joint au autres retours, ça commence à être très intéressant. 
+
+Pour garder enfin un point de vue de développeur, il faut peut être également retourner le problème du retour sur investissement.
+
+En effet, le premier reflexe est se dire, `Ok on investit dans de l'open source, mais qu'est ce que cela nous rapporte ?`. 
+La réalité c'est que la majorité des ESN (toutes à mon avis) utilisent des projets open source. 
+Que ce soit des IDEs, des bibliothèques reconnues. 
+Que ce soit pour la création de leurs propres outils, de ceux de leur client ou simplement de l'infrastructure,
+
+Dans ce cas, est ce que contribuer à l'open source n'est pas simplement un cercle vertueux ? 
+
+Pour reprendre une phrase d'un de mes comparses lors du Software Craftmanship Nantes : `Contribuer à l'open source est un investissement sur retour plutôt qu'un retour sur investissement`.
+
+NOTE: j'espère ne pas m'être planté sur la phrase précédente.
+
+
+== Les questions à prendre en compte en se lançant
+
+Forcément il y a des questions à se poser, et l'affaire récente autour de Redis est un point à prendre en considération.
+
+
+* Il faut penser à la propriété intellectuelle
+* Il faut également faire attention aux licences sur lesquelles ont contribue
+* Lorsque l'on utilise des projets dit open source, il faut vraiment regarder tous les cas. (Coucou Common Clause).
+
+== Oui mais au final on fait comment ?
+
+Premièrement c'est une culture à développer dans l'entreprise. 
+Ce n'est pas spécialement une culture d'entreprise comme pour Redhat (ndlr. tous les projets Redhat sont open source).
+
+L'une des façons les plus simples est de laisser un peu de liberté aux développeurs et développeuses pour qu'ils remontent les bugs ou les demandes de fonctionnalités. 
+Il ne faut pas oublier de communiquer sur cette liberté. 
+L'humain est prompt à s'interdire certaines actions dans le cadre du travail. 
+
+Autre action possible, si des personnes sont déjà sensibilisés à l'open source, il faut leur permettre de participer sur leur temps de travail. 
+Quelques jours par mois peut permettre de contribuer régulièrement sur un ou deux projets. 
+
+[WARNING]
+----
+En dessous de quelques jours par mois, cela reste intéressant, mais le temps utilisé sera vraisemblablement plus sur de la veille technologique que de la contribution open source. 
+Cela reste intéressant mais ce n'est plus contribuer.
+----
+
+*Bon allez maintenant vous savez ce qui vous reste à faire ?*
+*Poussez cet article dans vos ESN pour lancer le débat.*
+
+== Quelques liens intéressants 
+
+* Un article intéressant sur le risque de mort des projets open source : https://framablog.org/2018/08/29/les-logiciels-libres-meurent-lentement-sans-contributions/
+* Un article sur la Common Clause : https://scinfolex.com/2018/08/26/la-commons-clause-de-redis-une-mauvaise-reponse-a-de-vraies-questions/
+* Un article sur les logos des projets open source : http://www.maiwann.net/blog/pourquoi-les-logos-des-logiciels-libres-sont-ils-si-moches/
