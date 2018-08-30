@@ -3,7 +3,7 @@
 Cet article est inspiré d'une session du Software Craftmanship Nantes en juin 2018. 
 Il a pour but de résumer les échanges et les pistes que les participants ont partagés pendant environ 1h. 
 
-Comme cet article a mis du temps à s'écrire, j'en profite pour ajouter en fin de l'article quelques liens que je trouve intéressants autout de l'open source.
+Comme cet article a mis du temps à s'écrire, j'en profite pour ajouter en fin de l'article quelques liens que je trouve intéressants autour de l'open source.
 
 == Quel type de contribution ?
 
@@ -26,9 +26,9 @@ Il faut en fait penser aux contributions suivantes :
 * partager son propre projet interne
 
 Une autre contribution qui nous ait venu à l'esprit pourrait être dans le cas où l'ESN possèderait une équipe dédiée à la sécurité (audit du code produit par les équipes et également sur les bibliothèques utilisées). 
-Dans ce cas, l'ESN pourrait remonter voir corriger les vulnérabilités aux projets open source utilisés. 
+Dans ce cas, l'ESN pourrait remonter voire corriger les vulnérabilités aux projets open source utilisés. 
 Personnellement, je vois moins les ESN que je connais travailler sur ce point.
-Par contre ceux indiqué précédemment ne sont pas si complexes
+Par contre ceux indiqués précédemment ne sont pas si complexes.
 
 [NOTE]
 ---- 
@@ -46,7 +46,7 @@ Une entreprise n'est pas par vocation philantrope.
 Se pose donc la question du coût pour l'entreprise des contributions à des projets open source. 
 Par défaut c'est un coût (que je préfère voir comme un investissement. cf. prochaine partie).
 
-On peu estimer que les coûts seront liés à la taille de l'investissement dans le projet open source. 
+On peut estimer que les coûts seront liés à la taille de l'investissement dans le projet open source. 
 
 * Pour un investissement moindre (voir nul car absorbé dans le travail quotidien des équipes) : 
 ** Remonter les bugs (code / documentation)
